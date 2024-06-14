@@ -55,10 +55,10 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/", "/error", "/webjars/**", "/index.html", "/signup",
-                                "/signin", "/home/refreshtoken", "/home/**", "/home", "/home/addnewuser",
-                                "/home/authenticate",
-                                "/home/validateToken","/verifyemail",
-                                "/home/refreshtoken", "/home/validatetoken",
+                                "/api/signin", "/api/refreshtoken", "/api/**", "/api/", "/api/addnewuser",
+                                "/api/authenticate",
+                                "/api/validateToken","/api/verifyemail",
+                                "/api/refreshtoken", "/api/validatetoken",
                                 "/auth/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",

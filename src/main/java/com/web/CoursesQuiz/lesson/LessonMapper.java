@@ -1,23 +1,26 @@
 package com.web.CoursesQuiz.lesson;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+public class LessonMapper {
 
-import com.web.CoursesQuiz.course.Course;
-import com.web.CoursesQuiz.course.CourseDTO;
-import com.web.CoursesQuiz.course.CourseMapper;
+    public static LessonDTO toLessonDto(Lesson lesson) {
+        LessonDTO dto = new LessonDTO();
+        dto.setId(lesson.getId());
+        dto.setName(lesson.getName());
+        dto.setDescription(lesson.getDescription());
+        dto.setCourseId(lesson.getCourseId());
+        dto.setLessonQuestions(lesson.getLessonQuestions()); // Assuming this is a direct mapping
+        // Not copying audit fields to DTO
+        return dto;
+    }
 
-@Mapper
-public interface LessonMapper {
-
-    LessonMapper INSTANCE = Mappers.getMapper(LessonMapper.class);
-
-    LessonDTO toLessonDto(Lesson lesson);
-
-    @Mapping(target = "createdBy", ignore = true)
-    @Mapping(target = "createdDate", ignore = true)
-    @Mapping(target = "lastModifiedBy", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
-    Lesson toLesson(LessonDTO lessonDTO);
+    public static Lesson toLesson(LessonDTO lessonDTO) {
+        Lesson lesson = new Lesson();
+        lesson.setId(lessonDTO.getId());
+        lesson.setName(lessonDTO.getName());
+        lesson.setDescription(lessonDTO.getDescription());
+        lesson.setCourseId(lessonDTO.getCourseId());
+        lesson.setLessonQuestions(lessonDTO.getLessonQuestions()); // Assuming this is a direct mapping
+        // No audit fields initialized here
+        return lesson;
+    }
 }

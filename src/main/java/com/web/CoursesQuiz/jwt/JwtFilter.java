@@ -29,10 +29,10 @@ public class JwtFilter extends OncePerRequestFilter {
     public boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
         // "/", "/error", "/webjars/**", "/index.html", "/signup", "/signin"
-        return path.startsWith("/webjars") || path.startsWith("/index.html") || path.startsWith("/signup") || path.startsWith("/verifyemail")
-                || path.startsWith("/signin") ||
-                path.equals("/") || path.equals("/welcome.html") || path.startsWith("/blog")
-                || path.startsWith("/home/refreshtoken") || path.startsWith("/home") 
+        return path.startsWith("/webjars") || path.startsWith("/index.html") || path.startsWith("/api/signup") || path.startsWith("/api/verifyemail")
+                || path.startsWith("/api/signin") ||
+                path.equals("/api") || path.equals("/api/welcome.html") 
+                || path.startsWith("/api/refreshtoken") 
                 || path.startsWith("/swagger-ui.html") || path.startsWith("/swagger-resources")
                 || path.startsWith("/v2/api-docs") || path.startsWith("/v3/api-docs") ||
                 path.startsWith("/configuration/ui") || path.startsWith("/configuration/security")

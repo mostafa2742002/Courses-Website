@@ -19,7 +19,7 @@ public class CourseService {
     private CourseRepository courseRepository;
 
     public void addCourse(CourseDTO courseDTO) {
-        Course course = CourseMapper.INSTANCE.toCourse(courseDTO);
+        Course course = CourseMapper.toCourse(courseDTO);
 
         Optional<Course> courseOptional = courseRepository.findByName(course.getName());
         if (courseOptional.isPresent()) {
@@ -33,12 +33,12 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
-        return CourseMapper.INSTANCE.toCourseDto(course);
+        return CourseMapper.toCourseDto(course);
     }
 
     public boolean updateCourse(@Valid CourseDTO courseDTO) {
         boolean isUpdated = false;
-        Course course = CourseMapper.INSTANCE.toCourse(courseDTO);
+        Course course = CourseMapper.toCourse(courseDTO);
         Optional<Course> courseOptional = courseRepository.findById(course.getId());
         if (!courseOptional.isPresent())
             throw new ResourceNotFoundException("Course", "Course Id", courseDTO.getId());

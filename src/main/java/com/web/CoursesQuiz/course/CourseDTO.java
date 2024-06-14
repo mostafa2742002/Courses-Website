@@ -16,7 +16,7 @@ import nonapi.io.github.classgraph.json.Id;
 
 @Data
 @ToString
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseDTO extends AuditableBase{

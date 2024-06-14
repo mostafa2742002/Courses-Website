@@ -4,17 +4,21 @@ import nonapi.io.github.classgraph.json.Id;
 
 import java.util.ArrayList;
 
+import com.web.CoursesQuiz.user.AuditableBase;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class LessonDTO {
+public class LessonDTO extends AuditableBase{
 
     @NotNull
     private String Id;
