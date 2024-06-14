@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.web.CoursesQuiz.course.Course;
 import com.web.CoursesQuiz.course.CourseController;
 import com.web.CoursesQuiz.course.CourseDTO;
+import com.web.CoursesQuiz.course.CourseRepository;
 import com.web.CoursesQuiz.course.CourseService;
 import com.web.CoursesQuiz.course.SolvedCourse;
 import com.web.CoursesQuiz.course.SolvedCourseRepository;
@@ -45,6 +46,7 @@ public class UserService implements UserDetailsService {
     private final SolvedLessonRepository solvedLessonRepository;
     private final CourseService courseService;
     private final LessonService lessonService;
+    private final CourseRepository courseRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -70,11 +72,13 @@ public class UserService implements UserDetailsService {
         String subject = "Verify Your Email";
 
         // if we use render site then use this
-        // String body = "Click the link to verify your email:https://ecommerce-j0hf.onrender.com/home/verifyemail?token="
-        //         + verificationToken;
+        // String body = "Click the link to verify your
+        // email:https://ecommerce-j0hf.onrender.com/home/verifyemail?token="
+        // + verificationToken;
 
         // if we use localhost then use this
-        String body = "Click the link to verify your email:http://localhost:8080/verifyemail?token=" + verificationToken;
+        String body = "Click the link to verify your email:http://localhost:8080/verifyemail?token="
+                + verificationToken;
         emailService.sendEmail(savedUser.getEmail(), subject, body);
 
         return "the user added successfully go to your email to verify your email";
@@ -272,6 +276,20 @@ public class UserService implements UserDetailsService {
         }
 
         return isDeleted;
+    }
+
+    public void enrollCourse(@NotNull String userId, @NotNull String courseId) {
+        if (userRepository.findById(userId).isEmpty())
+            throw new IllegalArgumentException("User not found");
+        if (courseRepository.findById(courseId).isEmpty())
+            throw new IllegalArgumentException("Course not found");
+
+        User user = userRepository.findById(userId).get();
+        if (user.getCourses().contains(courseId))
+            throw new IllegalArgumentException("User already enrolled in this course");
+
+        user.getCourses().add(courseId);
+        userRepository.save(user);
     }
 
 }
