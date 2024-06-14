@@ -72,13 +72,12 @@ public class UserService implements UserDetailsService {
         String subject = "Verify Your Email";
 
         // if we use render site then use this
-        // String body = "Click the link to verify your
-        // email:https://ecommerce-j0hf.onrender.com/home/verifyemail?token="
-        // + verificationToken;
+        String body = "Click the link to verify your email:https://courses-website-q0gf.onrender.com/verifyemail?token="+ verificationToken;
 
         // if we use localhost then use this
-        String body = "Click the link to verify your email:http://localhost:8080/verifyemail?token="
-                + verificationToken;
+        // String body = "Click the link to verify your
+        // email:http://localhost:8080/verifyemail?token="
+        // + verificationToken;
         emailService.sendEmail(savedUser.getEmail(), subject, body);
 
         return "the user added successfully go to your email to verify your email";
