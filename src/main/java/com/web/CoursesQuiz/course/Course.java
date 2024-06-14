@@ -16,7 +16,7 @@ import lombok.ToString;
 import nonapi.io.github.classgraph.json.Id;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

@@ -14,7 +14,15 @@ public class CourseMapper {
             dto.setLessons(course.getLessons());
         if (course.getFinalQuiz() != null)
             dto.setFinalQuiz(course.getFinalQuiz()); // Same here
-        // Not copying audit fields to DTO
+        if (course.getCreatedBy() != null)
+            dto.setCreatedBy(course.getCreatedBy());
+        if (course.getCreatedDate() != null)
+            dto.setCreatedDate(course.getCreatedDate());
+        if (course.getLastModifiedBy() != null)
+            dto.setLastModifiedBy(course.getLastModifiedBy());
+        if (course.getLastModifiedDate() != null)
+            dto.setLastModifiedDate(course.getLastModifiedDate());
+
         return dto;
     }
 
@@ -30,7 +38,7 @@ public class CourseMapper {
             course.setLessons(courseDTO.getLessons()); // Directly assign the list if it's fine as is
         if (courseDTO.getFinalQuiz() != null)
             course.setFinalQuiz(courseDTO.getFinalQuiz()); // Same here
-        // No audit fields initialized here
+
         return course;
     }
 }
