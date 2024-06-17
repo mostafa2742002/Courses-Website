@@ -19,6 +19,7 @@ public class CourseService {
     private CourseRepository courseRepository;
 
     public void addCourse(CourseDTO courseDTO) {
+        courseDTO.setId(null);
         Course course = CourseMapper.toCourse(courseDTO);
 
         Optional<Course> courseOptional = courseRepository.findByName(course.getName());

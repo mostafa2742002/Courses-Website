@@ -21,6 +21,7 @@ public class LessonService {
     private CourseRepository courseRepository;
 
     public void addLesson(@NotNull LessonDTO lessonDTO, @NotNull String courseId) {
+        lessonDTO.setId(null);
         if (courseRepository.findById(courseId).isEmpty()) {
             throw new ResourceNotFoundException("Course", "Course Id", courseId);
         }
