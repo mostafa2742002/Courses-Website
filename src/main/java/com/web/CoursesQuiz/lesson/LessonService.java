@@ -1,13 +1,13 @@
 package com.web.CoursesQuiz.lesson;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.web.CoursesQuiz.course.Course;
-import com.web.CoursesQuiz.course.CourseMapper;
 import com.web.CoursesQuiz.course.CourseRepository;
 import com.web.CoursesQuiz.exception.ResourceNotFoundException;
-
-import java.util.*;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

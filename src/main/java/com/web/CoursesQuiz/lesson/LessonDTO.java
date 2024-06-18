@@ -1,7 +1,5 @@
 package com.web.CoursesQuiz.lesson;
 
-import nonapi.io.github.classgraph.json.Id;
-
 import java.util.ArrayList;
 
 import com.web.CoursesQuiz.user.AuditableBase;

@@ -12,7 +12,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import nonapi.io.github.classgraph.json.Id;
 
 @Data
 @ToString

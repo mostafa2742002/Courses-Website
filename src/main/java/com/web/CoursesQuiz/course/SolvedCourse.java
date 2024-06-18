@@ -1,10 +1,12 @@
 package com.web.CoursesQuiz.course;
 
+import java.util.ArrayList;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.web.CoursesQuiz.lesson.Question;
 import com.web.CoursesQuiz.user.AuditableBase;
-import java.util.ArrayList;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,28 +1,21 @@
 package com.web.CoursesQuiz.user;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,8 +41,13 @@ public class User extends AuditableBase implements UserDetails {
     @NotNull(message = "phone shouldn't be null")
     private String phone;
 
+    @Pattern(regexp = "^[0-9]{11}$", message = "invalid mobile number entered ")
+    @NotNull(message = "phone shouldn't be null")
+    private String parentPhone;
+
     private ArrayList<String> courses = new ArrayList<>();
     
+
     private String token;
     private String image;
     private boolean emailVerified;

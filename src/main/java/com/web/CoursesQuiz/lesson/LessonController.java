@@ -1,5 +1,10 @@
 package com.web.CoursesQuiz.lesson;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,11 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.*;
+
 import com.web.CoursesQuiz.constants.ServerConstants;
-import com.web.CoursesQuiz.course.Course;
-import com.web.CoursesQuiz.course.CourseDTO;
-import com.web.CoursesQuiz.course.CourseService;
 import com.web.CoursesQuiz.dto.ErrorResponseDto;
 import com.web.CoursesQuiz.dto.ResponseDto;
 
@@ -24,11 +26,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
 import lombok.AllArgsConstructor;
 
 @RestController
