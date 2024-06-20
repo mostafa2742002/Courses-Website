@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.CorsFilter;
 
 import com.web.CoursesQuiz.jwt.JwtFilter;
-import com.web.CoursesQuiz.user.UserDetailsServiceImpl;
+import com.web.CoursesQuiz.user.service.UserDetailsServiceImpl;
 
 /*
  * the explaination of the crsf and how it work is :

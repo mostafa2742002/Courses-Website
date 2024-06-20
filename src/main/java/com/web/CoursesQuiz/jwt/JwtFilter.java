@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.web.CoursesQuiz.user.UserDetailsServiceImpl;
+import com.web.CoursesQuiz.user.service.UserDetailsServiceImpl;
 
 @Setter
 @Component

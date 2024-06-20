@@ -1,6 +1,6 @@
 package com.web.CoursesQuiz.jwt;
 
-import com.web.CoursesQuiz.user.User;
+import com.web.CoursesQuiz.user.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
