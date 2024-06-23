@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.web.CoursesQuiz.course.entity.Course;
+import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.exception.ResourceNotFoundException;
 import com.web.CoursesQuiz.lesson.dto.LessonDTO;
@@ -64,11 +67,11 @@ public class LessonService {
         if (!lessonOptional.isPresent())
             throw new ResourceNotFoundException(" lesson", " lesson Id", lessonDTO.getId());
 
-        lessonOptional.get().setName(lesson.getName()); 
+        lessonOptional.get().setName(lesson.getName());
         lessonOptional.get().setDescription(lesson.getDescription());
         lessonOptional.get().setCourseId(lesson.getCourseId());
         lessonRepository.save(lessonOptional.get());
-        
+
         isUpdated = true;
 
         return isUpdated;
@@ -89,9 +92,19 @@ public class LessonService {
         return isDeleted;
     }
 
-    public List<Lesson> getAllLessons() {
-        List<Lesson> lessons = lessonRepository.findAll();
-        return lessons;
+    public PageResponse<Lesson> findAllLessons(int page, int size) {
+        Page<Lesson> lessonPage = lessonRepository.findAll(PageRequest.of(page, size));
+
+        PageResponse<Lesson> response = new PageResponse<>();
+        response.setContent(lessonPage.getContent());
+        response.setNumber(lessonPage.getNumber());
+        response.setSize(lessonPage.getSize());
+        response.setTotalElements(lessonPage.getTotalElements());
+        response.setTotalPages(lessonPage.getTotalPages());
+        response.setFirst(lessonPage.isFirst());
+        response.setLast(lessonPage.isLast());
+
+        return response;
     }
 
     public void addQuestion(@NotNull Question question, @NotNull String lessonId) {
@@ -113,17 +126,17 @@ public class LessonService {
 
     public boolean updateQuestion(@NotNull Question question) {
         boolean isUpdated = false;
-        if(question.getId() == null)
+        if (question.getId() == null)
             throw new ResourceNotFoundException("Question Id", "Question Id", null);
-        if(question.getLessonId() == null)
+        if (question.getLessonId() == null)
             throw new ResourceNotFoundException("Lesson Id", "Lesson Id", null);
-        if(question.getCourseId() == null)
+        if (question.getCourseId() == null)
             throw new ResourceNotFoundException("Course Id", "Course Id", null);
-        if(questionRepository.findById(question.getId()).isEmpty())
+        if (questionRepository.findById(question.getId()).isEmpty())
             throw new ResourceNotFoundException("Question", "Question Id", question.getId());
-        
+
         questionRepository.save(question);
-        
+
         isUpdated = true;
 
         return isUpdated;
@@ -133,13 +146,13 @@ public class LessonService {
         boolean isDeleted = false;
         Question question = questionRepository.findById(questionID).orElseThrow(
                 () -> new ResourceNotFoundException("Question", "Question Id", questionID));
-        
+
         Lesson lesson = lessonRepository.findById(question.getLessonId()).get();
         lesson.getLessonQuestionsIds().remove(questionID);
         lessonRepository.save(lesson);
 
         questionRepository.delete(question);
-        
+
         isDeleted = true;
 
         return isDeleted;

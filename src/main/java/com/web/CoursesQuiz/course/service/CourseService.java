@@ -1,14 +1,18 @@
 package com.web.CoursesQuiz.course.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import com.web.CoursesQuiz.course.dto.CourseDTO;
 import com.web.CoursesQuiz.course.dto.CourseMapper;
 import com.web.CoursesQuiz.course.entity.Course;
+import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.exception.ResourceNotFoundException;
 import com.web.CoursesQuiz.lesson.entity.Question;
@@ -70,10 +74,19 @@ public class CourseService {
         return isDeleted;
     }
 
-    public List<Course> getAllCourses() {
-        List<Course> courses = courseRepository.findAll();
-        return courses;
+    public PageResponse<Course> findAllCourses(int page, int size) {
+        Page<Course> coursePage = courseRepository.findAll(PageRequest.of(page, size));
 
+        PageResponse<Course> response = new PageResponse<>();
+        response.setContent(coursePage.getContent());
+        response.setNumber(coursePage.getNumber());
+        response.setSize(coursePage.getSize());
+        response.setTotalElements(coursePage.getTotalElements());
+        response.setTotalPages(coursePage.getTotalPages());
+        response.setFirst(coursePage.isFirst());
+        response.setLast(coursePage.isLast());
+
+        return response;
     }
 
     public void addQuestion(@NotNull Question question, @NotNull String courseId) {

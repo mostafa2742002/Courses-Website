@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.CoursesQuiz.constants.ServerConstants;
 import com.web.CoursesQuiz.course.dto.CourseDTO;
 import com.web.CoursesQuiz.course.entity.Course;
+import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.dto.ErrorResponseDto;
 import com.web.CoursesQuiz.dto.ResponseDto;
@@ -113,8 +114,11 @@ public class CourseController {
                         @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
         })
         @GetMapping("/courses")
-        public ResponseEntity<List<Course>> getAllCourses() {
-                List<Course> courses = courseService.getAllCourses();
+        public ResponseEntity<PageResponse<Course>> findAllCourses(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+        ){
+                PageResponse<Course> courses = courseService.findAllCourses(page, size);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(courses);
