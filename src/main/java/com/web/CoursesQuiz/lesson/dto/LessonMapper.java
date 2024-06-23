@@ -14,8 +14,6 @@ public class LessonMapper {
             dto.setDescription(lesson.getDescription());
         if (lesson.getCourseId() != null)
             dto.setCourseId(lesson.getCourseId());
-        if (lesson.getLessonQuestions() != null)
-            dto.setLessonQuestions(lesson.getLessonQuestions()); // Assuming this is a direct mapping
         if (lesson.getCreatedBy() != null)
             dto.setCreatedBy(lesson.getCreatedBy());
         if (lesson.getCreatedDate() != null)
@@ -38,8 +36,6 @@ public class LessonMapper {
             lesson.setDescription(lessonDTO.getDescription());
         if (lessonDTO.getCourseId() != null)
             lesson.setCourseId(lessonDTO.getCourseId());
-        if (lessonDTO.getLessonQuestions() != null)
-            lesson.setLessonQuestions(lessonDTO.getLessonQuestions()); // Assuming this is a direct mapping
         // No audit fields initialized here
         return lesson;
     }

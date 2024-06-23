@@ -1,5 +1,6 @@
 package com.web.CoursesQuiz.user.service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ import com.web.CoursesQuiz.email.EmailService;
 import com.web.CoursesQuiz.jwt.JwtResponse;
 import com.web.CoursesQuiz.jwt.JwtService;
 import com.web.CoursesQuiz.lesson.dto.LessonDTO;
+import com.web.CoursesQuiz.lesson.entity.Answer;
+import com.web.CoursesQuiz.lesson.entity.Question;
 import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 import com.web.CoursesQuiz.lesson.repo.SolvedLessonRepository;
 import com.web.CoursesQuiz.lesson.service.LessonService;
@@ -29,6 +32,8 @@ import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
 import com.web.CoursesQuiz.user.dto.LessonAnswersDTO;
 import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
+import com.web.CoursesQuiz.user.entity.AttendCourse;
+import com.web.CoursesQuiz.user.entity.AttendLesson;
 import com.web.CoursesQuiz.user.entity.ReferralCode;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
@@ -201,73 +206,126 @@ public class UserService implements UserDetailsService {
         return ResponseEntity.ok("Password updated successfully");
     }
 
-    public CourseDTO attendCourse(@NotNull String userId) {
+    public AttendCourse attendCourse(@NotNull String userId, @NotNull String courseId) {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        SolvedCourse solvedCourse = solvedCourseRepository.findByUserId(userId);
-        CourseDTO courseDTO = courseService.getCourse(userId);
+        if (courseRepository.findById(courseId).isEmpty())
+            throw new IllegalArgumentException("Course not found");
 
-        if (solvedCourse != null)
-            courseDTO.setFinalQuiz(solvedCourse.getFinalQuiz());
-        return courseDTO;
+        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId).get();
+        if (solvedCourse == null) {
+            SolvedCourse new_SolvedCourse = new SolvedCourse();
+            new_SolvedCourse.setUserId(userId);
+            new_SolvedCourse.setCourseId(courseId);
+            ArrayList<Question> questions = courseService.getAllQuestions(courseId);
+            Answer answer = new Answer();
+            for (Question question : questions) {
+                answer.setQuestionId(question.getId());
+                answer.setAnswer("");
+                answer.setIsCorrect("false");
+                new_SolvedCourse.getFinalQuiz().add(answer);
+            }
+            solvedCourseRepository.save(new_SolvedCourse);
+        }
+
+        AttendCourse attendCourse = new AttendCourse();
+
+        ArrayList<Question> questions = courseService.getAllQuestions(courseId);
+        attendCourse.setQuestions(questions);
+        attendCourse.setSolvedCourse(solvedCourse);
+
+        return attendCourse;
+
     }
 
     public void completeCourse(@NotNull CourseAnswersDTO answers) {
         if (userRepository.findById(answers.getUserId()).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        SolvedCourse solvedCourse = new SolvedCourse();
-        solvedCourse.setUserId(answers.getUserId());
-        solvedCourse.setFinalQuiz(answers.getQuestionsAnswers());
-        solvedCourse.setCourseId(answers.getCourseId());
+        if (courseRepository.findById(answers.getCourseId()).isEmpty())
+            throw new IllegalArgumentException("Course not found");
 
-        if (solvedCourseRepository.findById(answers.getUserId()).isPresent())
-            solvedCourseRepository.deleteById(answers.getUserId());
+        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId()).get();
+        if (solvedCourse == null)
+            throw new IllegalArgumentException("Solution not found");
+        
+        for (Answer answer : answers.getQuestionsAnswers()) {
+            Answer answer1 = solvedCourse.getFinalQuiz().stream().filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
+            answer1.setAnswer(answer.getAnswer());
+            answer1.setIsCorrect(answer.getIsCorrect());
+        }
 
         solvedCourseRepository.save(solvedCourse);
+
     }
 
     public Boolean resetCourse(@NotNull String userId, @NotNull String courseId) {
         Boolean isDeleted = false;
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
-
-        // delete solved course by the userid and courseid together
-        if (solvedCourseRepository.findByUserIdAndCourseId(userId, courseId).isPresent()) {
-            long deletedCount = solvedCourseRepository.deleteByUserIdAndCourseId(userId, courseId);
-            isDeleted = deletedCount > 0;
+        
+        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId).get();
+        for (Answer answer : solvedCourse.getFinalQuiz()) {
+            answer.setAnswer("");
+            answer.setIsCorrect("false");
         }
+
+        solvedCourseRepository.save(solvedCourse);
+        isDeleted = true;
 
         return isDeleted;
     }
 
-    public LessonDTO attendLesson(@NotNull String userId) {
+    public AttendLesson attendLesson(@NotNull String userId, @NotNull String lessonId) {
 
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        SolvedLesson solvedLesson = solvedLessonRepository.findByUserId(userId);
-        LessonDTO lessonDTO = lessonService.getLesson(userId);
+        if (courseRepository.findById(lessonId).isEmpty())
+            throw new IllegalArgumentException("Lesson not found");
 
-        if (solvedLesson != null)
-            lessonDTO.setLessonQuestions(solvedLesson.getLessonQuestions());
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId).get();
 
-        return lessonDTO;
+        if (solvedLesson == null) {
+            SolvedLesson new_SolvedLesson = new SolvedLesson();
+            new_SolvedLesson.setUserId(userId);
+            new_SolvedLesson.setLessonId(lessonId);
+            ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
+            Answer answer = new Answer();
+            for (Question question : questions) {
+                answer.setQuestionId(question.getId());
+                answer.setAnswer("");
+                answer.setIsCorrect("false");
+                new_SolvedLesson.getLessonQuestions().add(answer);
+            }
+            solvedLessonRepository.save(new_SolvedLesson);
+        }
+
+        AttendLesson attendLesson = new AttendLesson();
+
+        ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
+        attendLesson.setQuestions(questions);
+        attendLesson.setSolvedLesson(solvedLesson);
+
+        return attendLesson;
     }
 
-    public void completeLesson(@NotNull LessonAnswersDTO answers) {
-        if (userRepository.findById(answers.getUserId()).isEmpty())
+    public void completeQuestion(@NotNull Answer answer, @NotNull String userId, @NotNull String lessonId) {
+        if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        SolvedLesson solvedLesson = new SolvedLesson();
-        solvedLesson.setUserId(answers.getUserId());
-        solvedLesson.setLessonQuestions(answers.getQuestionsAnswers());
-        solvedLesson.setLessonId(answers.getLessonId());
+        if (courseRepository.findById(lessonId).isEmpty())
+            throw new IllegalArgumentException("Lesson not found");
 
-        if (solvedLessonRepository.findById(answers.getUserId()).isPresent())
-            solvedLessonRepository.deleteById(answers.getUserId());
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId).get();
+        if (solvedLesson == null)
+            throw new IllegalArgumentException("Solution not found");
 
+        Answer answer1 = solvedLesson.getLessonQuestions().stream()
+                .filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
+        answer1.setAnswer(answer.getAnswer());
+        answer1.setIsCorrect(answer.getIsCorrect());
         solvedLessonRepository.save(solvedLesson);
     }
 
@@ -276,11 +334,14 @@ public class UserService implements UserDetailsService {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        // delete solved lesson by the userid and lessonid together
-        if (solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId).isPresent()) {
-            long deletedCount = solvedLessonRepository.deleteByUserIdAndLessonId(userId, lessonId);
-            isDeleted = deletedCount > 0;
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId).get();
+        for (Answer answer : solvedLesson.getLessonQuestions()) {
+            answer.setAnswer("");
+            answer.setIsCorrect("false");
         }
+
+        solvedLessonRepository.save(solvedLesson);
+        isDeleted = true;
 
         return isDeleted;
     }

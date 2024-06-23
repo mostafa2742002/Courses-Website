@@ -2,6 +2,7 @@ package com.web.CoursesQuiz.user.dto;
 
 import java.util.ArrayList;
 
+import com.web.CoursesQuiz.lesson.entity.Answer;
 import com.web.CoursesQuiz.lesson.entity.Question;
 
 import jakarta.validation.constraints.NotNull;
@@ -19,5 +20,5 @@ public class CourseAnswersDTO {
     private String courseId;
 
     @NotNull
-    private ArrayList<Question> QuestionsAnswers = new ArrayList<>();
+    private ArrayList<Answer> QuestionsAnswers = new ArrayList<>();
 }

@@ -28,5 +28,5 @@ public class Lesson extends AuditableBase {
     private String name;
     private String description;
 
-    private ArrayList<Question> LessonQuestions = new ArrayList<>();
+    private ArrayList<String> LessonQuestionsIds = new ArrayList<>();
 }

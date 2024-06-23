@@ -154,9 +154,8 @@ public class CourseController {
                         @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
         })
         @DeleteMapping("/course/question")
-        public ResponseEntity<ResponseDto> deleteQuestion(@RequestParam @NotNull String courseId,
-                        @RequestParam @NotNull String questionIndex) {
-                boolean isDeleted = courseService.deleteQuestion(courseId, questionIndex);
+        public ResponseEntity<ResponseDto> deleteQuestion(@RequestParam @NotNull String questionId) {
+                boolean isDeleted = courseService.deleteQuestion(questionId);
                 if (isDeleted) {
                         return ResponseEntity
                                         .status(HttpStatus.OK)
@@ -176,9 +175,8 @@ public class CourseController {
                         @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
         })
         @PutMapping("/course/question")
-        public ResponseEntity<ResponseDto> updateQuestion(@RequestBody @NotNull Question question,
-                        @RequestParam @NotNull String courseId, @RequestParam @NotNull String questionIndex) {
-                boolean isUpdated = courseService.updateQuestion(question, courseId, questionIndex);
+        public ResponseEntity<ResponseDto> updateQuestion(@RequestBody @NotNull Question question) {
+                boolean isUpdated = courseService.updateQuestion(question);
                 if (isUpdated) {
                         return ResponseEntity
                                         .status(HttpStatus.OK)

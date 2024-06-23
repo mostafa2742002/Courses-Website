@@ -1,5 +1,6 @@
 package com.web.CoursesQuiz.lesson.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import com.web.CoursesQuiz.lesson.dto.LessonMapper;
 import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.lesson.entity.Question;
 import com.web.CoursesQuiz.lesson.repo.LessonRepository;
+import com.web.CoursesQuiz.lesson.repo.QuestionRepository;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +26,7 @@ public class LessonService {
 
     private LessonRepository lessonRepository;
     private CourseRepository courseRepository;
+    private QuestionRepository questionRepository;
 
     public void addLesson(@NotNull LessonDTO lessonDTO, @NotNull String courseId) {
         lessonDTO.setId(null);
@@ -48,8 +51,10 @@ public class LessonService {
     public LessonDTO getLesson(@NotNull String lessonId) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
-
-        return LessonMapper.toLessonDto(lesson);
+        LessonDTO lessonDTO = LessonMapper.toLessonDto(lesson);
+        ArrayList<Question> questions = getAllQuestions(lessonId);
+        lessonDTO.setLessonQuestions(questions);
+        return lessonDTO;
     }
 
     public boolean updateLesson(@Valid LessonDTO lessonDTO) {
@@ -59,7 +64,11 @@ public class LessonService {
         if (!lessonOptional.isPresent())
             throw new ResourceNotFoundException(" lesson", " lesson Id", lessonDTO.getId());
 
-        lessonRepository.save(lesson);
+        lessonOptional.get().setName(lesson.getName()); 
+        lessonOptional.get().setDescription(lesson.getDescription());
+        lessonOptional.get().setCourseId(lesson.getCourseId());
+        lessonRepository.save(lessonOptional.get());
+        
         isUpdated = true;
 
         return isUpdated;
@@ -70,7 +79,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
 
-        Course course = courseRepository.findById(lesson.getCourseId()).get();  
+        Course course = courseRepository.findById(lesson.getCourseId()).get();
         lessonRepository.delete(lesson);
         isDeleted = true;
 
@@ -89,46 +98,64 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
 
-        lesson.getLessonQuestions().add(question);
+        if (question.getId() != null)
+            question.setId(null);
+        if (question.getLessonId() == null)
+            throw new ResourceNotFoundException("Lesson Id", "Lesson Id", lessonId);
+        if (question.getCourseId() == null)
+            throw new ResourceNotFoundException("Course Id", "Course Id", lesson.getCourseId());
+
+        Question question2 = questionRepository.save(question);
+
+        lesson.getLessonQuestionsIds().add(question2.getId());
         lessonRepository.save(lesson);
     }
 
-    public boolean updateQuestion(@NotNull Question question, @NotNull String lessonId,
-            @NotNull String questionIndex) {
+    public boolean updateQuestion(@NotNull Question question) {
         boolean isUpdated = false;
-        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
-                () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
-
-        if (lesson.getLessonQuestions().size() <= Integer.parseInt(questionIndex))
-            throw new ResourceNotFoundException("Question", "Question Index", questionIndex);
-
-        lesson.getLessonQuestions().set(Integer.parseInt(questionIndex), question);
-        lessonRepository.save(lesson);
+        if(question.getId() == null)
+            throw new ResourceNotFoundException("Question Id", "Question Id", null);
+        if(question.getLessonId() == null)
+            throw new ResourceNotFoundException("Lesson Id", "Lesson Id", null);
+        if(question.getCourseId() == null)
+            throw new ResourceNotFoundException("Course Id", "Course Id", null);
+        if(questionRepository.findById(question.getId()).isEmpty())
+            throw new ResourceNotFoundException("Question", "Question Id", question.getId());
+        
+        questionRepository.save(question);
+        
         isUpdated = true;
 
         return isUpdated;
     }
 
-    public boolean deleteQuestion(@NotNull String lessonId, @NotNull String questionIndex) {
+    public boolean deleteQuestion(@NotNull String questionID) {
         boolean isDeleted = false;
-        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
-                () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
-
-        if (lesson.getLessonQuestions().size() <= Integer.parseInt(questionIndex))
-            throw new ResourceNotFoundException("Question", "Question Index", questionIndex);
-
-        lesson.getLessonQuestions().remove(Integer.parseInt(questionIndex));
+        Question question = questionRepository.findById(questionID).orElseThrow(
+                () -> new ResourceNotFoundException("Question", "Question Id", questionID));
+        
+        Lesson lesson = lessonRepository.findById(question.getLessonId()).get();
+        lesson.getLessonQuestionsIds().remove(questionID);
         lessonRepository.save(lesson);
+
+        questionRepository.delete(question);
+        
         isDeleted = true;
 
         return isDeleted;
     }
 
-    public List<Question> getAllQuestions(@NotNull String lessonId) {
+    public ArrayList<Question> getAllQuestions(@NotNull String lessonId) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
 
-        return lesson.getLessonQuestions();
+        ArrayList<Question> questions = new ArrayList<>();
+        for (String questionId : lesson.getLessonQuestionsIds()) {
+            Question question = questionRepository.findById(questionId).get();
+            questions.add(question);
+        }
+
+        return questions;
     }
 
 }

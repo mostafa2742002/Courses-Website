@@ -12,6 +12,7 @@ import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.exception.ResourceNotFoundException;
 import com.web.CoursesQuiz.lesson.entity.Question;
+import com.web.CoursesQuiz.lesson.repo.QuestionRepository;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ import lombok.AllArgsConstructor;
 public class CourseService {
 
     private CourseRepository courseRepository;
+    private QuestionRepository questionRepository;
 
     public void addCourse(CourseDTO courseDTO) {
         courseDTO.setId(null);
@@ -38,8 +40,10 @@ public class CourseService {
     public CourseDTO getCourse(@NotNull String courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
-
-        return CourseMapper.toCourseDto(course);
+        CourseDTO courseDTO = CourseMapper.toCourseDto(course);
+        ArrayList<Question> questions = getAllQuestions(courseId);
+        courseDTO.setFinalQuiz(questions);
+        return courseDTO;
     }
 
     public boolean updateCourse(@Valid CourseDTO courseDTO) {
@@ -76,45 +80,62 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
-        course.getFinalQuiz().add(question);
+        if (question.getId() != null)
+            question.setId(null);
+        if (question.getCourseId() == null)
+            throw new ResourceNotFoundException("Course Id", "Course Id", courseId);
+
+        Question savedQuestion = questionRepository.save(question);
+
+        course.getFinalQuizIds().add(savedQuestion.getId());
         courseRepository.save(course);
     }
 
-    public List<Question> getAllQuestions(@NotNull String courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
-
-        return course.getFinalQuiz();
-    }
-
-    public boolean deleteQuestion(@NotNull String courseId, @NotNull String questionIndex) {
+    public boolean deleteQuestion(@NotNull String questionId) {
         boolean isDeleted = false;
-        Course course = courseRepository.findById(courseId).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+        Question question = questionRepository.findById(questionId).orElseThrow(
+                () -> new ResourceNotFoundException("Question", "Question Id", questionId));
 
-        if (course.getFinalQuiz().size() <= Integer.parseInt(questionIndex))
-            throw new ResourceNotFoundException("Question", "Question Index", questionIndex);
+        Course course = courseRepository.findById(question.getCourseId()).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", question.getCourseId()));
 
-        course.getFinalQuiz().remove(Integer.parseInt(questionIndex));
+        course.getFinalQuizIds().remove(questionId);
         courseRepository.save(course);
+
+        questionRepository.delete(question);
+
         isDeleted = true;
 
         return isDeleted;
     }
 
-    public boolean updateQuestion(@NotNull Question question, @NotNull String courseId, @NotNull String questionIndex) {
+    public boolean updateQuestion(@NotNull Question question) {
         boolean isUpdated = false;
-        Course course = courseRepository.findById(courseId).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+        if (question.getId() == null)
+            throw new ResourceNotFoundException("Question Id", "Question Id", null);
+        if (question.getCourseId() == null)
+            throw new ResourceNotFoundException("Course Id", "Course Id", null);
+        if (questionRepository.findById(question.getId()).isEmpty())
+            throw new ResourceNotFoundException("Question", "Question Id", question.getId());
 
-        if (course.getFinalQuiz().size() <= Integer.parseInt(questionIndex))
-            throw new ResourceNotFoundException("Question", "Question Index", questionIndex);
+        questionRepository.save(question);
 
-        course.getFinalQuiz().set(Integer.parseInt(questionIndex), question);
-        courseRepository.save(course);
         isUpdated = true;
 
         return isUpdated;
     }
 
+    public ArrayList<Question> getAllQuestions(@NotNull String courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+
+        ArrayList<Question> questions = new ArrayList<>();
+        for (String questionId : course.getFinalQuizIds()) {
+            Question question = questionRepository.findById(questionId).orElseThrow(
+                    () -> new ResourceNotFoundException("Question", "Question Id", questionId));
+            questions.add(question);
+        }
+
+        return questions;
+    }
 }

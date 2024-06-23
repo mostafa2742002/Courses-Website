@@ -24,5 +24,6 @@ public class SolvedLesson extends AuditableBase {
     private String id;
     private String lessonId;
     private String userId;
-    private ArrayList<Question> LessonQuestions = new ArrayList<>();
+    private ArrayList<Answer> LessonQuestions = new ArrayList<>();
+
 }

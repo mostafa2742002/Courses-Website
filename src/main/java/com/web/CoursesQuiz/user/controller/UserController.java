@@ -18,11 +18,14 @@ import com.web.CoursesQuiz.course.dto.CourseDTO;
 import com.web.CoursesQuiz.dto.ErrorResponseDto;
 import com.web.CoursesQuiz.dto.ResponseDto;
 import com.web.CoursesQuiz.lesson.dto.LessonDTO;
+import com.web.CoursesQuiz.lesson.entity.Answer;
 import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
 import com.web.CoursesQuiz.user.dto.LessonAnswersDTO;
 import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.PasswordDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
+import com.web.CoursesQuiz.user.entity.AttendCourse;
+import com.web.CoursesQuiz.user.entity.AttendLesson;
 import com.web.CoursesQuiz.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -143,12 +146,13 @@ public class UserController {
             )) })
 
     @PostMapping("/course/attend")
-    public ResponseEntity<CourseDTO> attendCourse(@RequestParam @NotNull String userId) {
-        CourseDTO courseDTO = userService.attendCourse(userId);
+    public ResponseEntity<AttendCourse> attendCourse(@RequestParam @NotNull String userId,
+            @RequestParam @NotNull String courseId) {
+        AttendCourse attendCourse = userService.attendCourse(userId, courseId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(courseDTO);
+                .body(attendCourse);
     }
 
     @Operation(summary = "complete a course", description = "complete a course and submit the solutions by user id")
@@ -197,12 +201,13 @@ public class UserController {
     })
 
     @PostMapping("/lesson/attend")
-    public ResponseEntity<LessonDTO> attendLesson(@RequestParam @NotNull String userId) {
-        LessonDTO lessonDTO = userService.attendLesson(userId);
+    public ResponseEntity<AttendLesson> attendLesson(@RequestParam @NotNull String userId,
+            @RequestParam @NotNull String lessonId) {
+        AttendLesson attendLesson = userService.attendLesson(userId, lessonId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(lessonDTO);
+                .body(attendLesson);
     }
 
     @Operation(summary = "complete a lesson", description = "complete a lesson and submit the solutions by user id")
@@ -211,10 +216,11 @@ public class UserController {
 
             )) })
 
-    @PostMapping("/lesson/complete")
-    public ResponseEntity<String> completeLesson(@RequestBody @NotNull LessonAnswersDTO answers) {
+    @PostMapping("/lesson/question/complete")
+    public ResponseEntity<String> completeQuestion(@RequestBody @NotNull Answer answer,
+            @RequestParam @NotNull String userId, @RequestParam @NotNull String lessonId) {
         try {
-            userService.completeLesson(answers);
+            userService.completeQuestion(answer, userId, lessonId);
             return ResponseEntity.status(HttpStatus.OK).body("Course completed successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.web.CoursesQuiz.lesson.entity.Question;
+import com.web.CoursesQuiz.lesson.entity.*;
 import com.web.CoursesQuiz.user.entity.AuditableBase;
 
 import lombok.AllArgsConstructor;
@@ -28,5 +29,5 @@ public class SolvedCourse extends AuditableBase {
     private String id;
     private String courseId;
     private String userId;
-    private ArrayList<Question> FinalQuiz = new ArrayList<>();
+    private ArrayList<Answer> FinalQuiz = new ArrayList<>();
 }

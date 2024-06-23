@@ -14,8 +14,6 @@ public class CourseMapper {
             dto.setDescription(course.getDescription());
         if (course.getLessons() != null)
             dto.setLessons(course.getLessons());
-        if (course.getFinalQuiz() != null)
-            dto.setFinalQuiz(course.getFinalQuiz()); // Same here
         if (course.getCreatedBy() != null)
             dto.setCreatedBy(course.getCreatedBy());
         if (course.getCreatedDate() != null)
@@ -38,9 +36,6 @@ public class CourseMapper {
             course.setDescription(courseDTO.getDescription());
         if (courseDTO.getLessons() != null)
             course.setLessons(courseDTO.getLessons()); // Directly assign the list if it's fine as is
-        if (courseDTO.getFinalQuiz() != null)
-            course.setFinalQuiz(courseDTO.getFinalQuiz()); // Same here
-
         return course;
     }
 }
