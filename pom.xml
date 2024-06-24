@@ -101,6 +101,15 @@
 			<artifactId>spring-data-commons</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.braintreepayments.gateway/braintree-java -->
+		<dependency>
+			<groupId>com.braintreepayments.gateway</groupId>
+			<artifactId>braintree-java</artifactId>
+			<version>3.34.0</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<build>
