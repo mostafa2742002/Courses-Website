@@ -246,12 +246,14 @@ public class UserService implements UserDetailsService {
         if (courseRepository.findById(answers.getCourseId()).isEmpty())
             throw new IllegalArgumentException("Course not found");
 
-        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId()).get();
+        SolvedCourse solvedCourse = solvedCourseRepository
+                .findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId()).get();
         if (solvedCourse == null)
             throw new IllegalArgumentException("Solution not found");
-        
+
         for (Answer answer : answers.getQuestionsAnswers()) {
-            Answer answer1 = solvedCourse.getFinalQuiz().stream().filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
+            Answer answer1 = solvedCourse.getFinalQuiz().stream()
+                    .filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
             answer1.setAnswer(answer.getAnswer());
             answer1.setIsCorrect(answer.getIsCorrect());
         }
@@ -264,7 +266,7 @@ public class UserService implements UserDetailsService {
         Boolean isDeleted = false;
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
-        
+
         SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId).get();
         for (Answer answer : solvedCourse.getFinalQuiz()) {
             answer.setAnswer("");
@@ -392,6 +394,17 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("User already enrolled in this course");
 
         user.setWallet(user.getWallet() + Double.parseDouble(discountValue));
+    }
+
+    public ResponseEntity<UserDTO> getProfile(@NotNull String user_id) {
+        User user = userRepository.findById(user_id).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        UserDTO userDTO = new UserDTO(user);
+        return ResponseEntity.ok(userDTO);
     }
 
 }

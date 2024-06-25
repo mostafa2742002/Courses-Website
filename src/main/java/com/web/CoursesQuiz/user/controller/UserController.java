@@ -78,6 +78,16 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Get user profile", description = "Get user profile by user id")
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "Profile retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+            )) })
+    @GetMapping("/profile")
+    public ResponseEntity<UserDTO> getProfile(@RequestParam @NotNull String user_id) {
+        return userService.getProfile(user_id);
+    }
+
     @Operation(summary = "Validate The user email", description = "Validate The user email")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "Email verified successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid token", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))
