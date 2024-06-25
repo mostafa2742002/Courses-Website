@@ -396,15 +396,15 @@ public class UserService implements UserDetailsService {
         user.setWallet(user.getWallet() + Double.parseDouble(discountValue));
     }
 
-    public ResponseEntity<UserDTO> getProfile(@NotNull String user_id) {
-        User user = userRepository.findById(user_id).orElse(null);
+    public UserDTO getProfile(@NotNull String email) {
+        User user = userRepository.findByEmail(email);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new IllegalArgumentException("User not found");
         }
 
         UserDTO userDTO = new UserDTO(user);
-        return ResponseEntity.ok(userDTO);
+        return userDTO;
     }
 
 }
