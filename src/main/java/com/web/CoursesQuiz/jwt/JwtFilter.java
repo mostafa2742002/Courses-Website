@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.UserRepository;
 import com.web.CoursesQuiz.user.service.UserDetailsServiceImpl;
 
 @Setter
@@ -24,6 +26,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired 
+    private UserRepository userRepository;
+
 
     @Override
     public boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -57,6 +62,21 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         final String jwt = authHeader.substring(7);
         final String userEmail = jwtService.extractUserName(jwt);
+        if(userEmail != null)
+        {
+            User user = userRepository.findByEmail(userEmail);
+            if(user == null)
+            {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
+                return;
+            }
+            
+            if(!user.isEmailVerified())
+            {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not verified");
+                return;
+            }
+        }
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.validateToken(jwt, userDetails)) {
