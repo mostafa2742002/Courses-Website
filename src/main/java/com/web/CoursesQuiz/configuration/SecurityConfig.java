@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/error", "/webjars/**", "/index.html", "/signup",
                                 "/api/signin", "/api/refreshtoken", "/api/**", "/api/", "/api/addnewuser",
                                 "/api/authenticate",
-                                "/api/validateToken","/api/verifyemail",
+                                "/api/validateToken", "/api/verifyemail",
                                 "/api/refreshtoken", "/api/validatetoken",
                                 "/auth/**",
                                 "/v2/api-docs",
@@ -69,8 +69,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/webjars/**",
                                 "/swagger-ui.html",
-                                "/pay.html"
-                                )
+                                "/pay.html",
+                                "/verifyemail")
                         .permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
