@@ -140,6 +140,34 @@ public class UserController {
                 passwordDTO.getNewPassword());
     }
 
+    @Operation(summary = "Forgot password", description = "Forgot password")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "otp sent successfully to you email", content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+            )) })
+    @PostMapping("/forgotpassword")
+    public ResponseEntity<ResponseDto> forgotPassword(@RequestParam @NotNull String email)
+            throws MessagingException, InterruptedException {
+        String response = userService.forgotPassword(email);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(ServerConstants.STATUS_200, response));
+    }
+
+    @Operation(summary = "Put the opt", description = "Reset password by by user id and the otp")
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "Password reset successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+            )) })
+    @PutMapping("/resetpassword")
+    public ResponseEntity<ResponseDto> resetPassword(@RequestParam @NotNull String userId,
+            @RequestParam @NotNull String otp,
+            @RequestParam @NotNull String newPassword) {
+        userService.resetPassword(userId, otp, newPassword);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
+    }
+
     @Operation(summary = "enroll a course", description = "enroll a course by user id and the course id")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "Course enrolled successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)

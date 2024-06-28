@@ -407,4 +407,39 @@ public class UserService implements UserDetailsService {
         return userDTO;
     }
 
+    public String forgotPassword(@NotNull String email) throws MessagingException, InterruptedException {
+
+        // random otp from 5 digits
+        int otp = (int) (Math.random() * (99999 - 10000 + 1) + 10000);
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        user.setOtp(String.valueOf(otp));
+        userRepository.save(user);
+
+        String subject = "Reset Password";
+        String body = "Your OTP is: " + otp;
+
+        emailService.sendEmail(email, subject, body);
+
+        return "OTP sent to your email";
+    }
+
+    public void resetPassword(@NotNull String userId, @NotNull String otp, @NotNull String newPassword) {
+        User user = userRepository.findById(userId).get();
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (!user.getOtp().equals(otp)) {
+            throw new IllegalArgumentException("Invalid OTP");
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        user.setOtp(null);
+        userRepository.save(user);
+    }
+
 }

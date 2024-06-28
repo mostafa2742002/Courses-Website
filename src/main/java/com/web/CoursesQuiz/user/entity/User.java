@@ -54,6 +54,7 @@ public class User extends AuditableBase implements UserDetails {
     private String image;
     private boolean emailVerified;
     private String verificationToken;
+    private String otp;
 
     public User(UserDTO userDTO) {
         this.email = userDTO.getEmail();
