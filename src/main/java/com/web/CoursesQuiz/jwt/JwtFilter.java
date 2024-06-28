@@ -62,21 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         final String jwt = authHeader.substring(7);
         final String userEmail = jwtService.extractUserName(jwt);
-        if(userEmail != null)
-        {
-            User user = userRepository.findByEmail(userEmail);
-            if(user == null)
-            {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
-                return;
-            }
-            
-            if(!user.isEmailVerified())
-            {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not verified");
-                return;
-            }
-        }
+        
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.validateToken(jwt, userDetails)) {

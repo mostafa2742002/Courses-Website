@@ -100,6 +100,10 @@ public class UserService implements UserDetailsService {
         userDTO.setEmail(userDTO.getEmail().toLowerCase());
         User user = userRepository.findByEmail(userDTO.getEmail());
         if (user != null && bCryptPasswordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
+
+            if (user.isEmailVerified() == false)
+                throw new IllegalArgumentException("Email not verified");
+
             return new JwtResponse(jwtService.generateToken(user), jwtService.generateRefreshToken(user), user);
         }
         throw new IllegalArgumentException("Invalid credentials");
