@@ -60,6 +60,8 @@ public class User extends AuditableBase implements UserDetails {
         this.email = userDTO.getEmail();
         this.name = userDTO.getName();
         this.password = userDTO.getPassword();
+        this.phone = userDTO.getPhone();
+        this.parentPhone = userDTO.getParentPhone();
     }
 
     @Override
