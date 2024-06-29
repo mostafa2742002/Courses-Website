@@ -29,6 +29,7 @@ import com.web.CoursesQuiz.user.dto.PasswordDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;
 import com.web.CoursesQuiz.user.entity.AttendLesson;
+import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,7 +88,7 @@ public class UserController {
 
             )) })
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getProfile() {
+    public ResponseEntity<User> getProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         String email = ((UserDetails) principal).getUsername();

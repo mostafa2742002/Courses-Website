@@ -400,15 +400,13 @@ public class UserService implements UserDetailsService {
         user.setWallet(user.getWallet() + Double.parseDouble(discountValue));
     }
 
-    public UserDTO getProfile(@NotNull String email) {
+    public User getProfile(@NotNull String email) {
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
-
-        UserDTO userDTO = new UserDTO(user);
-        return userDTO;
+        return user;
     }
 
     public String forgotPassword(@NotNull String email) throws MessagingException, InterruptedException {
