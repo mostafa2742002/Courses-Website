@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/swagger-ui.html",
                                 "/pay.html",
-                                "/verifyemail")
+                                "/api/verifyemail")
                         .permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
