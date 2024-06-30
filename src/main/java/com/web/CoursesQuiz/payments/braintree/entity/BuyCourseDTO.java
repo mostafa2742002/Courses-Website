@@ -1,4 +1,4 @@
-package com.web.CoursesQuiz.payments.entity;
+package com.web.CoursesQuiz.payments.braintree.entity;
 
 import lombok.Data;
 

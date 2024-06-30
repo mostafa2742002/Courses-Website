@@ -1,10 +1,10 @@
-package com.web.CoursesQuiz.payments.controller;
+package com.web.CoursesQuiz.payments.braintree.controller;
 
 
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
-import com.web.CoursesQuiz.payments.entity.BuyCourseDTO;
-import com.web.CoursesQuiz.payments.service.BraintreeService;
+import com.web.CoursesQuiz.payments.braintree.entity.BuyCourseDTO;
+import com.web.CoursesQuiz.payments.braintree.service.BraintreeService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
