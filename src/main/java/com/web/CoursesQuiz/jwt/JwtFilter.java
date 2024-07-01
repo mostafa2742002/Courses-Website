@@ -15,8 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.web.CoursesQuiz.user.entity.User;
-import com.web.CoursesQuiz.user.repo.UserRepository;
+
 import com.web.CoursesQuiz.user.service.UserDetailsServiceImpl;
 
 @Setter
@@ -26,8 +25,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    @Autowired 
-    private UserRepository userRepository;
 
 
     @Override

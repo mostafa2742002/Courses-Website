@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import com.web.CoursesQuiz.dto.ResponseDto;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.Order;
-import com.web.CoursesQuiz.payments.paymob.entity.callback.ShippingData;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.TransactionCallback;
 import com.web.CoursesQuiz.payments.paymob.entity.request.BillingData;
 import com.web.CoursesQuiz.payments.paymob.entity.request.Item;

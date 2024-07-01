@@ -1,7 +1,7 @@
 package com.web.CoursesQuiz.payments.braintree.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,7 @@ import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.ValidationError;
-import com.web.CoursesQuiz.user.entity.CourseDate;
+
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.UserRepository;
 import com.web.CoursesQuiz.user.service.UserService;

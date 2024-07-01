@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.web.CoursesQuiz.course.dto.CourseDTO;
+
 import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.course.repo.SolvedCourseRepository;
@@ -23,14 +23,14 @@ import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.email.EmailService;
 import com.web.CoursesQuiz.jwt.JwtResponse;
 import com.web.CoursesQuiz.jwt.JwtService;
-import com.web.CoursesQuiz.lesson.dto.LessonDTO;
+
 import com.web.CoursesQuiz.lesson.entity.Answer;
 import com.web.CoursesQuiz.lesson.entity.Question;
 import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 import com.web.CoursesQuiz.lesson.repo.SolvedLessonRepository;
 import com.web.CoursesQuiz.lesson.service.LessonService;
 import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
-import com.web.CoursesQuiz.user.dto.LessonAnswersDTO;
+
 import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;

@@ -3,7 +3,6 @@ package com.web.CoursesQuiz.user.dto;
 import java.util.ArrayList;
 
 import com.web.CoursesQuiz.lesson.entity.Answer;
-import com.web.CoursesQuiz.lesson.entity.Question;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

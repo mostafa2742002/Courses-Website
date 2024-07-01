@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.CoursesQuiz.constants.ServerConstants;
-import com.web.CoursesQuiz.course.dto.CourseDTO;
+
 import com.web.CoursesQuiz.dto.ErrorResponseDto;
 import com.web.CoursesQuiz.dto.ResponseDto;
-import com.web.CoursesQuiz.lesson.dto.LessonDTO;
+
 import com.web.CoursesQuiz.lesson.entity.Answer;
 import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
-import com.web.CoursesQuiz.user.dto.LessonAnswersDTO;
+
 import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.PasswordDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;

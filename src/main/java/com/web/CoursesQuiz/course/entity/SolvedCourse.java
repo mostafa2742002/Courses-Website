@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.web.CoursesQuiz.lesson.entity.Question;
 import com.web.CoursesQuiz.lesson.entity.*;
 import com.web.CoursesQuiz.user.entity.AuditableBase;
 
