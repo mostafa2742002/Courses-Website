@@ -186,10 +186,13 @@ public class UserService implements UserDetailsService {
         if (user1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
+        if (user.getName() != null)
+            user1.setName(user.getName());
+        if (user.getPhone() != null)
+            user1.setPhone(user.getPhone());
+        if (user.getEmail() != null)
+            user1.setEmail(user.getEmail());
 
-        user1.setName(user.getName());
-        user1.setPhone(user.getPhone());
-        user1.setEmail(user.getEmail());
         userRepository.save(user1);
 
         return ResponseEntity.ok("Profile updated successfully");
