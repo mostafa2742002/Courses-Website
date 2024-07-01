@@ -169,21 +169,6 @@ public class UserController {
                 .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
     }
 
-    @Operation(summary = "enroll a course", description = "enroll a course by user id and the course id")
-    @ApiResponses({ @ApiResponse(responseCode = "200", description = "Course enrolled successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
-
-            )) })
-    @PostMapping("/course/enroll")
-    public ResponseEntity<ResponseDto> enrollCourse(@RequestParam @NotNull String userId,
-            @RequestParam @NotNull String courseId) {
-        userService.enrollCourse(userId, courseId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
-    }
-
     @Operation(summary = "attend a course", description = "attend a course by user id")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "Course attended successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)

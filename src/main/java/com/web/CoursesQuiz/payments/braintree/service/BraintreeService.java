@@ -11,6 +11,7 @@ import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.ValidationError;
+import com.web.CoursesQuiz.user.entity.CourseDate;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.UserRepository;
 import com.web.CoursesQuiz.user.service.UserService;
@@ -18,6 +19,7 @@ import com.web.CoursesQuiz.user.service.UserService;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -36,7 +38,7 @@ public class BraintreeService {
 
     @Transactional
     public ResponseEntity<String> createTransaction(String nonce, String amount, String userId, String courseId,
-                                                    String discountCode, Double discountWallet) {
+                                                    String discountCode, Double discountWallet, int expiryDate) {
         BigDecimal decimalAmount = validateAmount(amount);
         User user = validateUser(userId, decimalAmount, discountWallet);
 
@@ -56,7 +58,8 @@ public class BraintreeService {
         Result<Transaction> result = gateway.transaction().sale(request);
 
         if (result.isSuccess() || result.getTransaction() != null) {
-            userService.enrollCourse(userId, courseId);
+            LocalDate expiryDateLocal = LocalDate.now().plusMonths(expiryDate);
+            userService.enrollCourse(userId, courseId,expiryDateLocal);
             if (discountCode != null && !discountCode.isEmpty()) {
                 userService.useReferralCode(discountCode);
             }

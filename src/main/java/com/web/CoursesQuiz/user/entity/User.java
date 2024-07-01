@@ -33,6 +33,9 @@ public class User extends AuditableBase implements UserDetails {
     @Pattern(regexp = "^[a-zA-Z0-9 ]{3,30}$", message = "username must be between 3 and 30 characters long and can only contain letters and numbers")
     private String name;
 
+    private String first_name;
+    private String last_name;
+
     @Email(message = "invalid email address")
     @NotNull(message = "email shouldn't be null")
     private String email;
@@ -47,7 +50,7 @@ public class User extends AuditableBase implements UserDetails {
     @NotNull(message = "phone shouldn't be null")
     private String parentPhone;
 
-    private ArrayList<String> courses = new ArrayList<>();
+    private ArrayList<CourseDate> courses = new ArrayList<>();
     private double wallet = 0.0;
 
     private String token;

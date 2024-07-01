@@ -36,7 +36,8 @@ public class BraintreeController {
         String courseId = buyCourseDTO.getCourseId();
         String discountCode = buyCourseDTO.getDiscountCode();
         Double discountWallet = buyCourseDTO.getDiscountWallet();
-        ResponseEntity<String> result = braintreeService.createTransaction(nonce, amount, userId, courseId, discountCode, discountWallet);
+        int expiryDate = buyCourseDTO.getExpiryDate();
+        ResponseEntity<String> result = braintreeService.createTransaction(nonce, amount, userId, courseId, discountCode, discountWallet,expiryDate);
         return result;
     }
 }

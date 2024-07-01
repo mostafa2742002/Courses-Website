@@ -11,4 +11,5 @@ public class BuyCourseDTO {
     private String courseId;
     private String discountCode;
     private Double discountWallet;
+    private int expiryDate;
 }

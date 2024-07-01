@@ -1,5 +1,6 @@
 package com.web.CoursesQuiz.user.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;
 import com.web.CoursesQuiz.user.entity.AttendLesson;
+import com.web.CoursesQuiz.user.entity.CourseDate;
 import com.web.CoursesQuiz.user.entity.ReferralCode;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
@@ -352,17 +354,16 @@ public class UserService implements UserDetailsService {
         return isDeleted;
     }
 
-    public void enrollCourse(@NotNull String userId, @NotNull String courseId) {
+    public void enrollCourse(@NotNull String userId, @NotNull String courseId, @NotNull LocalDate expiryDate) {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
         if (courseRepository.findById(courseId).isEmpty())
             throw new IllegalArgumentException("Course not found");
 
         User user = userRepository.findById(userId).get();
-        if (user.getCourses().contains(courseId))
-            throw new IllegalArgumentException("User already enrolled in this course");
 
-        user.getCourses().add(courseId);
+        CourseDate courseDate = new CourseDate(courseId, expiryDate);
+        user.getCourses().add(courseDate);
         userRepository.save(user);
     }
 
