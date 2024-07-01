@@ -154,16 +154,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(ServerConstants.STATUS_200, response));
     }
 
-    @Operation(summary = "Put the opt", description = "Reset password by by user id and the otp")
+    @Operation(summary = "Put the opt", description = "Reset password by by user email and the otp")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "Password reset successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
 
             )) })
     @PutMapping("/resetpassword")
-    public ResponseEntity<ResponseDto> resetPassword(@RequestParam @NotNull String userId,
+    public ResponseEntity<ResponseDto> resetPassword(@RequestParam @NotNull String userEmail,
             @RequestParam @NotNull String otp,
             @RequestParam @NotNull String newPassword) {
-        userService.resetPassword(userId, otp, newPassword);
+        userService.resetPassword(userEmail, otp, newPassword);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));

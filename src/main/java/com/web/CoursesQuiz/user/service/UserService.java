@@ -433,8 +433,8 @@ public class UserService implements UserDetailsService {
         return "OTP sent to your email";
     }
 
-    public void resetPassword(@NotNull String userId, @NotNull String otp, @NotNull String newPassword) {
-        User user = userRepository.findById(userId).get();
+    public void resetPassword(@NotNull String userEmail, @NotNull String otp, @NotNull String newPassword) {
+        User user = userRepository.findByEmail(userEmail);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
