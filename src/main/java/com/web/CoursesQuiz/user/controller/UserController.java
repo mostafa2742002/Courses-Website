@@ -257,6 +257,23 @@ public class UserController {
         }
     }
 
+    @PostMapping("/lesson/question/reset")
+    public ResponseEntity<ResponseDto> resetQuestion(@RequestParam @NotNull String userId,
+            @RequestParam @NotNull String lessonId, @RequestParam @NotNull String questionId) {
+
+        Boolean isDeleted = userService.resetQuestion(userId, lessonId, questionId);
+        if (isDeleted) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(ServerConstants.STATUS_417,
+                            ServerConstants.MESSAGE_417_UPDATE));
+        }
+    }
+
     @Operation(summary = "reset a lesson", description = "reset a lesson by user id and lesson id")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "Lesson reset successfully"),
             @ApiResponse(responseCode = "417", description = "Failed to reset lesson", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
@@ -278,7 +295,6 @@ public class UserController {
                     .body(new ResponseDto(ServerConstants.STATUS_417,
                             ServerConstants.MESSAGE_417_UPDATE));
         }
-
     }
 
     @Operation(summary = "create referral code for a course", description = "create referral code for a course by user id and course id")

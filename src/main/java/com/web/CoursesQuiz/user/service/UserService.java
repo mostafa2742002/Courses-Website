@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.course.repo.SolvedCourseRepository;
@@ -446,6 +445,23 @@ public class UserService implements UserDetailsService {
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
         user.setOtp(null);
         userRepository.save(user);
+    }
+
+    public Boolean resetQuestion(@NotNull String userId, @NotNull String lessonId, @NotNull String questionId) {
+        Boolean isDeleted = false;
+        if (userRepository.findById(userId).isEmpty())
+            throw new IllegalArgumentException("User not found");
+
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId).get();
+        Answer answer = solvedLesson.getLessonQuestions().stream()
+                .filter(a -> a.getQuestionId().equals(questionId)).findFirst().get();
+        answer.setAnswer("");
+        answer.setIsCorrect("false");
+
+        solvedLessonRepository.save(solvedLesson);
+        isDeleted = true;
+
+        return isDeleted;
     }
 
 }
