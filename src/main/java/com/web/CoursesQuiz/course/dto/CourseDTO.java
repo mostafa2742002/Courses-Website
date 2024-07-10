@@ -27,6 +27,8 @@ public class CourseDTO extends AuditableBase{
     @NotNull
     private String description;
 
+    private String image;
+
     ArrayList<Lesson> lessons;
     ArrayList<Question> FinalQuiz;
 }
