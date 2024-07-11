@@ -9,6 +9,7 @@ import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.dto.ErrorResponseDto;
 import com.web.CoursesQuiz.dto.ResponseDto;
+import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.lesson.entity.Question;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -115,13 +116,25 @@ public class CourseController {
         })
         @GetMapping("/courses")
         public ResponseEntity<PageResponse<Course>> findAllCourses(
-            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(name = "size", defaultValue = "10", required = false) int size
-        ){
+                        @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+                        @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
                 PageResponse<Course> courses = courseService.findAllCourses(page, size);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(courses);
+        }
+
+        @Operation(summary = "Get Course Lessons REST API", description = "REST API to fetch all Lessons of a Course")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+                        @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+        })
+        @GetMapping("/course/lessons")
+        public ResponseEntity<List<Lesson>> getCourseLessons(@RequestParam @NotNull String courseId) {
+                List<Lesson> lessons = courseService.getCourseLessons(courseId);
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(lessons);
         }
 
         @Operation(summary = "Add A New Question REST API", description = "REST API to Add a new Question to a Course")

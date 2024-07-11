@@ -11,7 +11,10 @@ import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.exception.ResourceNotFoundException;
+import com.web.CoursesQuiz.lesson.dto.LessonDTO;
+import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.lesson.entity.Question;
+import com.web.CoursesQuiz.lesson.repo.LessonRepository;
 import com.web.CoursesQuiz.lesson.repo.QuestionRepository;
 
 import jakarta.validation.Valid;
@@ -24,6 +27,7 @@ public class CourseService {
 
     private CourseRepository courseRepository;
     private QuestionRepository questionRepository;
+    private LessonRepository lessonRepository;
 
     public void addCourse(CourseDTO courseDTO) {
         courseDTO.setId(null);
@@ -146,5 +150,19 @@ public class CourseService {
         }
 
         return questions;
+    }
+
+    public List<Lesson> getCourseLessons(@NotNull String courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+
+        List<Lesson> lessons = new ArrayList<>();
+        for (String lessonId : course.getLessonsIds()) {
+            Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
+                    () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
+            lessons.add(lesson);
+        }
+
+        return lessons;
     }
 }

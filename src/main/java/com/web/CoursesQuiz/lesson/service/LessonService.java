@@ -46,7 +46,7 @@ public class LessonService {
         Lesson lessonAdded = lessonRepository.save(lesson);
 
         Course course = courseRepository.findById(courseId).get();
-        course.getLessons().add(lessonAdded);
+        course.getLessonsIds().add(lessonAdded.getId());
         courseRepository.save(course);
 
     }
@@ -86,7 +86,7 @@ public class LessonService {
         lessonRepository.delete(lesson);
         isDeleted = true;
 
-        course.getLessons().remove(lesson);
+        course.getLessonsIds().remove(lessonId);
         courseRepository.save(course);
 
         return isDeleted;
