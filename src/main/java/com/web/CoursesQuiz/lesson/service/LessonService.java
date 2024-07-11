@@ -43,10 +43,10 @@ public class LessonService {
             throw new IllegalStateException("Lesson already exists");
         }
 
-        lessonRepository.save(lesson);
+        Lesson lessonAdded = lessonRepository.save(lesson);
 
         Course course = courseRepository.findById(courseId).get();
-        course.getLessons().add(lesson);
+        course.getLessons().add(lessonAdded);
         courseRepository.save(course);
 
     }
