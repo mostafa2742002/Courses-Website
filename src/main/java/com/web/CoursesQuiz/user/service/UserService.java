@@ -2,6 +2,7 @@ package com.web.CoursesQuiz.user.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -219,14 +220,16 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("User not found");
 
         if (courseRepository.findById(courseId).isEmpty())
-            throw new IllegalArgumentException("Course not found");
-
-        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId).get();
-        if (solvedCourse == null) {
+            throw new IllegalArgumentException("Course not found"); 
+        
+        Optional<SolvedCourse> solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId);
+        
+        if (solvedCourse.isEmpty()) {
             SolvedCourse new_SolvedCourse = new SolvedCourse();
             new_SolvedCourse.setUserId(userId);
             new_SolvedCourse.setCourseId(courseId);
             ArrayList<Question> questions = courseService.getAllQuestions(courseId);
+        
             Answer answer = new Answer();
             for (Question question : questions) {
                 answer.setQuestionId(question.getId());
@@ -235,14 +238,16 @@ public class UserService implements UserDetailsService {
                 new_SolvedCourse.getFinalQuiz().add(answer);
             }
             solvedCourseRepository.save(new_SolvedCourse);
+        
         }
 
         AttendCourse attendCourse = new AttendCourse();
 
         ArrayList<Question> questions = courseService.getAllQuestions(courseId);
+        
         attendCourse.setQuestions(questions);
-        attendCourse.setSolvedCourse(solvedCourse);
-
+        attendCourse.setSolvedCourse(solvedCourse.get());
+        
         return attendCourse;
 
     }
