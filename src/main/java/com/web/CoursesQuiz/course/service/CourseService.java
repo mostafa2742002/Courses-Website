@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import com.web.CoursesQuiz.course.dto.CourseDTO;
 import com.web.CoursesQuiz.course.dto.CourseMapper;
+import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
@@ -157,9 +158,9 @@ public class CourseService {
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
         List<Lesson> lessons = new ArrayList<>();
-        for (String lessonId : course.getLessonsIds()) {
-            Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
-                    () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
+        for (LessonPref lessonPref : course.getLessonsPref()) {
+            Lesson lesson = lessonRepository.findById(lessonPref.getId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonPref.getId()));
             lessons.add(lesson);
         }
 

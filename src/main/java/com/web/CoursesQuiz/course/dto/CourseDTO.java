@@ -29,6 +29,6 @@ public class CourseDTO extends AuditableBase{
 
     private String image;
 
-    ArrayList<String> lessonsIds;
+    ArrayList<LessonPref> lessonsPref;
     ArrayList<Question> FinalQuiz;
 }

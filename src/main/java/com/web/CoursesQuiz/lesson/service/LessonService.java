@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
@@ -46,7 +47,8 @@ public class LessonService {
         Lesson lessonAdded = lessonRepository.save(lesson);
 
         Course course = courseRepository.findById(courseId).get();
-        course.getLessonsIds().add(lessonAdded.getId());
+        LessonPref lessonPref = new LessonPref(lessonAdded.getId(), lessonAdded.getName());
+        course.getLessonsPref().add(lessonPref);
         courseRepository.save(course);
 
     }
@@ -86,7 +88,7 @@ public class LessonService {
         lessonRepository.delete(lesson);
         isDeleted = true;
 
-        course.getLessonsIds().remove(lessonId);
+        course.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         courseRepository.save(course);
 
         return isDeleted;

@@ -12,8 +12,8 @@ public class CourseMapper {
             dto.setName(course.getName());
         if (course.getDescription() != null)
             dto.setDescription(course.getDescription());
-        if (course.getLessonsIds() != null)
-            dto.setLessonsIds(course.getLessonsIds());
+        if (course.getLessonsPref() != null)
+            dto.setLessonsPref(course.getLessonsPref());
         if (course.getImage() != null)
             dto.setImage(course.getImage());
         if (course.getCreatedBy() != null)
@@ -36,8 +36,8 @@ public class CourseMapper {
             course.setName(courseDTO.getName());
         if (courseDTO.getDescription() != null)
             course.setDescription(courseDTO.getDescription());
-        if (courseDTO.getLessonsIds() != null)
-            course.setLessonsIds(courseDTO.getLessonsIds()); // Directly assign the list if it's fine as is
+        if (courseDTO.getLessonsPref() != null)
+            course.setLessonsPref(courseDTO.getLessonsPref()); // Directly assign the list if it's fine as is
         if (courseDTO.getImage() != null)
             course.setImage(courseDTO.getImage());
         return course;
