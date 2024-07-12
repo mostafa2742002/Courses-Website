@@ -261,8 +261,9 @@ public class UserService implements UserDetailsService {
 
         Optional<SolvedCourse> solvedCourse = solvedCourseRepository
                 .findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId());
-        if (solvedCourse.isEmpty())
+        if (solvedCourse.isEmpty() || solvedCourse.get().getFinalQuiz().isEmpty())
             throw new IllegalArgumentException("Solution not found");
+            
 
         SolvedCourse solvedCourse1 = solvedCourse.get();
         for (Answer answer : answers.getQuestionsAnswers()) {
