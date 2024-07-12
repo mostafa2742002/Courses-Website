@@ -264,14 +264,15 @@ public class UserService implements UserDetailsService {
         if (solvedCourse.isEmpty())
             throw new IllegalArgumentException("Solution not found");
 
+        SolvedCourse solvedCourse1 = solvedCourse.get();
         for (Answer answer : answers.getQuestionsAnswers()) {
-            Answer answer1 = solvedCourse.get().getFinalQuiz().stream()
+            Answer answer1 = solvedCourse1.getFinalQuiz().stream()
                     .filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
             answer1.setAnswer(answer.getAnswer());
             answer1.setIsCorrect(answer.getIsCorrect());
         }
-
-        solvedCourseRepository.save(solvedCourse.get());
+        
+        solvedCourseRepository.save(solvedCourse1);
 
     }
 
