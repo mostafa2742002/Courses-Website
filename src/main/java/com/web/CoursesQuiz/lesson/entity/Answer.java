@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class Answer {
     private String questionId;
-    private String answer = "";
+    private String answer = "first time";
     private String isCorrect = "false";
 }
