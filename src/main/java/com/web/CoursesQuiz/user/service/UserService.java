@@ -259,19 +259,19 @@ public class UserService implements UserDetailsService {
         if (courseRepository.findById(answers.getCourseId()).isEmpty())
             throw new IllegalArgumentException("Course not found");
 
-        SolvedCourse solvedCourse = solvedCourseRepository
-                .findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId()).get();
-        if (solvedCourse == null)
+        Optional<SolvedCourse> solvedCourse = solvedCourseRepository
+                .findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId());
+        if (solvedCourse.isEmpty())
             throw new IllegalArgumentException("Solution not found");
 
         for (Answer answer : answers.getQuestionsAnswers()) {
-            Answer answer1 = solvedCourse.getFinalQuiz().stream()
+            Answer answer1 = solvedCourse.get().getFinalQuiz().stream()
                     .filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
             answer1.setAnswer(answer.getAnswer());
             answer1.setIsCorrect(answer.getIsCorrect());
         }
 
-        solvedCourseRepository.save(solvedCourse);
+        solvedCourseRepository.save(solvedCourse.get());
 
     }
 
