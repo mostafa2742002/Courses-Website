@@ -20,7 +20,6 @@ import nonapi.io.github.classgraph.json.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Builder
 @Document(collection = "SolvedCourses")
 public class SolvedCourse extends AuditableBase {
 
@@ -29,4 +28,5 @@ public class SolvedCourse extends AuditableBase {
     private String courseId;
     private String userId;
     private ArrayList<Answer> FinalQuiz = new ArrayList<>();
+    private Boolean firstTime = true;
 }

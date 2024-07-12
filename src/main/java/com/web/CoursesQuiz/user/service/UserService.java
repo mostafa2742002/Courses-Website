@@ -220,16 +220,16 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("User not found");
 
         if (courseRepository.findById(courseId).isEmpty())
-            throw new IllegalArgumentException("Course not found"); 
-        
+            throw new IllegalArgumentException("Course not found");
+
         Optional<SolvedCourse> solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId);
-        
+
         if (solvedCourse.isEmpty()) {
             SolvedCourse new_SolvedCourse = new SolvedCourse();
             new_SolvedCourse.setUserId(userId);
             new_SolvedCourse.setCourseId(courseId);
             ArrayList<Question> questions = courseService.getAllQuestions(courseId);
-        
+
             Answer answer = new Answer();
             for (Question question : questions) {
                 answer.setQuestionId(question.getId());
@@ -238,16 +238,16 @@ public class UserService implements UserDetailsService {
                 new_SolvedCourse.getFinalQuiz().add(answer);
             }
             solvedCourseRepository.save(new_SolvedCourse);
-        
+
         }
 
         AttendCourse attendCourse = new AttendCourse();
 
         ArrayList<Question> questions = courseService.getAllQuestions(courseId);
-        
+
         attendCourse.setQuestions(questions);
         attendCourse.setSolvedCourse(solvedCourse.get());
-        
+
         return attendCourse;
 
     }
@@ -263,7 +263,6 @@ public class UserService implements UserDetailsService {
                 .findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId());
         if (solvedCourse.isEmpty() || solvedCourse.get().getFinalQuiz().isEmpty())
             throw new IllegalArgumentException("Solution not found");
-            
 
         SolvedCourse solvedCourse1 = solvedCourse.get();
         for (Answer answer : answers.getQuestionsAnswers()) {
@@ -272,7 +271,8 @@ public class UserService implements UserDetailsService {
             answer1.setAnswer(answer.getAnswer());
             answer1.setIsCorrect(answer.getIsCorrect());
         }
-        
+
+        solvedCourse1.setFirstTime(false);
         solvedCourseRepository.save(solvedCourse1);
 
     }
