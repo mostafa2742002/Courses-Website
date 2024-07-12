@@ -47,6 +47,7 @@ public class LessonService {
         Lesson lessonAdded = lessonRepository.save(lesson);
 
         Course course = courseRepository.findById(courseId).get();
+
         LessonPref lessonPref = new LessonPref(lessonAdded.getId(), lessonAdded.getName());
         course.getLessonsPref().add(lessonPref);
         courseRepository.save(course);

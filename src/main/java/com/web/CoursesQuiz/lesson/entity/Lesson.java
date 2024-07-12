@@ -21,7 +21,7 @@ import nonapi.io.github.classgraph.json.Id;
 public class Lesson extends AuditableBase {
 
     @Id
-    private String Id;
+    private String id;
 
     private String courseId;
 
