@@ -69,7 +69,28 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
+        ArrayList<Question> questions = getAllQuestions(courseId);
+        for (Question question : questions) {
+            questionRepository.delete(question);
+        }
+
+        ArrayList<LessonPref> lessons = course.getLessonsPref();
+        for (LessonPref lessonPref : lessons) {
+            Lesson lesson = lessonRepository.findById(lessonPref.getId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonPref.getId()));
+
+            ArrayList<String> lessonQuestionsIds = lesson.getLessonQuestionsIds();
+            for (String questionId : lessonQuestionsIds) {
+                Question question = questionRepository.findById(questionId).orElseThrow(
+                        () -> new ResourceNotFoundException("Question", "Question Id", questionId));
+                questionRepository.delete(question);
+            }
+
+            lessonRepository.delete(lesson);
+        }
+
         courseRepository.delete(course);
+
         isDeleted = true;
 
         return isDeleted;
