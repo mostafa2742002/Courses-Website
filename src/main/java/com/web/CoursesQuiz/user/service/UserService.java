@@ -233,15 +233,15 @@ public class UserService implements UserDetailsService {
             new_SolvedCourse.setCourseId(courseId);
             ArrayList<Question> questions = courseService.getAllQuestions(courseId);
 
-            Answer answer = new Answer();
+            
             for (Question question : questions) {
+                Answer answer = new Answer();
                 answer.setQuestionId(question.getId());
                 answer.setQuestion(question.getQuestion());
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
                 answer.setIsCorrect(false);
-
                 new_SolvedCourse.getFinalQuiz().add(answer);
             }
             solvedCourseRepository.save(new_SolvedCourse);
