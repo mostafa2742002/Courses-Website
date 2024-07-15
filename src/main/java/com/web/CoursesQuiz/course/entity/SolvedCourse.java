@@ -29,4 +29,5 @@ public class SolvedCourse extends AuditableBase {
     private String userId;
     private ArrayList<Answer> FinalQuiz = new ArrayList<>();
     private Boolean firstTime = true;
+    private Integer grade = 0;
 }

@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.CoursesQuiz.constants.ServerConstants;
-
+import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.dto.ErrorResponseDto;
 import com.web.CoursesQuiz.dto.ResponseDto;
 
 import com.web.CoursesQuiz.lesson.entity.Answer;
+import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
 
 import com.web.CoursesQuiz.user.dto.LoginDTO;
@@ -176,9 +177,24 @@ public class UserController {
             )) })
 
     @PostMapping("/course/attend")
-    public ResponseEntity<AttendCourse> attendCourse(@RequestParam @NotNull String userId,
+    public ResponseEntity<Boolean> attendCourse(@RequestParam @NotNull String userId,
             @RequestParam @NotNull String courseId) {
-        AttendCourse attendCourse = userService.attendCourse(userId, courseId);
+        Boolean attendCourse = userService.attendCourse(userId, courseId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(attendCourse);
+    }
+
+    @Operation(summary = "Get User Answer To A Course", description = "Get User Answer To A Course")
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "User Answer To A Course retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+            )) })
+    @GetMapping("/course/answers")
+    public ResponseEntity<SolvedCourse> getCourseAnswers(@RequestParam @NotNull String userId,
+            @RequestParam @NotNull String courseId) {
+        SolvedCourse attendCourse = userService.getCourseAnswers(userId, courseId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -231,9 +247,25 @@ public class UserController {
     })
 
     @PostMapping("/lesson/attend")
-    public ResponseEntity<AttendLesson> attendLesson(@RequestParam @NotNull String userId,
+    public ResponseEntity<Boolean> attendLesson(@RequestParam @NotNull String userId,
             @RequestParam @NotNull String lessonId) {
-        AttendLesson attendLesson = userService.attendLesson(userId, lessonId);
+        Boolean attendLesson = userService.attendLesson(userId, lessonId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(attendLesson);
+    }
+
+    @Operation(summary = "Get User Answer To A Lesson", description = "Get User Answer To A Lesson")
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "User Answer To A Lesson retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+            )) })
+
+    @GetMapping("/lesson/answers")
+    public ResponseEntity<SolvedLesson> getLessonAnswers(@RequestParam @NotNull String userId,
+            @RequestParam @NotNull String lessonId) {
+        SolvedLesson attendLesson = userService.getLessonAnswers(userId, lessonId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -251,7 +283,7 @@ public class UserController {
             @RequestParam @NotNull String userId, @RequestParam @NotNull String lessonId) {
         try {
             userService.completeQuestion(answer, userId, lessonId);
-            return ResponseEntity.status(HttpStatus.OK).body("Course completed successfully");
+            return ResponseEntity.status(HttpStatus.OK).body("Lesson completed successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

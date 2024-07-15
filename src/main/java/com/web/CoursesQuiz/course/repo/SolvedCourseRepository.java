@@ -13,7 +13,7 @@ public interface SolvedCourseRepository extends MongoRepository<SolvedCourse, St
 
     SolvedCourse findByUserId(String userId);
 
-    Optional<SolvedCourse> findByUserIdAndCourseId(String userId, String courseId);
+    SolvedCourse findByUserIdAndCourseId(String userId, String courseId);
 
     @Transactional
     long deleteByUserIdAndCourseId(String userId, String courseId); // Returns the count of deleted documents

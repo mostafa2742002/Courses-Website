@@ -39,8 +39,8 @@ public class LessonService {
         }
 
         Lesson lesson = LessonMapper.toLesson(lessonDTO);
-        Optional<Lesson> lessonOptional = lessonRepository.findByName(lesson.getName());
-        if (lessonOptional.isPresent()) {
+        Lesson lessonOptional = lessonRepository.findByName(lesson.getName());
+        if (lessonOptional != null) {
             throw new IllegalStateException("Lesson already exists");
         }
 
@@ -114,7 +114,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
 
-        if (question.getId() != null)
+        if (question.getId() != null) 
             question.setId(null);
         if (question.getLessonId() == null)
             throw new ResourceNotFoundException("Lesson Id", "Lesson Id", lessonId);

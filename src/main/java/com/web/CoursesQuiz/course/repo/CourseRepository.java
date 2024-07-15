@@ -11,7 +11,7 @@ import com.web.CoursesQuiz.course.entity.Course;
 @Repository
 public interface CourseRepository  extends MongoRepository <Course, String>{
 
-    Optional<Course> findByName(String name);
+    Course findByName(String name);
     Page<Course> findAll(Pageable pageable);
 
 }

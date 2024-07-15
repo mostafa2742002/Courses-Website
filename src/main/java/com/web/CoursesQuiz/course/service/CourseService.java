@@ -34,8 +34,8 @@ public class CourseService {
         courseDTO.setId(null);
         Course course = CourseMapper.toCourse(courseDTO);
 
-        Optional<Course> courseOptional = courseRepository.findByName(course.getName());
-        if (courseOptional.isPresent()) {
+        Course courseOptional = courseRepository.findByName(course.getName());
+        if (courseOptional != null) {
             throw new IllegalStateException("Course already exists");
         }
 

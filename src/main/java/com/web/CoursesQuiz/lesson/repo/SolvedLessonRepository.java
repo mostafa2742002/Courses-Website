@@ -13,7 +13,7 @@ public interface SolvedLessonRepository extends MongoRepository<SolvedLesson, St
 
     SolvedLesson findByUserId(String userId);
 
-    Optional<SolvedLesson> findByUserIdAndLessonId(String userId, String lessonId);
+    SolvedLesson findByUserIdAndLessonId(String userId, String lessonId);
 
     @Transactional
     long deleteByUserIdAndLessonId(String userId, String lessonId); // Returns the count of deleted documents

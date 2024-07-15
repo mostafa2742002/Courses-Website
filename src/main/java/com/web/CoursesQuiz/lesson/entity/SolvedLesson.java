@@ -25,5 +25,7 @@ public class SolvedLesson extends AuditableBase {
     private String lessonId;
     private String userId;
     private ArrayList<Answer> LessonQuestions = new ArrayList<>();
+    private Integer grade = 0;
+    private Boolean firstTime = true;
 
 }

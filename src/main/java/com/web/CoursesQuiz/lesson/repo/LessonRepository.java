@@ -12,7 +12,7 @@ import java.util.*;
 @Repository
 public interface LessonRepository extends MongoRepository <Lesson, String>{
 
-    Optional<Lesson> findByName(String name);
+    Lesson findByName(String name);
     Page<Lesson> findAll(Pageable pageable);
 
 }
