@@ -260,17 +260,23 @@ public class UserService implements UserDetailsService {
         if (courseRepository.findById(answers.getCourseId()).isEmpty())
             throw new IllegalArgumentException("Course not found");
 
-        SolvedCourse solvedCourse = solvedCourseRepository
-                .findByUserIdAndCourseId(answers.getUserId(), answers.getCourseId());
+        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(answers.getUserId(),
+                answers.getCourseId());
         if (solvedCourse == null)
             throw new IllegalArgumentException("Solution not found");
 
         SolvedCourse solvedCourse1 = solvedCourse;
         for (Answer answer : answers.getQuestionsAnswers()) {
-            Answer answer1 = solvedCourse1.getFinalQuiz().stream()
-                    .filter(a -> a.getQuestionId().equals(answer.getQuestionId())).findFirst().get();
-            answer1.setUserAnswer(answer.getUserAnswer());
-            answer1.setIsCorrect(answer.getIsCorrect());
+            Optional<Answer> optionalAnswer = solvedCourse1.getFinalQuiz().stream()
+                    .filter(a -> a.getQuestionId().equals(answer.getQuestionId()))
+                    .findFirst();
+            if (optionalAnswer.isPresent()) {
+                Answer answer1 = optionalAnswer.get();
+                answer1.setUserAnswer(answer.getUserAnswer());
+                answer1.setIsCorrect(answer.getIsCorrect());
+            } else {
+                throw new IllegalArgumentException("Question not found in final quiz");
+            }
         }
 
         int grade = 0;
@@ -282,7 +288,6 @@ public class UserService implements UserDetailsService {
         solvedCourse1.setGrade(grade);
         solvedCourse1.setFirstTime(false);
         solvedCourseRepository.save(solvedCourse1);
-
     }
 
     public Boolean resetCourse(@NotNull String userId, @NotNull String courseId) {
@@ -291,6 +296,9 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("User not found");
 
         SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId);
+        if (solvedCourse == null)
+            throw new IllegalArgumentException("Solution not found");
+
         for (Answer answer : solvedCourse.getFinalQuiz()) {
             answer.setUserAnswer("");
             answer.setIsCorrect(false);
