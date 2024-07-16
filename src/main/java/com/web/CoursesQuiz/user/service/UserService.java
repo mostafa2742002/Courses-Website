@@ -233,7 +233,6 @@ public class UserService implements UserDetailsService {
             new_SolvedCourse.setCourseId(courseId);
             ArrayList<Question> questions = courseService.getAllQuestions(courseId);
 
-            
             for (Question question : questions) {
                 Answer answer = new Answer();
                 answer.setQuestionId(question.getId());
@@ -328,7 +327,6 @@ public class UserService implements UserDetailsService {
             new_SolvedLesson.setLessonId(lessonId);
             ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
 
-            
             for (Question question : questions) {
                 Answer answer = new Answer();
                 answer.setQuestionId(question.getId());
@@ -492,6 +490,10 @@ public class UserService implements UserDetailsService {
         SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId);
         Answer answer = solvedLesson.getLessonQuestions().stream()
                 .filter(a -> a.getQuestionId().equals(questionId)).findFirst().get();
+
+        if (answer == null)
+            throw new IllegalArgumentException("Question not found");
+        
         answer.setUserAnswer("");
         answer.setIsCorrect(false);
 
