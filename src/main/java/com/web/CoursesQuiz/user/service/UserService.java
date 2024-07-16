@@ -242,6 +242,7 @@ public class UserService implements UserDetailsService {
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
                 answer.setIsCorrect(false);
+                answer.setOptions(question.getOptions());
                 new_SolvedCourse.getFinalQuiz().add(answer);
             }
             solvedCourseRepository.save(new_SolvedCourse);
@@ -333,7 +334,7 @@ public class UserService implements UserDetailsService {
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
                 answer.setIsCorrect(false);
-
+                answer.setOptions(question.getOptions());
                 new_SolvedLesson.getLessonQuestions().add(answer);
             }
             solvedLessonRepository.save(new_SolvedLesson);
