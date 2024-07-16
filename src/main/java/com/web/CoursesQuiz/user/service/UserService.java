@@ -326,8 +326,9 @@ public class UserService implements UserDetailsService {
             new_SolvedLesson.setLessonId(lessonId);
             ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
 
-            Answer answer = new Answer();
+            
             for (Question question : questions) {
+                Answer answer = new Answer();
                 answer.setQuestionId(question.getId());
                 answer.setQuestion(question.getQuestion());
                 answer.setCorrectAnswer(question.getCorrectAnswer());
