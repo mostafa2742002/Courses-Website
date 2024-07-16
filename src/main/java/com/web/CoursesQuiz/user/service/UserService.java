@@ -305,6 +305,8 @@ public class UserService implements UserDetailsService {
             answer.setIsCorrect(false);
         }
 
+        solvedCourse.setGrade(0);
+
         solvedCourseRepository.save(solvedCourse);
         isDeleted = true;
 
@@ -381,6 +383,8 @@ public class UserService implements UserDetailsService {
             answer.setUserAnswer("");
             answer.setIsCorrect(false);
         }
+
+        solvedLesson.setGrade(0);
 
         solvedLessonRepository.save(solvedLesson);
 
