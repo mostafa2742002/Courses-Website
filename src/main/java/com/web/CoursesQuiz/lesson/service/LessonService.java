@@ -39,10 +39,6 @@ public class LessonService {
         }
 
         Lesson lesson = LessonMapper.toLesson(lessonDTO);
-        Lesson lessonOptional = lessonRepository.findByName(lesson.getName());
-        if (lessonOptional != null) {
-            throw new IllegalStateException("Lesson already exists");
-        }
 
         Lesson lessonAdded = lessonRepository.save(lesson);
 
