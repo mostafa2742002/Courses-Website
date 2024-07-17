@@ -168,6 +168,7 @@ public class PaymentService {
     courseDate.setCourseId(userPayment.getCourseId());
     courseDate.setExpiryDate(userPayment.getExpiryDate());
     courseDate.setCourseName(courseService.getCourseName(userPayment.getCourseId()));
+    courseDate.setCourseImage(courseService.getCourseImage(userPayment.getCourseId()));
     user.getCourses().add(courseDate);
     userRepository.save(user);
 

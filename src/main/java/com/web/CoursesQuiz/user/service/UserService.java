@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService {
         User savedUser = userRepository.save(user);
         savedUser.setReferralCode(createReferralCode(user.getId()));
         userRepository.save(savedUser);
-        
+
         String subject = "Verify Your Email";
 
         // if we use render site then use this
@@ -428,7 +428,8 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.findById(userId).get();
 
-        CourseDate courseDate = new CourseDate(courseId, expiryDate, courseService.getCourseName(courseId));
+        CourseDate courseDate = new CourseDate(courseId, expiryDate, courseService.getCourseName(courseId),
+                courseService.getCourseImage(courseId));
         user.getCourses().add(courseDate);
         userRepository.save(user);
     }

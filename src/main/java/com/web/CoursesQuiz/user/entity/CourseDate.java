@@ -14,4 +14,5 @@ public class CourseDate {
     private String courseId;
     private LocalDate expiryDate;
     private String courseName;
+    private String courseImage;
 }

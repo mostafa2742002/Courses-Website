@@ -193,4 +193,10 @@ public class CourseService {
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
         return course.getName();
     }
+
+    public String getCourseImage(@NotNull String courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+        return course.getImage();
+    }
 }
