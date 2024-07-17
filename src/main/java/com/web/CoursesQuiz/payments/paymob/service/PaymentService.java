@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.dto.ResponseDto;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.Order;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.TransactionCallback;
@@ -32,6 +33,7 @@ public class PaymentService {
   private final UserRepository userRepository;
   private final UserPaymentRepository userPaymentRepository;
   private final UserService userService;
+  private final CourseService courseService;
 
   @Value("${paymob.api.secretkey}")
   private String secretKey;
@@ -46,11 +48,13 @@ public class PaymentService {
   private String publicKey;
 
   public PaymentService(WebClient.Builder webClientBuilder, UserRepository userRepository,
-      UserPaymentRepository userPaymentRepository, UserService userService) {
+      UserPaymentRepository userPaymentRepository, UserService userService,
+      CourseService courseService) {
     this.webClient = webClientBuilder.baseUrl("https://accept.paymob.com/v1/intention").build();
     this.userRepository = userRepository;
     this.userPaymentRepository = userPaymentRepository;
     this.userService = userService;
+    this.courseService = courseService;
   }
 
   public ResponseEntity<ResponseDto> createPaymentIntent(int amount, String courseId, String userId, int expiryDate,
@@ -163,6 +167,7 @@ public class PaymentService {
     CourseDate courseDate = new CourseDate();
     courseDate.setCourseId(userPayment.getCourseId());
     courseDate.setExpiryDate(userPayment.getExpiryDate());
+    courseDate.setCourseName(courseService.getCourseName(userPayment.getCourseId()));
     user.getCourses().add(courseDate);
     userRepository.save(user);
 

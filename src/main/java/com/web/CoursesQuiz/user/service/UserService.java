@@ -426,7 +426,7 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.findById(userId).get();
 
-        CourseDate courseDate = new CourseDate(courseId, expiryDate);
+        CourseDate courseDate = new CourseDate(courseId, expiryDate, courseService.getCourseName(courseId));
         user.getCourses().add(courseDate);
         userRepository.save(user);
     }
