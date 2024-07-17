@@ -1,6 +1,8 @@
 package com.web.CoursesQuiz.user.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -84,7 +86,6 @@ public class UserController {
         public ResponseEntity<User> getUserById(@RequestParam @NotNull String userId) {
                 return ResponseEntity.ok(userService.getUserById(userId));
         }
-        
 
         @Operation(summary = "Sign up a new user", description = "Sign up a new user")
         @ApiResponses({
@@ -372,6 +373,7 @@ public class UserController {
                         )) })
         @GetMapping("/courses/paid")
         public ResponseEntity<ArrayList<CourseDate>> getMyCourses(@RequestParam @NotNull String userId) {
+
                 ArrayList<CourseDate> attendCourse = userService.getMyCourses(userId);
 
                 return ResponseEntity
@@ -391,5 +393,14 @@ public class UserController {
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(myCoursesAndLessonsInfo);
+        }
+
+        @PostMapping("enroll-course")
+        public ResponseEntity<ResponseDto> enrollCourse(@RequestParam @NotNull String userId,
+                        @RequestParam @NotNull String courseId, @RequestParam @NotNull LocalDate expiryDate) {
+                userService.enrollCourse(userId, courseId, expiryDate);
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
         }
 }

@@ -58,7 +58,7 @@ public class PaymentService {
   }
 
   public ResponseEntity<ResponseDto> createPaymentIntent(int amount, String courseId, String userId, int expiryDate,
-      String discountCode, Double discountWallet) {
+      String referralCode, Double discountWallet) {
 
     // validate that the user has enough money in his wallet greater than or equal
     // to the amount
@@ -67,11 +67,11 @@ public class PaymentService {
       throw new RuntimeException("User not found");
     }
 
-    if (checkUser.getReferralCode().equals(discountCode)) {
+    if (checkUser.getReferralCode().equals(referralCode)) {
       throw new RuntimeException("User cannot use his own referral code");
     }
 
-    if (checkUser.getUsedReferralCodes().contains(discountCode)) {
+    if (checkUser.getUsedReferralCodes().contains(referralCode)) {
       throw new RuntimeException("User has already used this referral code");
     }
 
@@ -120,7 +120,7 @@ public class PaymentService {
       UserPayment userPayment = new UserPayment();
       userPayment.setUserId(userId);
       userPayment.setCourseId(courseId);
-      userPayment.setDiscountCode(discountCode);
+      userPayment.setReferralCode(referralCode);
       LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate);
       userPayment.setExpiryDate(expiryDate1);
       userPayment.setPaymentId(paymentResponse.getId());
@@ -144,11 +144,11 @@ public class PaymentService {
       throw new RuntimeException("User payment not found");
     }
 
-    String discountcode = userPayment.getDiscountCode();
+    String referralCode = userPayment.getReferralCode();
     Double discountWallet = userPayment.getDiscountWallet();
 
-    if (discountcode != null && !discountcode.isEmpty()) {
-      userService.useReferralCode(discountcode);
+    if (referralCode != null && !referralCode.isEmpty()) {
+      userService.useReferralCode(referralCode);
     }
 
     User user = userRepository.findById(userPayment.getUserId()).get();
@@ -162,7 +162,7 @@ public class PaymentService {
       userRepository.save(user);
     }
 
-    user.getUsedReferralCodes().add(discountcode);
+    user.getUsedReferralCodes().add(referralCode);
 
     CourseDate courseDate = new CourseDate();
     courseDate.setCourseId(userPayment.getCourseId());
