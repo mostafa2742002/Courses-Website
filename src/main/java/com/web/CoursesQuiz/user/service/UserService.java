@@ -89,9 +89,11 @@ public class UserService implements UserDetailsService {
         user.setVerificationToken(verificationToken);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        user.setReferralCode(createReferralCode(user.getId()));
-
+        
         User savedUser = userRepository.save(user);
+        savedUser.setReferralCode(createReferralCode(user.getId()));
+        userRepository.save(savedUser);
+        
         String subject = "Verify Your Email";
 
         // if we use render site then use this
