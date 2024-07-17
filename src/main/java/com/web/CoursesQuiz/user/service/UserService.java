@@ -32,7 +32,8 @@ import com.web.CoursesQuiz.lesson.repo.LessonRepository;
 import com.web.CoursesQuiz.lesson.repo.SolvedLessonRepository;
 import com.web.CoursesQuiz.lesson.service.LessonService;
 import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
-
+import com.web.CoursesQuiz.user.dto.CourseInfo;
+import com.web.CoursesQuiz.user.dto.CourseInfo.CourseQuestions;
 import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;
@@ -42,9 +43,9 @@ import com.web.CoursesQuiz.user.entity.ReferralCode;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
-import com.web.CoursesQuiz.user.dto.CourseLessonInfo;
-import com.web.CoursesQuiz.user.dto.CourseLessonInfo.CourseQuestions;
-import com.web.CoursesQuiz.user.dto.CourseLessonInfo.LessonQuestions;
+
+import com.web.CoursesQuiz.user.dto.LessonInfo;
+import com.web.CoursesQuiz.user.dto.LessonInfo.LessonQuestions;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
@@ -89,7 +90,6 @@ public class UserService implements UserDetailsService {
         user.setVerificationToken(verificationToken);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        
         User savedUser = userRepository.save(user);
         savedUser.setReferralCode(createReferralCode(user.getId()));
         userRepository.save(savedUser);
@@ -573,44 +573,6 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public List<CourseLessonInfo> getMyCoursesAndLessonsInfo(@NotNull String userId) {
-        if (userRepository.findById(userId).isEmpty()) {
-            throw new IllegalArgumentException("User not found");
-        }
-
-        List<CourseLessonInfo> courseLessonInfos = new ArrayList<>();
-
-        // Retrieve solved courses
-        List<SolvedCourse> solvedCourses = solvedCourseRepository.findAllByUserId(userId);
-        for (SolvedCourse course : solvedCourses) {
-            CourseLessonInfo courseLessonInfo = new CourseLessonInfo();
-            courseLessonInfo.setCourseId(course.getCourseId());
-            courseLessonInfo.setCourseName(courseService.getCourseName(course.getCourseId()));
-            courseLessonInfo.setCourseGrade(course.getGrade().toString());
-
-            CourseQuestions courseQuestions = calculateCourseQuestions(course.getFinalQuiz());
-            courseLessonInfo.setCourseQuestions(courseQuestions);
-
-            courseLessonInfos.add(courseLessonInfo);
-        }
-
-        // Retrieve solved lessons
-        List<SolvedLesson> solvedLessons = solvedLessonRepository.findAllByUserId(userId);
-        for (SolvedLesson lesson : solvedLessons) {
-            CourseLessonInfo courseLessonInfo = new CourseLessonInfo();
-            courseLessonInfo.setLessonId(lesson.getLessonId());
-            courseLessonInfo.setLessonName(lessonService.getLessonName(lesson.getLessonId()));
-            courseLessonInfo.setLessonGrade(lesson.getGrade().toString());
-
-            LessonQuestions lessonQuestions = calculateLessonQuestions(lesson.getLessonQuestions());
-            courseLessonInfo.setLessonQuestions(lessonQuestions);
-
-            courseLessonInfos.add(courseLessonInfo);
-        }
-
-        return courseLessonInfos;
-    }
-
     private CourseQuestions calculateCourseQuestions(List<Answer> answers) {
         int right = 0;
         int wrong = 0;
@@ -664,6 +626,54 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("User not found");
 
         return userRepository.findById(userId).get();
+    }
+
+    public List<CourseInfo> getMyCoursesInfo(@NotNull String userId) {
+
+        if (userRepository.findById(userId).isEmpty())
+            throw new IllegalArgumentException("User not found");
+
+        List<CourseInfo> courseInfos = new ArrayList<>();
+
+        // Retrieve solved courses
+        List<SolvedCourse> solvedCourses = solvedCourseRepository.findAllByUserId(userId);
+        for (SolvedCourse course : solvedCourses) {
+            CourseInfo courseInfo = new CourseInfo();
+            courseInfo.setCourseId(course.getCourseId());
+            courseInfo.setCourseName(courseService.getCourseName(course.getCourseId()));
+            courseInfo.setCourseGrade(course.getGrade().toString());
+
+            CourseQuestions courseQuestions = calculateCourseQuestions(course.getFinalQuiz());
+            courseInfo.setCourseQuestions(courseQuestions);
+
+            courseInfos.add(courseInfo);
+        }
+
+        return courseInfos;
+    }
+
+    public List<LessonInfo> getMyLessonsInfo(@NotNull String userId) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        List<LessonInfo> lessonInfos = new ArrayList<>();
+
+        // Retrieve solved lessons
+        List<SolvedLesson> solvedLessons = solvedLessonRepository.findAllByUserId(userId);
+        for (SolvedLesson lesson : solvedLessons) {
+            LessonInfo lessonInfo = new LessonInfo();
+            lessonInfo.setLessonId(lesson.getLessonId());
+            lessonInfo.setLessonName(lessonService.getLessonName(lesson.getLessonId()));
+            lessonInfo.setLessonGrade(lesson.getGrade().toString());
+
+            LessonQuestions lessonQuestions = calculateLessonQuestions(lesson.getLessonQuestions());
+            lessonInfo.setLessonQuestions(lessonQuestions);
+
+            lessonInfos.add(lessonInfo);
+        }
+
+        return lessonInfos;
     }
 
 }

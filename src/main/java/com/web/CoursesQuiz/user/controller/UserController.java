@@ -29,7 +29,9 @@ import com.web.CoursesQuiz.dto.ResponseDto;
 import com.web.CoursesQuiz.lesson.entity.Answer;
 import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 import com.web.CoursesQuiz.user.dto.CourseAnswersDTO;
-import com.web.CoursesQuiz.user.dto.CourseLessonInfo;
+import com.web.CoursesQuiz.user.dto.CourseInfo;
+
+import com.web.CoursesQuiz.user.dto.LessonInfo;
 import com.web.CoursesQuiz.user.dto.LoginDTO;
 import com.web.CoursesQuiz.user.dto.PasswordDTO;
 import com.web.CoursesQuiz.user.dto.UserDTO;
@@ -386,14 +388,30 @@ public class UserController {
                         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
 
                         )) })
-        @GetMapping("/courses/lessons/info")
-        public ResponseEntity<List<CourseLessonInfo>> getMyCoursesAndLessons(@RequestParam @NotNull String userId) {
-                List<CourseLessonInfo> myCoursesAndLessonsInfo = userService.getMyCoursesAndLessonsInfo(userId);
+        @GetMapping("/courses/info")
+        public ResponseEntity<List<CourseInfo>> getMyCoursesInfo(@RequestParam @NotNull String userId) {
+                List<CourseInfo> myCoursesAndLessonsInfo = userService.getMyCoursesInfo(userId);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(myCoursesAndLessonsInfo);
         }
+
+
+        @Operation(summary = "Get The Lessons and Courses Info That I Participated In", description = "Get The Lessons and Courses Info That I Participated In")
+        @ApiResponses({ @ApiResponse(responseCode = "200", description = "Lessons and Courses Info That I Participated In retrieved successfully"),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+                        )) })
+        @GetMapping("/lessons/info")
+        public ResponseEntity<List<LessonInfo>> getMyLessonsInfo(@RequestParam @NotNull String userId) {
+                List<LessonInfo> myCoursesAndLessonsInfo = userService.getMyLessonsInfo(userId);
+
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(myCoursesAndLessonsInfo);
+        }
+
 
         @PostMapping("enroll-course")
         public ResponseEntity<ResponseDto> enrollCourse(@RequestParam @NotNull String userId,
