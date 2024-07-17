@@ -187,4 +187,10 @@ public class CourseService {
 
         return lessons;
     }
+
+    public String getCourseName(String courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+        return course.getName();
+    }
 }

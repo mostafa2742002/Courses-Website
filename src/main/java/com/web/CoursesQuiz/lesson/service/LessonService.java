@@ -110,7 +110,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
 
-        if (question.getId() != null) 
+        if (question.getId() != null)
             question.setId(null);
         if (question.getLessonId() == null)
             throw new ResourceNotFoundException("Lesson Id", "Lesson Id", lessonId);
@@ -168,6 +168,12 @@ public class LessonService {
         }
 
         return questions;
+    }
+
+    public String getLessonName(String lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
+                () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
+        return lesson.getName();
     }
 
 }

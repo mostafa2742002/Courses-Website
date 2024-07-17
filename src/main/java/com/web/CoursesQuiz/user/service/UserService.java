@@ -2,6 +2,7 @@ package com.web.CoursesQuiz.user.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +42,9 @@ import com.web.CoursesQuiz.user.entity.ReferralCode;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
+import com.web.CoursesQuiz.user.dto.CourseLessonInfo;
+import com.web.CoursesQuiz.user.dto.CourseLessonInfo.CourseQuestions;
+import com.web.CoursesQuiz.user.dto.CourseLessonInfo.LessonQuestions;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
@@ -493,7 +497,7 @@ public class UserService implements UserDetailsService {
 
         if (answer == null)
             throw new IllegalArgumentException("Question not found");
-        
+
         answer.setUserAnswer("");
         answer.setIsCorrect(false);
 
@@ -529,6 +533,97 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Solution not found");
 
         return solvedCourse;
+    }
+
+    public ArrayList<CourseDate> getMyCourses(@NotNull String userId) {
+
+        if (userRepository.findById(userId).isEmpty())
+            throw new IllegalArgumentException("User not found");
+
+        if (userRepository.findById(userId).isPresent()) {
+            User user = userRepository.findById(userId).get();
+            if (user.getCourses().isEmpty())
+                throw new IllegalArgumentException("User has no courses");
+
+            return user.getCourses();
+
+        } else
+            throw new IllegalArgumentException("User not found");
+
+    }
+
+    public List<CourseLessonInfo> getMyCoursesAndLessonsInfo(@NotNull String userId) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        List<CourseLessonInfo> courseLessonInfos = new ArrayList<>();
+
+        // Retrieve solved courses
+        List<SolvedCourse> solvedCourses = solvedCourseRepository.findAllByUserId(userId);
+        for (SolvedCourse course : solvedCourses) {
+            CourseLessonInfo courseLessonInfo = new CourseLessonInfo();
+            courseLessonInfo.setCourseId(course.getCourseId());
+            courseLessonInfo.setCourseName(courseService.getCourseName(course.getCourseId()));
+            courseLessonInfo.setCourseGrade(course.getGrade().toString());
+
+            CourseQuestions courseQuestions = calculateCourseQuestions(course.getFinalQuiz());
+            courseLessonInfo.setCourseQuestions(courseQuestions);
+
+            courseLessonInfos.add(courseLessonInfo);
+        }
+
+        // Retrieve solved lessons
+        List<SolvedLesson> solvedLessons = solvedLessonRepository.findAllByUserId(userId);
+        for (SolvedLesson lesson : solvedLessons) {
+            CourseLessonInfo courseLessonInfo = new CourseLessonInfo();
+            courseLessonInfo.setLessonId(lesson.getLessonId());
+            courseLessonInfo.setLessonName(lessonService.getLessonName(lesson.getLessonId()));
+            courseLessonInfo.setLessonGrade(lesson.getGrade().toString());
+
+            LessonQuestions lessonQuestions = calculateLessonQuestions(lesson.getLessonQuestions());
+            courseLessonInfo.setLessonQuestions(lessonQuestions);
+
+            courseLessonInfos.add(courseLessonInfo);
+        }
+
+        return courseLessonInfos;
+    }
+
+    private CourseQuestions calculateCourseQuestions(List<Answer> answers) {
+        int right = 0;
+        int wrong = 0;
+        int notSolved = 0;
+
+        for (Answer answer : answers) {
+            if (Boolean.TRUE.equals(answer.getIsCorrect())) {
+                right++;
+            } else if (Boolean.FALSE.equals(answer.getIsCorrect()) && !answer.getUserAnswer().isEmpty()) {
+                wrong++;
+            } else {
+                notSolved++;
+            }
+        }
+
+        return new CourseQuestions(String.valueOf(right), String.valueOf(wrong), String.valueOf(notSolved));
+    }
+
+    private LessonQuestions calculateLessonQuestions(List<Answer> answers) {
+        int right = 0;
+        int wrong = 0;
+        int notSolved = 0;
+
+        for (Answer answer : answers) {
+            if (Boolean.TRUE.equals(answer.getIsCorrect())) {
+                right++;
+            } else if (Boolean.FALSE.equals(answer.getIsCorrect()) && !answer.getUserAnswer().isEmpty()) {
+                wrong++;
+            } else {
+                notSolved++;
+            }
+        }
+
+        return new LessonQuestions(String.valueOf(right), String.valueOf(wrong), String.valueOf(notSolved));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.web.CoursesQuiz.lesson.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,4 +18,8 @@ public interface SolvedLessonRepository extends MongoRepository<SolvedLesson, St
 
     @Transactional
     long deleteByUserIdAndLessonId(String userId, String lessonId); // Returns the count of deleted documents
+
+    // ArrayList of SolvedLesson by userId
+    List<SolvedLesson> findAllByUserId(String userId);
+
 }
