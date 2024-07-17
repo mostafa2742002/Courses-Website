@@ -265,6 +265,7 @@ public class UserService implements UserDetailsService {
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
+                answer.setImage(question.getImage());
                 answer.setIsCorrect(false);
                 answer.setOptions(question.getOptions());
                 new_SolvedCourse.getFinalQuiz().add(answer);
@@ -359,6 +360,7 @@ public class UserService implements UserDetailsService {
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
+                answer.setImage(question.getImage());
                 answer.setIsCorrect(false);
                 answer.setOptions(question.getOptions());
                 new_SolvedLesson.getLessonQuestions().add(answer);
