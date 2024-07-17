@@ -129,8 +129,10 @@ public class UserService implements UserDetailsService {
                     notifications.add("Your course " + courseService.getCourseName(courseDate.getCourseId())
                             + " will expire in 10 days. Please renew it to continue learning.");
                 }
-
             }
+
+            // delete the expired courses
+            user.getCourses().removeIf(courseDate -> courseDate.getExpiryDate().isBefore(LocalDate.now()));
 
             user.setNotifications(notifications);
 
