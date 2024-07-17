@@ -63,6 +63,10 @@ public class PaymentService {
       throw new RuntimeException("User not found");
     }
 
+    if (checkUser.getReferralCode().equals(discountCode)) {
+      throw new RuntimeException("User cannot use his own referral code");
+    }
+
     if (checkUser.getWallet() < amount) {
       throw new RuntimeException("User wallet balance is less than the amount");
     }
