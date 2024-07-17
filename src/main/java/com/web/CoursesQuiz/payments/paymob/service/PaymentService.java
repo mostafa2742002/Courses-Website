@@ -75,7 +75,7 @@ public class PaymentService {
       throw new RuntimeException("User has already used this referral code");
     }
 
-    if (checkUser.getWallet() < amount) {
+    if (checkUser.getWallet() < discountWallet && discountWallet > 0) {
       throw new RuntimeException("User wallet balance is less than the amount");
     }
 
@@ -94,7 +94,9 @@ public class PaymentService {
       throw new RuntimeException("User not found");
     }
 
-    request.setBilling_data(new BillingData(user.getFirst_name(), user.getLast_name(), "+2" + user.getPhone(),
+    request.setBilling_data(new BillingData( "sasa" //user.getFirst_name()
+    , "mahmoud" // user.getLast_name()
+    , "+2" + user.getPhone(),
         "egypt", user.getEmail()));
 
     Mono<PaymentResponse> response = webClient.post()
