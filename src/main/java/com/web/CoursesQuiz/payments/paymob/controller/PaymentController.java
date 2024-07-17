@@ -26,8 +26,9 @@ public class PaymentController {
     @GetMapping("/create-payment-intent")
     public ResponseEntity<ResponseDto> createPaymentIntent(@RequestParam("amount") int amount,
             @RequestParam("course_id") String courseId, @RequestParam("user_id") String userId,
-            @RequestParam("expiry_date") int expiryDate) {
-        return paymentService.createPaymentIntent(amount, courseId, userId, expiryDate);
+            @RequestParam("expiry_date") int expiryDate,
+            @RequestParam("discount_code") String discountCode, @RequestParam("discount_wallet") Double discountWallet) {
+        return paymentService.createPaymentIntent(amount, courseId, userId, expiryDate, discountCode, discountWallet);
     }
 
     @PostMapping("/callback")

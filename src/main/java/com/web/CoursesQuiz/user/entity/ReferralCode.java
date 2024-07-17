@@ -18,7 +18,5 @@ public class ReferralCode {
 
     private String userId;
 
-    private String courseId;
-
     private String code;
 }

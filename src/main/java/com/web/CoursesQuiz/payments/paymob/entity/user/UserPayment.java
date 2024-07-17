@@ -22,4 +22,6 @@ public class UserPayment {
     private String courseId;
     private String paymentId;
     private LocalDate expiryDate;
+    private String discountCode;
+    private Double discountWallet;
 }

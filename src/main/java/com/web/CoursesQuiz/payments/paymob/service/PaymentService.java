@@ -21,6 +21,7 @@ import com.web.CoursesQuiz.payments.paymob.repo.UserPaymentRepository;
 import com.web.CoursesQuiz.user.entity.CourseDate;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.UserRepository;
+import com.web.CoursesQuiz.user.service.UserService;
 
 import reactor.core.publisher.Mono;
 
@@ -30,6 +31,7 @@ public class PaymentService {
   private final WebClient webClient;
   private final UserRepository userRepository;
   private final UserPaymentRepository userPaymentRepository;
+  private final UserService userService;
 
   @Value("${paymob.api.secretkey}")
   private String secretKey;
@@ -44,13 +46,29 @@ public class PaymentService {
   private String publicKey;
 
   public PaymentService(WebClient.Builder webClientBuilder, UserRepository userRepository,
-      UserPaymentRepository userPaymentRepository) {
+      UserPaymentRepository userPaymentRepository, UserService userService) {
     this.webClient = webClientBuilder.baseUrl("https://accept.paymob.com/v1/intention").build();
     this.userRepository = userRepository;
     this.userPaymentRepository = userPaymentRepository;
+    this.userService = userService;
   }
 
-  public ResponseEntity<ResponseDto> createPaymentIntent(int amount, String courseId, String userId, int expiryDate) {
+  public ResponseEntity<ResponseDto> createPaymentIntent(int amount, String courseId, String userId, int expiryDate,
+      String discountCode, Double discountWallet) {
+
+    // validate that the user has enough money in his wallet greater than or equal
+    // to the amount
+    User checkUser = userRepository.findById(userId).get();
+    if (checkUser == null) {
+      throw new RuntimeException("User not found");
+    }
+
+    if (checkUser.getWallet() < amount) {
+      throw new RuntimeException("User wallet balance is less than the amount");
+    }
+
+    // we will deduct the amount from the user wallet when the payment is successful
+
     PaymentIntentRequest request = new PaymentIntentRequest();
     request.setAmount(amount);
     request.setCurrency("EGP");
@@ -90,7 +108,8 @@ public class PaymentService {
       UserPayment userPayment = new UserPayment();
       userPayment.setUserId(userId);
       userPayment.setCourseId(courseId);
-      LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate); 
+      userPayment.setDiscountCode(discountCode);
+      LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate);
       userPayment.setExpiryDate(expiryDate1);
       userPayment.setPaymentId(paymentResponse.getId());
       userPaymentRepository.save(userPayment);
@@ -106,16 +125,29 @@ public class PaymentService {
     if (!transactionCallback.getObj().isSuccess())
       return;
     Order order = transactionCallback.getObj().getOrder();
-    
+
     UserPayment userPayment = userPaymentRepository.findByUserId(order.getShippingData().getEmail());
 
-    if(userPayment == null) {
+    if (userPayment == null) {
       throw new RuntimeException("User payment not found");
+    }
+
+    String discountcode = userPayment.getDiscountCode();
+    Double discountWallet = userPayment.getDiscountWallet();
+
+    if (discountcode != null && !discountcode.isEmpty()) {
+      userService.useReferralCode(discountcode);
     }
 
     User user = userRepository.findById(userPayment.getUserId()).get();
     if (user == null) {
       throw new RuntimeException("User not found");
+    }
+
+    // Deduct from wallet if applicable
+    if (discountWallet != null && discountWallet > 0) {
+      user.setWallet(user.getWallet() - discountWallet);
+      userRepository.save(user);
     }
 
     CourseDate courseDate = new CourseDate();

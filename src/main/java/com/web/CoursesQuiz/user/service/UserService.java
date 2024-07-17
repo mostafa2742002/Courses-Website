@@ -89,6 +89,8 @@ public class UserService implements UserDetailsService {
         user.setVerificationToken(verificationToken);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
+        user.setReferralCode(createReferralCode(user.getId()));
+
         User savedUser = userRepository.save(user);
         String subject = "Verify Your Email";
 
@@ -112,6 +114,25 @@ public class UserService implements UserDetailsService {
 
             if (user.isEmailVerified() == false)
                 throw new IllegalArgumentException("Email not verified");
+
+            ArrayList<String> notifications = user.getNotifications();
+            for (CourseDate courseDate : user.getCourses()) {
+                if (courseDate.getExpiryDate().isBefore(LocalDate.now())) {
+                    notifications.add("Your course " + courseService.getCourseName(courseDate.getCourseId())
+                            + " has expired. Please renew it to continue learning.");
+                }
+
+                // if any course will expire after 10 days
+                if (courseDate.getExpiryDate().minusDays(10).isBefore(LocalDate.now())) {
+                    notifications.add("Your course " + courseService.getCourseName(courseDate.getCourseId())
+                            + " will expire in 10 days. Please renew it to continue learning.");
+                }
+
+            }
+
+            user.setNotifications(notifications);
+
+            userRepository.save(user);
 
             return new JwtResponse(jwtService.generateToken(user), jwtService.generateRefreshToken(user), user);
         }
@@ -408,15 +429,12 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public String createReferralCode(@NotNull String userId, @NotNull String courseId) {
+    public String createReferralCode(@NotNull String userId) {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
-        if (courseRepository.findById(courseId).isEmpty())
-            throw new IllegalArgumentException("Course not found");
 
         ReferralCode referralCode = new ReferralCode();
         referralCode.setUserId(userId);
-        referralCode.setCourseId(courseId);
         referralCode.setCode(UUID.randomUUID().toString().substring(0, 8));
         boolean isCodeExist = true;
         while (isCodeExist) {
@@ -436,8 +454,6 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Invalid code");
 
         User user = userRepository.findById(referralCode.getUserId()).get();
-        if (user.getCourses().contains(referralCode.getCourseId()))
-            throw new IllegalArgumentException("User already enrolled in this course");
 
         user.setWallet(user.getWallet() + Double.parseDouble(discountValue));
     }
@@ -624,6 +640,25 @@ public class UserService implements UserDetailsService {
         }
 
         return new LessonQuestions(String.valueOf(right), String.valueOf(wrong), String.valueOf(notSolved));
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public ResponseEntity<String> deleteUser(@NotNull String userId) {
+        if (userRepository.findById(userId).isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+
+        userRepository.deleteById(userId);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    public User getUserById(@NotNull String userId) {
+        if (userRepository.findById(userId).isEmpty())
+            throw new IllegalArgumentException("User not found");
+
+        return userRepository.findById(userId).get();
     }
 
 }

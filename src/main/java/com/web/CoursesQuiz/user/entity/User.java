@@ -53,6 +53,10 @@ public class User extends AuditableBase implements UserDetails {
     private ArrayList<CourseDate> courses = new ArrayList<>();
     private double wallet = 0.0;
 
+    private String referralCode;
+
+    private ArrayList<String> notifications = new ArrayList<>();
+
     private String token;
     private String image;
     private boolean emailVerified;

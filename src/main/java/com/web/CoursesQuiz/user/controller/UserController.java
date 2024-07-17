@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,6 +54,37 @@ import lombok.AllArgsConstructor;
 public class UserController {
 
         private UserService userService;
+
+        @Operation(summary = "Get All Users", description = "Get All Users")
+        @ApiResponses({ @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+                        )) })
+        @GetMapping("/users")
+        public ResponseEntity<List<User>> getAllUsers() {
+                return ResponseEntity.ok(userService.getAllUsers());
+        }
+
+        @Operation(summary = "Delete User", description = "Delete User by user id")
+        @ApiResponses({ @ApiResponse(responseCode = "200", description = "User deleted successfully"),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+                        )) })
+        @DeleteMapping("/user")
+        public ResponseEntity<String> deleteUser(@RequestParam @NotNull String userId) {
+                return userService.deleteUser(userId);
+        }
+
+        @Operation(summary = "Get User By Id", description = "Get User By Id")
+        @ApiResponses({ @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
+
+                        )) })
+        @GetMapping("/user")
+        public ResponseEntity<User> getUserById(@RequestParam @NotNull String userId) {
+                return ResponseEntity.ok(userService.getUserById(userId));
+        }
+        
 
         @Operation(summary = "Sign up a new user", description = "Sign up a new user")
         @ApiResponses({
@@ -331,20 +363,6 @@ public class UserController {
                                         .body(new ResponseDto(ServerConstants.STATUS_417,
                                                         ServerConstants.MESSAGE_417_UPDATE));
                 }
-        }
-
-        @Operation(summary = "create referral code for a course", description = "create referral code for a course by user id and course id")
-        @ApiResponses({ @ApiResponse(responseCode = "200", description = "Referral code created successfully"),
-                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
-
-                        )) })
-        public ResponseEntity<ResponseDto> createReferralCode(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String courseId) {
-                String referralCode = userService.createReferralCode(userId, courseId);
-
-                return ResponseEntity
-                                .status(HttpStatus.OK)
-                                .body(new ResponseDto(ServerConstants.STATUS_200, referralCode));
         }
 
         @Operation(summary = "Get The Courses That I Participated In", description = "Gat The Courses That I Participated In")
