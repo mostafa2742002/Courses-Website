@@ -67,6 +67,10 @@ public class PaymentService {
       throw new RuntimeException("User cannot use his own referral code");
     }
 
+    if (checkUser.getUsedReferralCodes().contains(discountCode)) {
+      throw new RuntimeException("User has already used this referral code");
+    }
+
     if (checkUser.getWallet() < amount) {
       throw new RuntimeException("User wallet balance is less than the amount");
     }
@@ -153,6 +157,8 @@ public class PaymentService {
       user.setWallet(user.getWallet() - discountWallet);
       userRepository.save(user);
     }
+
+    user.getUsedReferralCodes().add(discountcode);
 
     CourseDate courseDate = new CourseDate();
     courseDate.setCourseId(userPayment.getCourseId());
