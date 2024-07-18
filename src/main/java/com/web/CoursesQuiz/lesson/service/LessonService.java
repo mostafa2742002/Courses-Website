@@ -39,7 +39,7 @@ public class LessonService {
         }
 
         Lesson lesson = LessonMapper.toLesson(lessonDTO);
-
+        lesson.setCourseId(courseId);
         Lesson lessonAdded = lessonRepository.save(lesson);
 
         Course course = courseRepository.findById(courseId).get();
