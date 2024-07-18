@@ -24,12 +24,11 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/create-payment-intent")
-    public ResponseEntity<ResponseDto> createPaymentIntent(@RequestParam("amount") int amount,
+    public ResponseEntity<ResponseDto> createPaymentIntent(@RequestParam("pkg_id") String pkgId,
             @RequestParam("course_id") String courseId, @RequestParam("user_id") String userId,
-            @RequestParam("expiry_date") int expiryDate,
             @RequestParam(name = "referralCode", defaultValue = "0", required = false) String referralCode,
              @RequestParam("discount_wallet") Double discountWallet) {
-        return paymentService.createPaymentIntent(amount, courseId, userId, expiryDate, referralCode, discountWallet);
+        return paymentService.createPaymentIntent(courseId, userId, pkgId ,referralCode, discountWallet);
     }
 
     @PostMapping("/callback")

@@ -20,6 +20,10 @@ public class Pkg {
 
     private String description;
 
-    private Double price;
+    private Integer price;
+
+    private String image;
+
+    private int durationByMonths; 
 
 }

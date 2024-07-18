@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.dto.ResponseDto;
+import com.web.CoursesQuiz.packages.entity.Pkg;
+import com.web.CoursesQuiz.packages.repo.PkgRepository;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.Order;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.TransactionCallback;
 import com.web.CoursesQuiz.payments.paymob.entity.request.BillingData;
@@ -34,6 +36,7 @@ public class PaymentService {
   private final UserPaymentRepository userPaymentRepository;
   private final UserService userService;
   private final CourseService courseService;
+  private final PkgRepository pkgRepository;
 
   @Value("${paymob.api.secretkey}")
   private String secretKey;
@@ -49,19 +52,35 @@ public class PaymentService {
 
   public PaymentService(WebClient.Builder webClientBuilder, UserRepository userRepository,
       UserPaymentRepository userPaymentRepository, UserService userService,
-      CourseService courseService) {
+      CourseService courseService, PkgRepository pkgRepository) {
     this.webClient = webClientBuilder.baseUrl("https://accept.paymob.com/v1/intention").build();
     this.userRepository = userRepository;
     this.userPaymentRepository = userPaymentRepository;
     this.userService = userService;
     this.courseService = courseService;
+    this.pkgRepository = pkgRepository;
   }
 
-  public ResponseEntity<ResponseDto> createPaymentIntent(int amount, String courseId, String userId, int expiryDate,
+  public ResponseEntity<ResponseDto> createPaymentIntent(String courseId, String userId, String pkgId,
       String referralCode, Double discountWallet) {
 
     // validate that the user has enough money in his wallet greater than or equal
     // to the amount
+
+    if (pkgId != null && !pkgId.isEmpty()) {
+      if (pkgRepository.findById(pkgId).isEmpty()) {
+        throw new RuntimeException("Package not found");
+      }
+    }
+
+    Pkg pkg = pkgRepository.findById(pkgId).get();
+    if (pkg == null) {
+      throw new RuntimeException("Package not found");
+    }
+
+    int amount = pkg.getPrice();
+    int expiryDate = pkg.getDurationByMonths();
+
     User checkUser = userRepository.findById(userId).get();
     if (checkUser == null) {
       throw new RuntimeException("User not found");
@@ -94,9 +113,9 @@ public class PaymentService {
       throw new RuntimeException("User not found");
     }
 
-    request.setBilling_data(new BillingData( "sasa" //user.getFirst_name()
-    , "mahmoud" // user.getLast_name()
-    , "+2" + user.getPhone(),
+    request.setBilling_data(new BillingData("sasa" // user.getFirst_name()
+        , "mahmoud" // user.getLast_name()
+        , "+2" + user.getPhone(),
         "egypt", user.getEmail()));
 
     Mono<PaymentResponse> response = webClient.post()
