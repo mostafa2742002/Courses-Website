@@ -26,6 +26,7 @@ import com.web.CoursesQuiz.jwt.JwtResponse;
 import com.web.CoursesQuiz.jwt.JwtService;
 
 import com.web.CoursesQuiz.lesson.entity.Answer;
+import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.lesson.entity.Question;
 import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 import com.web.CoursesQuiz.lesson.repo.LessonRepository;
@@ -665,6 +666,15 @@ public class UserService implements UserDetailsService {
         List<SolvedLesson> solvedLessons = solvedLessonRepository.findAllByUserId(userId);
         for (SolvedLesson lesson : solvedLessons) {
             LessonInfo lessonInfo = new LessonInfo();
+            if (lesson.getLessonId() == null) {
+                continue;
+            }
+            if (lessonRepository.findById(lesson.getLessonId()).isEmpty()) {
+                continue;
+            }
+            Lesson savedLesson = lessonRepository.findById(lesson.getLessonId()).get();
+            lessonInfo.setCourseId(savedLesson.getCourseId());
+            lessonInfo.setCourseName(courseService.getCourseName(savedLesson.getCourseId()));
             lessonInfo.setLessonId(lesson.getLessonId());
             lessonInfo.setLessonName(lessonService.getLessonName(lesson.getLessonId()));
             lessonInfo.setLessonGrade(lesson.getGrade().toString());
