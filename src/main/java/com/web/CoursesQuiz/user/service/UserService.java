@@ -653,6 +653,13 @@ public class UserService implements UserDetailsService {
             courseInfos.add(courseInfo);
         }
 
+        // delete empty solved sourses from the list
+        // if the not solved questions equal to the number of questions we will delete
+        // it
+
+        courseInfos.removeIf(courseInfo -> courseInfo.getCourseQuestions().getNotSolved()
+                .equals(String.valueOf(courseService.getAllQuestions(courseInfo.getCourseId()).size())));
+
         return courseInfos;
     }
 
