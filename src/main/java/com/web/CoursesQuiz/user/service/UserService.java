@@ -336,6 +336,7 @@ public class UserService implements UserDetailsService {
         }
 
         solvedCourse.setGrade(0);
+        solvedCourse.setFirstTime(true);
 
         solvedCourseRepository.save(solvedCourse);
         isDeleted = true;
