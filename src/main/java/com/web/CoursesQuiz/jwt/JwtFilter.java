@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 path.startsWith("/configuration/ui") || path.startsWith("/configuration/security") || path.startsWith("/api/verifyemail")
                 || path.startsWith("/swagger-ui") || path.startsWith("/webjars") || path.startsWith("/pay.html")
                 || path.startsWith("/api/forgotpassword") || path.startsWith("/api/resetpassword")
-                || path.startsWith("/api/courses");
+                || path.startsWith("/api/courses") || path.startsWith("/payment/success") || path.startsWith("/payment/cancel");
     }
 
     @Override

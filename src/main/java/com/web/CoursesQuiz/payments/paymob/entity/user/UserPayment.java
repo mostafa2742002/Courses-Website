@@ -24,4 +24,6 @@ public class UserPayment {
     private LocalDate expiryDate;
     private String referralCode;
     private Double discountWallet;
+    private String approvalUrl;
+
 }
