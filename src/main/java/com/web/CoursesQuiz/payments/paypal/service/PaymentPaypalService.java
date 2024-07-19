@@ -45,16 +45,23 @@ public class PaymentPaypalService {
     private PkgRepository pkgRepository;
 
     public ResponseEntity<ResponseDto> createPaymentIntent(String courseId, String userId, String pkgId,
-            String referralCode, Double discountWallet) {
+            String referralCode, Double discountWallet, Boolean IsEgypt) {
 
-        // Optional<Pkg> optionalPkg = pkgRepository.findById(pkgId);
-        // if (optionalPkg.isEmpty()) {
-        // throw new RuntimeException("Package not found");
-        // }
+        Optional<Pkg> optionalPkg = pkgRepository.findById(pkgId);
+        if (optionalPkg.isEmpty()) {
+        throw new RuntimeException("Package not found");
+        }
 
-        // Pkg pkg = optionalPkg.get();
-        int amount = 200; // pkg.getPrice();
-        int expiryDate = 3; // pkg.getDurationByMonths();
+        Pkg pkg = optionalPkg.get();
+
+        int amount =  0;
+        if(IsEgypt) {
+            amount = pkg.getPriceForEgypt();
+        } else {
+            amount = pkg.getPriceForNonEgypt();
+        }
+        
+        int expiryDate =  pkg.getDurationByMonths();
 
         User checkUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -70,7 +77,7 @@ public class PaymentPaypalService {
             throw new RuntimeException("User wallet balance is less than the amount");
         }
 
-        Order order = new Order(200, "USD", "paypal", "sale", "Course payment");
+        Order order = new Order(amount, "USD", "paypal", "sale", "Course payment");
 
         String approvalUrl;
         String paymentId;
@@ -93,7 +100,7 @@ public class PaymentPaypalService {
         userPayment.setUserId(userId);
         userPayment.setCourseId(courseId);
         userPayment.setReferralCode(referralCode);
-        userPayment.setExpiryDate(LocalDate.now().plusMonths(3));
+        userPayment.setExpiryDate(LocalDate.now().plusMonths(expiryDate));
         userPayment.setPaymentId(paymentId);
         userPayment.setApprovalUrl(approvalUrl);
         userPaymentRepository.save(userPayment);

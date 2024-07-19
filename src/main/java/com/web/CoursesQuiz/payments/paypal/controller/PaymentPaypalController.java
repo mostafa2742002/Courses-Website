@@ -11,7 +11,6 @@ import com.web.CoursesQuiz.dto.ResponseDto;
 
 import com.web.CoursesQuiz.payments.paypal.service.PaymentPaypalService;
 
-
 @RestController
 @RequestMapping("/payment")
 public class PaymentPaypalController {
@@ -21,8 +20,9 @@ public class PaymentPaypalController {
 
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createPaymentIntent(@RequestParam String courseId, @RequestParam String userId,
-            @RequestParam String pkgId,  @RequestParam(required = false) String referralCode,
-            @RequestParam Double discountWallet) {
-        return paymentPaypalService.createPaymentIntent(courseId, userId, pkgId, referralCode, discountWallet);
+            @RequestParam String pkgId, @RequestParam(required = false) String referralCode,
+            @RequestParam Double discountWallet,
+            @RequestParam Boolean IsEgypt) {
+        return paymentPaypalService.createPaymentIntent(courseId, userId, pkgId, referralCode, discountWallet, IsEgypt);
     }
 }
