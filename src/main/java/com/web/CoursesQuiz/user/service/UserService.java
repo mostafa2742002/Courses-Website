@@ -654,8 +654,7 @@ public class UserService implements UserDetailsService {
         }
 
         // delete empty solved sourses from the list
-        // if the not solved questions equal to the number of questions we will delete
-        // it
+        // if the not solved questions equal to the number of questions we will delete it
 
         courseInfos.removeIf(courseInfo -> courseInfo.getCourseQuestions().getNotSolved()
                 .equals(String.valueOf(courseService.getAllQuestions(courseInfo.getCourseId()).size())));

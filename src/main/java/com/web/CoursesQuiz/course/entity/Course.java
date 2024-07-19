@@ -29,6 +29,7 @@ public class Course extends AuditableBase {
     private String name;
     private String description;
     private String image;
+    // private Integer timer;
 
     private ArrayList<LessonPref> lessonsPref = new ArrayList<>();
     private ArrayList<String> FinalQuizIds = new ArrayList<>();

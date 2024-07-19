@@ -1,5 +1,7 @@
 package com.web.CoursesQuiz.packages.entity;
 
+import java.util.ArrayList;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -18,9 +20,11 @@ public class Pkg {
 
     private String name;
 
-    private String description;
+    private ArrayList<String> description;
 
-    private Integer price;
+    private Integer priceForEgypt;
+
+    private Integer priceForNonEgypt;
 
     private String image;
 

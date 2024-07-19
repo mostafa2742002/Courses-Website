@@ -62,7 +62,7 @@ public class PaymentService {
   }
 
   public ResponseEntity<ResponseDto> createPaymentIntent(String courseId, String userId, String pkgId,
-      String referralCode, Double discountWallet) {
+      String referralCode, Double discountWallet, Boolean IsEgypt) {
 
     // validate that the user has enough money in his wallet greater than or equal
     // to the amount
@@ -78,7 +78,12 @@ public class PaymentService {
       throw new RuntimeException("Package not found");
     }
 
-    int amount = pkg.getPrice();
+    int amount = 0;
+    if (IsEgypt) {
+      pkg.getPriceForEgypt();
+    } else {
+      amount = pkg.getPriceForNonEgypt();
+    }
     int expiryDate = pkg.getDurationByMonths();
 
     User checkUser = userRepository.findById(userId).get();

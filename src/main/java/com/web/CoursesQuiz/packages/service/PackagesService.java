@@ -40,7 +40,8 @@ public class PackagesService {
             Pkg pkg = pkgRepository.findById(id).get();
             pkg.setName(packages.getName());
             pkg.setDescription(packages.getDescription());
-            pkg.setPrice(packages.getPrice());
+            pkg.setPriceForEgypt(packages.getPriceForEgypt());
+            pkg.setPriceForNonEgypt(packages.getPriceForNonEgypt());
             pkgRepository.save(pkg);
         } else {
             throw new RuntimeException("Package not found for id: " + id);

@@ -27,8 +27,9 @@ public class PaymentController {
     public ResponseEntity<ResponseDto> createPaymentIntent(@RequestParam("pkg_id") String pkgId,
             @RequestParam("course_id") String courseId, @RequestParam("user_id") String userId,
             @RequestParam(name = "referralCode", defaultValue = "0", required = false) String referralCode,
-             @RequestParam("discount_wallet") Double discountWallet) {
-        return paymentService.createPaymentIntent(courseId, userId, pkgId ,referralCode, discountWallet);
+             @RequestParam("discount_wallet") Double discountWallet,
+             @RequestParam("IsEgypt") Boolean IsEgypt) {
+        return paymentService.createPaymentIntent(courseId, userId, pkgId ,referralCode, discountWallet, IsEgypt);
     }
 
     @PostMapping("/callback")
