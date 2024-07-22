@@ -428,7 +428,7 @@ public class UserService implements UserDetailsService {
                 .noneMatch(question -> question.getId().equals(answer.getQuestionId())));
         solvedLessonRepository.save(solvedLesson);
 
-        
+
         Boolean firstTime = solvedLesson.getFirstTime();
         return !firstTime;
     }
@@ -622,7 +622,7 @@ public class UserService implements UserDetailsService {
         if (userRepository.findById(userId).isPresent()) {
             User user = userRepository.findById(userId).get();
             if (user.getCourses().isEmpty())
-                throw new IllegalArgumentException("User has no courses");
+                return new ArrayList<CourseDate>();
 
             return user.getCourses();
 
