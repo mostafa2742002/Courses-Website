@@ -106,7 +106,7 @@ public class PaymentService {
     // we will deduct the amount from the user wallet when the payment is successful
 
     PaymentIntentRequest request = new PaymentIntentRequest();
-    request.setAmount(amount);
+    request.setAmount(amount*10);
     request.setCurrency("EGP");
     request.setPayment_methods(new int[] { CardIntegrationId, WalletIntegrationId });
     request.setItems(new Item[] {

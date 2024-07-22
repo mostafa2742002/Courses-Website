@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
 import com.web.CoursesQuiz.course.repo.SolvedCourseRepository;
@@ -278,6 +279,32 @@ public class UserService implements UserDetailsService {
             solvedCourseRepository.save(new_SolvedCourse);
             return false;
         }
+        // we need to update the solved course if a new question is added to the course
+        // or a question is deleted
+
+        ArrayList<Question> questions = courseService.getAllQuestions(courseId);
+        for (Question question : questions) {
+            Optional<Answer> optionalAnswer = solvedCourse.getFinalQuiz().stream()
+                    .filter(a -> a.getQuestionId().equals(question.getId())).findFirst();
+            if (optionalAnswer.isEmpty()) {
+                Answer answer = new Answer();
+                answer.setQuestionId(question.getId());
+                answer.setQuestion(question.getQuestion());
+                answer.setCorrectAnswer(question.getCorrectAnswer());
+                answer.setUserAnswer("");
+                answer.setExplaination(question.getExplanation());
+                answer.setImage(question.getImage());
+                answer.setIsCorrect(false);
+                answer.setOptions(question.getOptions());
+                solvedCourse.getFinalQuiz().add(answer);
+            }
+        }
+
+        // now we want to delete the quetions that are not in the course
+        solvedCourse.getFinalQuiz().removeIf(answer -> questions.stream()
+                .noneMatch(question -> question.getId().equals(answer.getQuestionId())));
+
+        solvedCourseRepository.save(solvedCourse);
 
         Boolean firstTime = solvedCourse.getFirstTime();
 
@@ -375,6 +402,33 @@ public class UserService implements UserDetailsService {
             return false;
         }
 
+        // we need to update the solved lesson if a new question is added to the lesson
+        // or a question is deleted
+
+        ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
+        for (Question question : questions) {
+            Optional<Answer> optionalAnswer = solvedLesson.getLessonQuestions().stream()
+                    .filter(a -> a.getQuestionId().equals(question.getId())).findFirst();
+            if (optionalAnswer.isEmpty()) {
+                Answer answer = new Answer();
+                answer.setQuestionId(question.getId());
+                answer.setQuestion(question.getQuestion());
+                answer.setCorrectAnswer(question.getCorrectAnswer());
+                answer.setUserAnswer("");
+                answer.setExplaination(question.getExplanation());
+                answer.setImage(question.getImage());
+                answer.setIsCorrect(false);
+                answer.setOptions(question.getOptions());
+                solvedLesson.getLessonQuestions().add(answer);
+            }
+        }
+
+        // now we want to delete the quetions that are not in the lesson
+        solvedLesson.getLessonQuestions().removeIf(answer -> questions.stream()
+                .noneMatch(question -> question.getId().equals(answer.getQuestionId())));
+        solvedLessonRepository.save(solvedLesson);
+
+        
         Boolean firstTime = solvedLesson.getFirstTime();
         return !firstTime;
     }
@@ -654,7 +708,8 @@ public class UserService implements UserDetailsService {
         }
 
         // delete empty solved sourses from the list
-        // if the not solved questions equal to the number of questions we will delete it
+        // if the not solved questions equal to the number of questions we will delete
+        // it
 
         courseInfos.removeIf(courseInfo -> courseInfo.getCourseQuestions().getNotSolved()
                 .equals(String.valueOf(courseService.getAllQuestions(courseInfo.getCourseId()).size())));
