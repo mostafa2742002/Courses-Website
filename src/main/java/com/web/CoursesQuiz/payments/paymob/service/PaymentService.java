@@ -146,6 +146,7 @@ public class PaymentService {
       UserPayment userPayment = new UserPayment();
       userPayment.setUserId(userId);
       userPayment.setCourseId(courseId);
+      if(!referralCode.equals("null"))
       userPayment.setReferralCode(referralCode);
       LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate);
       userPayment.setExpiryDate(expiryDate1);

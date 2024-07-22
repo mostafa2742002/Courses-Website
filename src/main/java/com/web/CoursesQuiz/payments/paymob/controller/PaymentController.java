@@ -26,7 +26,7 @@ public class PaymentController {
     @GetMapping("/create-payment-intent")
     public ResponseEntity<ResponseDto> createPaymentIntent(@RequestParam("pkg_id") String pkgId,
             @RequestParam("course_id") String courseId, @RequestParam("user_id") String userId,
-            @RequestParam(name = "referralCode", defaultValue = "0", required = false) String referralCode,
+            @RequestParam(name = "referralCode", defaultValue = "null", required = false) String referralCode,
              @RequestParam("discount_wallet") Double discountWallet,
              @RequestParam("IsEgypt") Boolean IsEgypt) {
         return paymentService.createPaymentIntent(courseId, userId, pkgId ,referralCode, discountWallet, IsEgypt);
