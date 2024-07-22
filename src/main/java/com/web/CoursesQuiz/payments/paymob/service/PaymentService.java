@@ -80,7 +80,7 @@ public class PaymentService {
 
     int amount = 0;
     if (IsEgypt) {
-      pkg.getPriceForEgypt();
+      amount = pkg.getPriceForEgypt();
     } else {
       amount = pkg.getPriceForNonEgypt();
     }
@@ -122,6 +122,9 @@ public class PaymentService {
         , "mahmoud" // user.getLast_name()
         , "+2" + user.getPhone(),
         "egypt", user.getEmail()));
+
+      System.out.println("Request: " + request);
+
 
     Mono<PaymentResponse> response = webClient.post()
         .uri("/")
