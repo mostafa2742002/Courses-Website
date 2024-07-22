@@ -83,8 +83,8 @@ public class PaymentPaypalService {
         String paymentId;
         try {
             Payment payment = paypalService.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "http://localhost:8080/payment/cancel",
-                    "http://localhost:8080/payment/success");
+                    order.getIntent(), order.getDescription(),"https://courses-website-q0gf.onrender.com/payment/cancel", //"http://localhost:8080/payment/cancel",
+                    "https://courses-website-q0gf.onrender.com/payment/success");// "http://localhost:8080/payment/success");
 
             paymentId = payment.getId();
             approvalUrl = payment.getLinks().stream()

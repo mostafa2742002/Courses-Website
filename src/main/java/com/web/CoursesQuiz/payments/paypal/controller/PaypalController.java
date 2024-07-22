@@ -32,8 +32,11 @@ public class PaypalController {
     public String payment(@ModelAttribute("order") Order order) {
         try {
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "http://localhost:8080/" + CANCEL_URL,
-                    "http://localhost:8080/" + SUCCESS_URL);
+                    order.getIntent(), order.getDescription(),
+                    "https://courses-website-q0gf.onrender.com/payment/cancel", // "http://localhost:8080/" +
+                                                                                // CANCEL_URL,
+                    "https://courses-website-q0gf.onrender.com/payment/success"); // "http://localhost:8080/" +
+                                                                                  // SUCCESS_URL);
             for (Links link : payment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
                     return "redirect:" + link.getHref();
@@ -71,7 +74,7 @@ public class PaypalController {
 
                 // Set the transaction object
                 callback.setObj(transactionObject);
-                
+
                 // Handle the callback
                 paymentPaypalService.handleCallback(callback, paymentId);
                 return "success";
