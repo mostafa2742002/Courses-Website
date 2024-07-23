@@ -106,11 +106,11 @@ public class PaymentService {
     // we will deduct the amount from the user wallet when the payment is successful
 
     PaymentIntentRequest request = new PaymentIntentRequest();
-    request.setAmount(amount*10);
+    request.setAmount(amount*100);
     request.setCurrency("EGP");
     request.setPayment_methods(new int[] { CardIntegrationId, WalletIntegrationId });
     request.setItems(new Item[] {
-        new Item(courseId, amount*10, 1)
+        new Item(courseId, amount*100, 1)
     });
 
     User user = userRepository.findById(userId).get();
@@ -118,8 +118,8 @@ public class PaymentService {
       throw new RuntimeException("User not found");
     }
 
-    request.setBilling_data(new BillingData("sasa" // user.getFirst_name()
-        , "mahmoud" // user.getLast_name()
+    request.setBilling_data(new BillingData( user.getFirst_name()
+        , user.getLast_name()
         , "+2" + user.getPhone(),
         "egypt", user.getEmail()));
 
