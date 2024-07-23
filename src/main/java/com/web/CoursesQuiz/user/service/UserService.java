@@ -514,7 +514,7 @@ public class UserService implements UserDetailsService {
     public void useReferralCode(@NotNull String code) {
         ReferralCode referralCode = referralCodeRepository.findByCode(code);
         if (referralCode == null)
-            throw new IllegalArgumentException("Invalid code");
+            return;
 
         User user = userRepository.findById(referralCode.getUserId()).get();
 
