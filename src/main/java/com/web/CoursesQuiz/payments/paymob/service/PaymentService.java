@@ -106,11 +106,11 @@ public class PaymentService {
     // we will deduct the amount from the user wallet when the payment is successful
 
     PaymentIntentRequest request = new PaymentIntentRequest();
-    request.setAmount(amount*100);
+    request.setAmount(amount * 100);
     request.setCurrency("EGP");
     request.setPayment_methods(new int[] { CardIntegrationId, WalletIntegrationId });
     request.setItems(new Item[] {
-        new Item(courseId, amount*100, 1)
+        new Item(courseId, amount * 100, 1)
     });
 
     User user = userRepository.findById(userId).get();
@@ -118,11 +118,8 @@ public class PaymentService {
       throw new RuntimeException("User not found");
     }
 
-    request.setBilling_data(new BillingData( user.getFirst_name()
-        , user.getLast_name()
-        , "+2" + user.getPhone(),
+    request.setBilling_data(new BillingData(user.getFirst_name(), user.getLast_name(), "+2" + user.getPhone(),
         "egypt", user.getEmail()));
-
 
     Mono<PaymentResponse> response = webClient.post()
         .uri("/")
@@ -137,8 +134,11 @@ public class PaymentService {
             WebClientResponseException we = (WebClientResponseException) error;
             System.out.println("Response Body: " + we.getResponseBodyAsString());
             System.out.println("Status Text: " + we.getStatusText());
+
+            throw new RuntimeException("Error occurred: " + we.getResponseBodyAsString());
           }
           System.out.println("Error occurred: " + error.getMessage());
+          throw new RuntimeException("Error occurred: " + error.getMessage());
         });
 
     // if there is no error we will add the payment intent to the payments
@@ -147,8 +147,8 @@ public class PaymentService {
       UserPayment userPayment = new UserPayment();
       userPayment.setUserId(userId);
       userPayment.setCourseId(courseId);
-      if(!referralCode.equals("null"))
-      userPayment.setReferralCode(referralCode);
+      if (!referralCode.equals("null"))
+        userPayment.setReferralCode(referralCode);
       LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate);
       userPayment.setExpiryDate(expiryDate1);
       userPayment.setPaymentId(paymentResponse.getId());
