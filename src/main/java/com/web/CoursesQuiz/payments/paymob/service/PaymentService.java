@@ -110,7 +110,7 @@ public class PaymentService {
     request.setCurrency("EGP");
     request.setPayment_methods(new int[] { CardIntegrationId, WalletIntegrationId });
     request.setItems(new Item[] {
-        new Item(courseId, amount, 1)
+        new Item(courseId, amount*10, 1)
     });
 
     User user = userRepository.findById(userId).get();
@@ -122,8 +122,6 @@ public class PaymentService {
         , "mahmoud" // user.getLast_name()
         , "+2" + user.getPhone(),
         "egypt", user.getEmail()));
-
-      System.out.println("Request: " + request);
 
 
     Mono<PaymentResponse> response = webClient.post()
