@@ -37,6 +37,7 @@ public class PagesService {
             Pages page = pagesRepository.findById(id).get();
             page.setAbout(pages.getAbout());
             page.setContact(pages.getContact());
+            page.setTerms(pages.getTerms());
             page.getContact().setEmail(pages.getContact().getEmail());
             page.getContact().setPhone(pages.getContact().getPhone());
             pagesRepository.save(page);
