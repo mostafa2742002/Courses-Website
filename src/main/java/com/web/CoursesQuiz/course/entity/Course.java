@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.web.CoursesQuiz.chapter.entity.Chapter;
 import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.user.entity.AuditableBase;
@@ -30,7 +31,7 @@ public class Course extends AuditableBase {
     private String description;
     private String image;
     private Integer timer;
-
+    private ArrayList<String> chaptersIds = new ArrayList<>();
     private ArrayList<LessonPref> lessonsPref = new ArrayList<>();
     private ArrayList<String> FinalQuizIds = new ArrayList<>();
 }

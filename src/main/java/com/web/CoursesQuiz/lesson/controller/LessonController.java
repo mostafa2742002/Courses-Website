@@ -48,8 +48,8 @@ public class LessonController {
         })
         @PostMapping("/lesson")
         public ResponseEntity<ResponseDto> AddLesson(@RequestBody LessonDTO lessonDTO,
-                        @RequestParam @NotNull String courseId) {
-                lessonService.addLesson(lessonDTO, courseId);
+                        @RequestParam @NotNull String courseId, @RequestParam @NotNull String chapterId) {
+                lessonService.addLesson(lessonDTO, courseId, chapterId);
                 return ResponseEntity
                                 .status(HttpStatus.CREATED)
                                 .body(new ResponseDto(ServerConstants.STATUS_201, ServerConstants.MESSAGE_201));
@@ -61,8 +61,9 @@ public class LessonController {
                         @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
         })
         @GetMapping("/lesson")
-        public ResponseEntity<LessonDTO> getLesson(@RequestParam @NotNull String lessonId) {
-                LessonDTO lessonDTO = lessonService.getLesson(lessonId);
+        public ResponseEntity<LessonDTO> getLesson(@RequestParam @NotNull String lessonId,
+                        @RequestParam @NotNull String level) {
+                LessonDTO lessonDTO = lessonService.getLesson(lessonId,level);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(lessonDTO);
@@ -145,8 +146,9 @@ public class LessonController {
                         @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
         })
         @GetMapping("/lesson/questions")
-        public ResponseEntity<List<Question>> getAllQuestions(@RequestParam @NotNull String lessonId) {
-                List<Question> questions = lessonService.getAllQuestions(lessonId);
+        public ResponseEntity<List<Question>> getAllQuestions(@RequestParam @NotNull String lessonId,
+                        @RequestParam @NotNull String level) {
+                List<Question> questions = lessonService.getAllQuestions(lessonId, level);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(questions);

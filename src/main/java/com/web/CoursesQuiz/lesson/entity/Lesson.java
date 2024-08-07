@@ -24,6 +24,7 @@ public class Lesson extends AuditableBase {
     private String id;
 
     private String courseId;
+    private String chapterId;
 
     private String name;
     private String description;

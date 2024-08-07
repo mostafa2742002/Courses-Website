@@ -287,8 +287,9 @@ public class UserController {
 
         @PostMapping("/lesson/attend")
         public ResponseEntity<Boolean> attendLesson(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String lessonId) {
-                Boolean attendLesson = userService.attendLesson(userId, lessonId);
+                        @RequestParam @NotNull String lessonId,
+                        @RequestParam @NotNull String level) {
+                Boolean attendLesson = userService.attendLesson(userId, lessonId,level);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)

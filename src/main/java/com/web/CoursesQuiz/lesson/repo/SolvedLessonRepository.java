@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 
+import jakarta.validation.constraints.NotNull;
+
 @Repository
 public interface SolvedLessonRepository extends MongoRepository<SolvedLesson, String> {
 
@@ -21,5 +23,8 @@ public interface SolvedLessonRepository extends MongoRepository<SolvedLesson, St
 
     // ArrayList of SolvedLesson by userId
     List<SolvedLesson> findAllByUserId(String userId);
+
+    SolvedLesson findByUserIdAndLessonIdAndLevel(@NotNull String userId, @NotNull String lessonId,
+            @NotNull String level);
 
 }

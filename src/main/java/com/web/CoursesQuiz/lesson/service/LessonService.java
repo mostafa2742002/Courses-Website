@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.web.CoursesQuiz.chapter.entity.Chapter;
+import com.web.CoursesQuiz.chapter.repo.ChapterReposetory;
 import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.PageResponse;
@@ -31,11 +33,16 @@ public class LessonService {
     private LessonRepository lessonRepository;
     private CourseRepository courseRepository;
     private QuestionRepository questionRepository;
+    private ChapterReposetory chapterReposetory;
 
-    public void addLesson(@NotNull LessonDTO lessonDTO, @NotNull String courseId) {
+    public void addLesson(@NotNull LessonDTO lessonDTO, @NotNull String courseId, @NotNull String chapterId) {
         lessonDTO.setId(null);
         if (courseRepository.findById(courseId).isEmpty()) {
             throw new ResourceNotFoundException("Course", "Course Id", courseId);
+        }
+
+        if (!chapterReposetory.findById(chapterId).isPresent()) {
+            throw new ResourceNotFoundException("Chapter", "Chapter Id", chapterId);
         }
 
         Lesson lesson = LessonMapper.toLesson(lessonDTO);
@@ -46,15 +53,22 @@ public class LessonService {
 
         LessonPref lessonPref = new LessonPref(lessonAdded.getId(), lessonAdded.getName());
         course.getLessonsPref().add(lessonPref);
-        courseRepository.save(course);
 
+        Chapter chapter = chapterReposetory.findById(chapterId).get();
+        chapter.getLessonsPref().add(lessonPref);
+
+        courseRepository.save(course);
+        chapterReposetory.save(chapter);
     }
 
-    public LessonDTO getLesson(@NotNull String lessonId) {
+    public LessonDTO getLesson(@NotNull String lessonId, @NotNull String level) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
+        if (!(level.equals("easy") || level.equals("medium") || level.equals("hard")))
+            throw new IllegalArgumentException("Invalid level value should be easy or medium or hard");
+
         LessonDTO lessonDTO = LessonMapper.toLessonDto(lesson);
-        ArrayList<Question> questions = getAllQuestions(lessonId);
+        ArrayList<Question> questions = getAllQuestions(lessonId, level);
         lessonDTO.setLessonQuestions(questions);
         return lessonDTO;
     }
@@ -87,6 +101,10 @@ public class LessonService {
 
         course.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         courseRepository.save(course);
+
+        Chapter chapter = chapterReposetory.findById(lesson.getChapterId()).get();
+        chapter.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
+        chapterReposetory.save(chapter);
 
         return isDeleted;
     }
@@ -157,14 +175,15 @@ public class LessonService {
         return isDeleted;
     }
 
-    public ArrayList<Question> getAllQuestions(@NotNull String lessonId) {
+    public ArrayList<Question> getAllQuestions(@NotNull String lessonId, String level) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("lesson", "lesson Id", lessonId));
 
         ArrayList<Question> questions = new ArrayList<>();
         for (String questionId : lesson.getLessonQuestionsIds()) {
             Question question = questionRepository.findById(questionId).get();
-            questions.add(question);
+            if (question.getLevel().equals(level))
+                questions.add(question);
         }
 
         return questions;

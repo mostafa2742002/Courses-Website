@@ -5,6 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import com.web.CoursesQuiz.chapter.entity.Chapter;
+import com.web.CoursesQuiz.chapter.repo.ChapterReposetory;
 import com.web.CoursesQuiz.course.dto.CourseDTO;
 import com.web.CoursesQuiz.course.dto.CourseMapper;
 import com.web.CoursesQuiz.course.dto.LessonPref;
@@ -29,6 +32,7 @@ public class CourseService {
     private CourseRepository courseRepository;
     private QuestionRepository questionRepository;
     private LessonRepository lessonRepository;
+    private ChapterReposetory chapterReposetory;
 
     public void addCourse(CourseDTO courseDTO) {
         courseDTO.setId(null);
@@ -87,6 +91,13 @@ public class CourseService {
             }
 
             lessonRepository.delete(lesson);
+        }
+
+        ArrayList<String> chapters = course.getChaptersIds();
+        for (String chapterId : chapters) {
+            Chapter chapter = chapterReposetory.findById(chapterId).orElseThrow(
+                    () -> new ResourceNotFoundException("Chapter", "Chapter Id", chapterId));
+            chapterReposetory.delete(chapter);
         }
 
         courseRepository.delete(course);

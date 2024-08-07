@@ -152,33 +152,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public void saveProfileImage(String email, String image) {
-        User user = findUserByEmail(email);
-        user.setImage(image);
-        userRepository.save(user);
-    }
-
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userRepository.findByEmail(userDetails.getUsername());
-    }
-
-    public String getCurrentUserProfilePicture() {
-        User currentUser = getCurrentUser();
-        return currentUser.getImage();
-    }
-
-    public String getCurrentUserName() {
-        User currentUser = getCurrentUser();
-        return currentUser.getName();
-    }
-
-    public String getCurrentUserEmail() {
-        User currentUser = getCurrentUser();
-        return currentUser.getEmail();
-    }
-
     public String refreshToken(String refreshToken) {
         String email = jwtService.extractUserName(refreshToken);
         if (email == null) {
@@ -371,7 +344,7 @@ public class UserService implements UserDetailsService {
         return isDeleted;
     }
 
-    public Boolean attendLesson(@NotNull String userId, @NotNull String lessonId) {
+    public Boolean attendLesson(@NotNull String userId, @NotNull String lessonId, @NotNull String level) {
 
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
@@ -379,12 +352,16 @@ public class UserService implements UserDetailsService {
         if (lessonRepository.findById(lessonId).isEmpty())
             throw new IllegalArgumentException("Lesson not found");
 
-        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId);
+        if (!(level.equals("easy") || level.equals("medium") || level.equals("hard"))) 
+            throw new IllegalArgumentException("Invalid level value should be easy or medium or hard"); 
+
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonIdAndLevel(userId, lessonId, level);
         if (solvedLesson == null) {
             SolvedLesson new_SolvedLesson = new SolvedLesson();
             new_SolvedLesson.setUserId(userId);
             new_SolvedLesson.setLessonId(lessonId);
-            ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
+            new_SolvedLesson.setLevel(level);
+            ArrayList<Question> questions = lessonService.getAllQuestions(lessonId, level);
 
             for (Question question : questions) {
                 Answer answer = new Answer();
@@ -405,7 +382,7 @@ public class UserService implements UserDetailsService {
         // we need to update the solved lesson if a new question is added to the lesson
         // or a question is deleted
 
-        ArrayList<Question> questions = lessonService.getAllQuestions(lessonId);
+        ArrayList<Question> questions = lessonService.getAllQuestions(lessonId, level);
         for (Question question : questions) {
             Optional<Answer> optionalAnswer = solvedLesson.getLessonQuestions().stream()
                     .filter(a -> a.getQuestionId().equals(question.getId())).findFirst();

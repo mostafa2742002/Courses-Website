@@ -22,6 +22,7 @@ public class SolvedLesson extends AuditableBase {
 
     @Id
     private String id;
+    private String level;
     private String lessonId;
     private String userId;
     private ArrayList<Answer> LessonQuestions = new ArrayList<>();

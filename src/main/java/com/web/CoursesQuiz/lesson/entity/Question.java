@@ -22,10 +22,11 @@ public class Question {
 
     private String lessonId;    
     private String courseId;
-
+    private String level;
     private String question;
     private String image;
     private ArrayList<String> options;
     private String correctAnswer;
     private String explanation;
+    private Boolean free = false;
 }
