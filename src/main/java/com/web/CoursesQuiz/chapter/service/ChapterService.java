@@ -34,7 +34,7 @@ public class ChapterService {
         Chapter chapterSaved = chapterReposetory.save(chapter);
         Course course = courseRepository.findById(chapter.getCourseId()).get();
         course.getChaptersIds().add(chapterSaved.getId());
-
+        courseRepository.save(course);
         return ResponseEntity.ok(new ResponseDto("201", "Chapter added successfully"));
     }
 
