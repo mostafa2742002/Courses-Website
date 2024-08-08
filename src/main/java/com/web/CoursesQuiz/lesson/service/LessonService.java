@@ -95,14 +95,16 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
 
-        Course course = courseRepository.findById(lesson.getCourseId()).get();
+        Course course = courseRepository.findById(lesson.getCourseId()).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", lesson.getCourseId()));
         lessonRepository.delete(lesson);
         isDeleted = true;
 
         course.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         courseRepository.save(course);
 
-        Chapter chapter = chapterReposetory.findById(lesson.getChapterId()).get();
+        Chapter chapter = chapterReposetory.findById(lesson.getChapterId()).orElseThrow(
+                () -> new ResourceNotFoundException("Chapter", "Chapter Id", lesson.getChapterId()));
         chapter.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         chapterReposetory.save(chapter);
 
