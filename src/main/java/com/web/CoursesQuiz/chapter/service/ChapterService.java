@@ -31,9 +31,9 @@ public class ChapterService {
             throw new ResourceNotFoundException("Course", "Course Id", chapter.getCourseId());
         }
 
-        chapterReposetory.save(chapter);
+        Chapter chapterSaved = chapterReposetory.save(chapter);
         Course course = courseRepository.findById(chapter.getCourseId()).get();
-        course.getChaptersIds().add(chapter.getId());
+        course.getChaptersIds().add(chapterSaved.getId());
 
         return ResponseEntity.ok(new ResponseDto("201", "Chapter added successfully"));
     }
