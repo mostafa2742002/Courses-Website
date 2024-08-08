@@ -48,6 +48,7 @@ public class LessonService {
 
         Lesson lesson = LessonMapper.toLesson(lessonDTO);
         lesson.setCourseId(courseId);
+        lesson.setChapterId(chapterId);
         Lesson lessonAdded = lessonRepository.save(lesson);
 
         Course course = courseRepository.findById(courseId).get();
@@ -93,15 +94,30 @@ public class LessonService {
 
     @Transactional
     public boolean deleteLesson(@NotNull String lessonId) {
+        // Ensure lessonId is not null before proceeding
+        if (lessonId == null) {
+            throw new IllegalArgumentException("Lesson ID must not be null");
+        }
+        System.out.println("Lesson ID: " + lessonId);
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
 
-        Course course = courseRepository.findById(lesson.getCourseId()).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Course Id", lesson.getCourseId()));
+        String courseId = lesson.getCourseId();
+        if (courseId == null) {
+            throw new IllegalStateException("Lesson's Course ID must not be null");
+        }
 
-        Chapter chapter = chapterRepository.findById(lesson.getChapterId()).orElseThrow(
-                () -> new ResourceNotFoundException("Chapter", "Chapter Id", lesson.getChapterId()));
-                
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+
+        String chapterId = lesson.getChapterId();
+        if (chapterId == null) {
+            throw new IllegalStateException("Lesson's Chapter ID must not be null");
+        }
+
+        Chapter chapter = chapterRepository.findById(chapterId).orElseThrow(
+                () -> new ResourceNotFoundException("Chapter", "Chapter Id", chapterId));
+
         course.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         courseRepository.save(course);
 
