@@ -102,8 +102,8 @@ public class LessonService {
         course.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         courseRepository.save(course);
         
-        Chapter chapter = chapterReposetory.findById(lesson.getChapterId()).orElseThrow(
-            () -> new ResourceNotFoundException("Chapter", "Chapter Id", lesson.getChapterId()));
+        Chapter chapter = chapterReposetory.findById(lessonId).orElseThrow(
+            () -> new ResourceNotFoundException("Chapter", "Chapter Id", lessonId));
             chapter.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
             chapterReposetory.save(chapter);
         isDeleted = true;
