@@ -10,7 +10,7 @@ import com.web.CoursesQuiz.chapter.entity.Chapter;
 import jakarta.validation.constraints.NotNull;
 
 @Repository
-public interface ChapterReposetory extends MongoRepository<Chapter, String> {
+public interface ChapterRepository extends MongoRepository<Chapter, String> {
     Chapter findByCourseId(String courseId);
 
     // return all chapters by courseId

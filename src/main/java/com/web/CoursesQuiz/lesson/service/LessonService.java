@@ -7,9 +7,10 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.CoursesQuiz.chapter.entity.Chapter;
-import com.web.CoursesQuiz.chapter.repo.ChapterReposetory;
+import com.web.CoursesQuiz.chapter.repo.ChapterRepository;
 import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.PageResponse;
@@ -33,7 +34,7 @@ public class LessonService {
     private LessonRepository lessonRepository;
     private CourseRepository courseRepository;
     private QuestionRepository questionRepository;
-    private ChapterReposetory chapterReposetory;
+    private ChapterRepository chapterRepository;
 
     public void addLesson(@NotNull LessonDTO lessonDTO, @NotNull String courseId, @NotNull String chapterId) {
         lessonDTO.setId(null);
@@ -41,7 +42,7 @@ public class LessonService {
             throw new ResourceNotFoundException("Course", "Course Id", courseId);
         }
 
-        if (!chapterReposetory.findById(chapterId).isPresent()) {
+        if (!chapterRepository.findById(chapterId).isPresent()) {
             throw new ResourceNotFoundException("Chapter", "Chapter Id", chapterId);
         }
 
@@ -54,11 +55,11 @@ public class LessonService {
         LessonPref lessonPref = new LessonPref(lessonAdded.getId(), lessonAdded.getName());
         course.getLessonsPref().add(lessonPref);
 
-        Chapter chapter = chapterReposetory.findById(chapterId).get();
+        Chapter chapter = chapterRepository.findById(chapterId).get();
         chapter.getLessonsPref().add(lessonPref);
 
         courseRepository.save(course);
-        chapterReposetory.save(chapter);
+        chapterRepository.save(chapter);
     }
 
     public LessonDTO getLesson(@NotNull String lessonId, @NotNull String level) {
@@ -90,25 +91,25 @@ public class LessonService {
         return isUpdated;
     }
 
+    @Transactional
     public boolean deleteLesson(@NotNull String lessonId) {
-        boolean isDeleted = false;
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
 
         Course course = courseRepository.findById(lesson.getCourseId()).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", lesson.getCourseId()));
 
+        Chapter chapter = chapterRepository.findById(lesson.getChapterId()).orElseThrow(
+                () -> new ResourceNotFoundException("Chapter", "Chapter Id", lesson.getChapterId()));
+                
         course.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
         courseRepository.save(course);
 
-        Chapter chapter = chapterReposetory.findById(lesson.getChapterId()).orElseThrow(
-                () -> new ResourceNotFoundException("Chapter", "Chapter Id", lesson.getChapterId()));
         chapter.getLessonsPref().removeIf(lessonPref -> lessonPref.getId().equals(lessonId));
-        chapterReposetory.save(chapter);
-        lessonRepository.delete(lesson);
-        isDeleted = true;
+        chapterRepository.save(chapter);
 
-        return isDeleted;
+        lessonRepository.delete(lesson);
+        return true;
     }
 
     public PageResponse<Lesson> findAllLessons(int page, int size) {
