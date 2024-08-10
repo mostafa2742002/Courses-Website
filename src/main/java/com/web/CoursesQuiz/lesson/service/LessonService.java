@@ -1,7 +1,7 @@
 package com.web.CoursesQuiz.lesson.service;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -212,6 +212,18 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
         return lesson.getName();
+    }
+
+    public List<Question> getAllFreeQuestions(@NotNull String lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
+                () -> new ResourceNotFoundException("Lesson", "Lesson Id", lessonId));
+        List<Question> questions = new ArrayList<>();
+        for (String questionId : lesson.getLessonQuestionsIds()) {
+            Question question = questionRepository.findById(questionId).get();
+            if (question.getFree())
+                questions.add(question);
+        }
+        return questions;
     }
 
 }

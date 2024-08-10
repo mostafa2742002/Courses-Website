@@ -63,7 +63,7 @@ public class LessonController {
         @GetMapping("/lesson")
         public ResponseEntity<LessonDTO> getLesson(@RequestParam @NotNull String lessonId,
                         @RequestParam @NotNull String level) {
-                LessonDTO lessonDTO = lessonService.getLesson(lessonId,level);
+                LessonDTO lessonDTO = lessonService.getLesson(lessonId, level);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(lessonDTO);
@@ -149,6 +149,19 @@ public class LessonController {
         public ResponseEntity<List<Question>> getAllQuestions(@RequestParam @NotNull String lessonId,
                         @RequestParam @NotNull String level) {
                 List<Question> questions = lessonService.getAllQuestions(lessonId, level);
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(questions);
+        }
+
+        @Operation(summary = "Fetch all Free Questions REST API", description = "REST API to fetch all Free Questions of a Lesson")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+                        @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+        })
+        @GetMapping("/lesson/questions/free")
+        public ResponseEntity<List<Question>> getAllFreeQuestions(@RequestParam @NotNull String lessonId) {
+                List<Question> questions = lessonService.getAllFreeQuestions(lessonId);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(questions);
