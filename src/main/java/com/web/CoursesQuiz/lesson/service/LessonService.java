@@ -169,6 +169,7 @@ public class LessonService {
             }
         });
 
+        chapterRepository.save(chapter);
         lessonRepository.save(lesson);
     }
 
@@ -210,7 +211,6 @@ public class LessonService {
                 }
             }
         });
-
 
         isDeleted = true;
 
