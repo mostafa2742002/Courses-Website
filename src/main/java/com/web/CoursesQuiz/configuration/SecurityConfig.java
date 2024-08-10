@@ -74,7 +74,9 @@ public class SecurityConfig {
                                 "/api/forgotpassword",
                                 "/api/resetpassword",
                                 "/api/courses",
-                                "/payment/success", "/payment/cancel")
+                                "/payment/success", "/payment/cancel",
+                                "/api/pages",
+                                "/api/pages/{id}")
                         .permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
