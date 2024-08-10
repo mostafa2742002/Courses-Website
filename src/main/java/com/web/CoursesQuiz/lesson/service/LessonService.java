@@ -162,7 +162,7 @@ public class LessonService {
         chapter.getLessonsPref().forEach(lessonPref -> {
             if (lessonPref.getId().equals(lessonId)) {
                 lessonPref.setAllQuestions(lessonPref.getAllQuestions() + 1);
-                
+
                 if (question2.getFree()) {
                     lessonPref.setFreeQuestions(lessonPref.getFreeQuestions() + 1);
                 }
@@ -200,6 +200,17 @@ public class LessonService {
         lessonRepository.save(lesson);
 
         questionRepository.delete(question);
+
+        Chapter chapter = chapterRepository.findById(lesson.getChapterId()).get();
+        chapter.getLessonsPref().forEach(lessonPref -> {
+            if (lessonPref.getId().equals(lesson.getId())) {
+                lessonPref.setAllQuestions(lessonPref.getAllQuestions() - 1);
+                if (question.getFree()) {
+                    lessonPref.setFreeQuestions(lessonPref.getFreeQuestions() - 1);
+                }
+            }
+        });
+
 
         isDeleted = true;
 
