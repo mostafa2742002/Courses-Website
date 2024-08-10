@@ -29,4 +29,5 @@ public class Question {
     private String correctAnswer;
     private String explanation;
     private Boolean free = false;
+    private Boolean calc = false;
 }
