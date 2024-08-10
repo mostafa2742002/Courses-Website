@@ -304,8 +304,9 @@ public class UserController {
 
         @GetMapping("/lesson/answers")
         public ResponseEntity<SolvedLesson> getLessonAnswers(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String lessonId) {
-                SolvedLesson attendLesson = userService.getLessonAnswers(userId, lessonId);
+                        @RequestParam @NotNull String lessonId,
+                        @RequestParam @NotNull String level) {
+                SolvedLesson attendLesson = userService.getLessonAnswers(userId, lessonId,level);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)

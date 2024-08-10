@@ -563,14 +563,14 @@ public class UserService implements UserDetailsService {
         return isDeleted;
     }
 
-    public SolvedLesson getLessonAnswers(@NotNull String userId, @NotNull String lessonId) {
+    public SolvedLesson getLessonAnswers(@NotNull String userId, @NotNull String lessonId, @NotNull String level) {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
         if (lessonRepository.findById(lessonId).isEmpty())
             throw new IllegalArgumentException("Lesson not found");
 
-        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId);
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonIdAndLevel(userId, lessonId, level);
         if (solvedLesson == null)
             throw new IllegalArgumentException("Solution not found");
 
