@@ -53,7 +53,7 @@ public class LessonService {
 
         Course course = courseRepository.findById(courseId).get();
 
-        LessonPref lessonPref = new LessonPref(lessonAdded.getId(), lessonAdded.getName());
+        LessonPref lessonPref = new LessonPref(lessonAdded.getId(), lessonAdded.getName(), 0, 0);
         course.getLessonsPref().add(lessonPref);
 
         Chapter chapter = chapterRepository.findById(chapterId).get();
@@ -157,6 +157,18 @@ public class LessonService {
         Question question2 = questionRepository.save(question);
 
         lesson.getLessonQuestionsIds().add(question2.getId());
+
+        Chapter chapter = chapterRepository.findById(lesson.getChapterId()).get();
+        chapter.getLessonsPref().forEach(lessonPref -> {
+            if (lessonPref.getId().equals(lessonId)) {
+                lessonPref.setAllQuestions(lessonPref.getAllQuestions() + 1);
+                
+                if (question2.getFree()) {
+                    lessonPref.setFreeQuestions(lessonPref.getFreeQuestions() + 1);
+                }
+            }
+        });
+
         lessonRepository.save(lesson);
     }
 

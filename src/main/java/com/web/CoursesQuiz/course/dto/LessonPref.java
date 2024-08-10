@@ -11,4 +11,6 @@ public class LessonPref {
 
     private String id;
     private String name;
+    private Integer freeQuestions;
+    private Integer allQuestions;
 }
