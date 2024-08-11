@@ -103,6 +103,10 @@ public class PaymentService {
       throw new RuntimeException("User wallet balance is less than the amount");
     }
 
+    UserPayment checkUserPayment = userPaymentRepository.findByUserIdAndCourseId(userId, courseId);
+    if (checkUserPayment != null) {
+      userPaymentRepository.delete(checkUserPayment);
+    }
     // we will deduct the amount from the user wallet when the payment is successful
 
     PaymentIntentRequest request = new PaymentIntentRequest();

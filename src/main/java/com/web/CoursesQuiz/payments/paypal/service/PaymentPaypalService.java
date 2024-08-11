@@ -49,19 +49,19 @@ public class PaymentPaypalService {
 
         Optional<Pkg> optionalPkg = pkgRepository.findById(pkgId);
         if (optionalPkg.isEmpty()) {
-        throw new RuntimeException("Package not found");
+            throw new RuntimeException("Package not found");
         }
 
         Pkg pkg = optionalPkg.get();
 
-        int amount =  0;
-        if(IsEgypt) {
+        int amount = 0;
+        if (IsEgypt) {
             amount = pkg.getPriceForEgypt();
         } else {
             amount = pkg.getPriceForNonEgypt();
         }
-        
-        int expiryDate =  pkg.getDurationByMonths();
+
+        int expiryDate = pkg.getDurationByMonths();
 
         User checkUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -69,12 +69,17 @@ public class PaymentPaypalService {
             throw new RuntimeException("User cannot use his own referral code");
         }
 
-        if (referralCode != null  && checkUser.getUsedReferralCodes().contains(referralCode)) {
+        if (referralCode != null && checkUser.getUsedReferralCodes().contains(referralCode)) {
             throw new RuntimeException("User has already used this referral code");
         }
 
         if (checkUser.getWallet() < discountWallet && discountWallet > 0) {
             throw new RuntimeException("User wallet balance is less than the amount");
+        }
+
+        UserPayment checkUserPayment = userPaymentRepository.findByUserIdAndCourseId(userId, courseId);
+        if (checkUserPayment != null) {
+            userPaymentRepository.delete(checkUserPayment);
         }
 
         Order order = new Order(amount, "USD", "paypal", "sale", "Course payment");
@@ -83,7 +88,8 @@ public class PaymentPaypalService {
         String paymentId;
         try {
             Payment payment = paypalService.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(),"https://courses-website-q0gf.onrender.com/payment/cancel", //"http://localhost:8080/payment/cancel",
+                    order.getIntent(), order.getDescription(),
+                    "https://courses-website-q0gf.onrender.com/payment/cancel", // "http://localhost:8080/payment/cancel",
                     "https://courses-website-q0gf.onrender.com/payment/success");// "http://localhost:8080/payment/success");
 
             paymentId = payment.getId();
@@ -134,8 +140,8 @@ public class PaymentPaypalService {
             userRepository.save(user);
         }
 
-        if(referralCode != null && !referralCode.isEmpty())
-        user.getUsedReferralCodes().add(referralCode);
+        if (referralCode != null && !referralCode.isEmpty())
+            user.getUsedReferralCodes().add(referralCode);
 
         CourseDate courseDate = new CourseDate();
         courseDate.setCourseId(userPayment.getCourseId());
