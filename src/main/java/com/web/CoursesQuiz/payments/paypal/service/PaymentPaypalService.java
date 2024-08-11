@@ -8,6 +8,7 @@ import com.web.CoursesQuiz.payments.paypal.entity.Order;
 import com.web.CoursesQuiz.payments.paypal.entity.TransactionCallback;
 import com.web.CoursesQuiz.payments.paypal.entity.TransactionCallback.CallbackOrder;
 import com.web.CoursesQuiz.user.entity.CourseDate;
+import com.web.CoursesQuiz.user.entity.PromoCode;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
@@ -93,6 +94,17 @@ public class PaymentPaypalService {
         if (!promoCode.equals("null")) {
             if (promoCodeRepository.findByCode(promoCode) == null) {
                 throw new RuntimeException("Promo code not found");
+            }
+
+            // we want to check if it expired or not. we have how it long by months and we
+            // have created date
+            PromoCode promoCode1 = promoCodeRepository.findByCode(promoCode);
+            if (promoCode1.getExpiryDateByMonth() != null) {
+                LocalDate expiryDate1 = promoCode1.getCreatedDate();
+                expiryDate1 = expiryDate1.plusMonths(promoCode1.getExpiryDateByMonth());
+                if (LocalDate.now().isAfter(expiryDate1)) {
+                    throw new RuntimeException("Promo code is expired");
+                }
             }
             amount -= promoCodeRepository.findByCode(promoCode).getDiscount();
         }

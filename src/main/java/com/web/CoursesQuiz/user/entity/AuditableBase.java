@@ -1,5 +1,6 @@
 package com.web.CoursesQuiz.user.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -15,12 +16,12 @@ public abstract class AuditableBase {
     private String createdBy;
 
     @CreatedDate
-    private Date createdDate;
+    private LocalDate createdDate;
 
     @LastModifiedBy
     private String lastModifiedBy;
 
     @LastModifiedDate
-    private Date lastModifiedDate;
+    private LocalDate lastModifiedDate;
 
 }

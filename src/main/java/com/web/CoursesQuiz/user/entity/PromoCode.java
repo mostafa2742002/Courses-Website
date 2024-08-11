@@ -11,7 +11,7 @@ import nonapi.io.github.classgraph.json.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "promoCodes")
-public class PromoCode {
+public class PromoCode extends AuditableBase{
 
     @Id
     private String id;
