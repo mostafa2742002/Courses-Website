@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.web.CoursesQuiz.chapter.repo.ChapterRepository;
 import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
@@ -67,6 +68,7 @@ public class UserService implements UserDetailsService {
     private final LessonService lessonService;
     private final CourseRepository courseRepository;
     private final ReferralCodeRepository referralCodeRepository;
+    private final ChapterRepository chapterRepository;
     private final LessonRepository lessonRepository;
 
     // get the discountValue from the application.properties
@@ -718,6 +720,9 @@ public class UserService implements UserDetailsService {
             lessonInfo.setLessonGrade(lesson.getGrade().toString());
             lessonInfo.setLevel(lesson.getLevel());
             lessonInfo.setChapterId(savedLesson.getChapterId());
+            if(chapterRepository.findById(savedLesson.getChapterId()).isPresent()){
+                lessonInfo.setChapterName(chapterRepository.findById(savedLesson.getChapterId()).get().getName());
+            }
             LessonQuestions lessonQuestions = calculateLessonQuestions(lesson.getLessonQuestions());
             lessonInfo.setLessonQuestions(lessonQuestions);
 

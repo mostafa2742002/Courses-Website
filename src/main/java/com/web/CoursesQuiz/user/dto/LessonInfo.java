@@ -11,6 +11,7 @@ public class LessonInfo {
 
     private String courseId;
     private String chapterId;
+    private String chapterName;
     private String level;
     private String courseName;
     private String lessonId;
