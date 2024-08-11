@@ -55,7 +55,7 @@ public class User extends AuditableBase implements UserDetails {
 
     private String referralCode;
     private ArrayList<String> usedReferralCodes = new ArrayList<>();
-
+    private ArrayList<String> userPromoCodes = new ArrayList<>();
 
     private ArrayList<String> notifications = new ArrayList<>();
 

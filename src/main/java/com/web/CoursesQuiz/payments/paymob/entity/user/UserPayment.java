@@ -23,6 +23,7 @@ public class UserPayment {
     private String paymentId;
     private LocalDate expiryDate;
     private String referralCode;
+    private String promoCode;
     private Double discountWallet;
     private String approvalUrl;
 

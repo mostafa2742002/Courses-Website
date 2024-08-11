@@ -13,6 +13,7 @@ import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.dto.ResponseDto;
 import com.web.CoursesQuiz.packages.entity.Pkg;
 import com.web.CoursesQuiz.packages.repo.PkgRepository;
+import com.web.CoursesQuiz.payments.paymob.entity.CheckOut;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.Order;
 import com.web.CoursesQuiz.payments.paymob.entity.callback.TransactionCallback;
 import com.web.CoursesQuiz.payments.paymob.entity.request.BillingData;
@@ -23,6 +24,8 @@ import com.web.CoursesQuiz.payments.paymob.entity.user.UserPayment;
 import com.web.CoursesQuiz.payments.paymob.repo.UserPaymentRepository;
 import com.web.CoursesQuiz.user.entity.CourseDate;
 import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
+import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
 import com.web.CoursesQuiz.user.service.UserService;
 
@@ -37,6 +40,8 @@ public class PaymentService {
   private final UserService userService;
   private final CourseService courseService;
   private final PkgRepository pkgRepository;
+  private final PromoCodeRepository promoCodeRepository;
+  private final ReferralCodeRepository referralCodeRepository;
 
   @Value("${paymob.api.secretkey}")
   private String secretKey;
@@ -50,19 +55,25 @@ public class PaymentService {
   @Value("${paymob.api.publicKey}")
   private String publicKey;
 
+  @Value("${DISCOUNT_VALUE}")
+  private int DISCOUNT_VALUE;
+
   public PaymentService(WebClient.Builder webClientBuilder, UserRepository userRepository,
       UserPaymentRepository userPaymentRepository, UserService userService,
-      CourseService courseService, PkgRepository pkgRepository) {
+      CourseService courseService, PkgRepository pkgRepository, PromoCodeRepository promoCodeRepository,
+      ReferralCodeRepository referralCodeRepository) {
     this.webClient = webClientBuilder.baseUrl("https://accept.paymob.com/v1/intention").build();
     this.userRepository = userRepository;
     this.userPaymentRepository = userPaymentRepository;
     this.userService = userService;
     this.courseService = courseService;
     this.pkgRepository = pkgRepository;
+    this.promoCodeRepository = promoCodeRepository;
+    this.referralCodeRepository = referralCodeRepository;
   }
 
-  public ResponseEntity<ResponseDto> createPaymentIntent(String courseId, String userId, String pkgId,
-      String referralCode, Double discountWallet, Boolean IsEgypt) {
+  public ResponseEntity<CheckOut> createPaymentIntent(String courseId, String userId, String pkgId,
+      String referralCode, Double discountWallet, Boolean IsEgypt, String promoCode) {
 
     // validate that the user has enough money in his wallet greater than or equal
     // to the amount
@@ -103,11 +114,34 @@ public class PaymentService {
       throw new RuntimeException("User wallet balance is less than the amount");
     }
 
+    if (!promoCode.equals("null") && checkUser.getUserPromoCodes().contains(promoCode)) {
+      throw new RuntimeException("User has already used this promo code");
+    }
+
     UserPayment checkUserPayment = userPaymentRepository.findByUserIdAndCourseId(userId, courseId);
     if (checkUserPayment != null) {
       userPaymentRepository.delete(checkUserPayment);
     }
     // we will deduct the amount from the user wallet when the payment is successful
+
+    amount -= discountWallet;
+
+    if (!promoCode.equals("null")) {
+      if (promoCodeRepository.findByCode(promoCode) == null) {
+        throw new RuntimeException("Promo code not found");
+      }
+      amount -= promoCodeRepository.findByCode(promoCode).getDiscount();
+    }
+
+    if (!referralCode.equals("null")) {
+      if (referralCodeRepository.findByCode(referralCode) == null) {
+        throw new RuntimeException("Referral code not found");
+      }
+
+      amount -= DISCOUNT_VALUE;
+    }
+
+    amount = Math.max(amount, 0);
 
     PaymentIntentRequest request = new PaymentIntentRequest();
     request.setAmount(amount * 100);
@@ -153,6 +187,8 @@ public class PaymentService {
       userPayment.setCourseId(courseId);
       if (!referralCode.equals("null"))
         userPayment.setReferralCode(referralCode);
+      if (!promoCode.equals("null"))
+        userPayment.setPromoCode(promoCode);
       LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate);
       userPayment.setExpiryDate(expiryDate1);
       userPayment.setPaymentId(paymentResponse.getId());
@@ -162,7 +198,21 @@ public class PaymentService {
     String userURL = "https://accept.paymob.com/unifiedcheckout/?publicKey=" + publicKey + "&clientSecret="
         + response.block().getClient_secret();
 
-    return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("Payment intent created successfully", userURL));
+    CheckOut checkOut = new CheckOut();
+    checkOut.setUrlToBuy(userURL);
+    checkOut.setOriginalPrice(String.valueOf(amount));
+    checkOut.setDiscountedFromWallet(String.valueOf(discountWallet));
+    if (!promoCode.equals("null"))
+      checkOut.setDiscountedFromPromoCode(promoCodeRepository.findByCode(promoCode).getDiscount().toString());
+    else
+      checkOut.setDiscountedFromPromoCode("0");
+    if (!referralCode.equals("null"))
+      checkOut.setDiscountedFromReferralCode(String.valueOf(DISCOUNT_VALUE));
+    else
+      checkOut.setDiscountedFromReferralCode("0");
+    checkOut.setTotal(String.valueOf(amount));
+
+    return ResponseEntity.status(HttpStatus.OK).body(checkOut);
   }
 
   public void handleCallback(TransactionCallback transactionCallback) {
@@ -178,6 +228,7 @@ public class PaymentService {
 
     String referralCode = userPayment.getReferralCode();
     Double discountWallet = userPayment.getDiscountWallet();
+    String promoCode = userPayment.getPromoCode();
 
     if (referralCode != null && !referralCode.isEmpty()) {
       userService.useReferralCode(referralCode);
@@ -195,6 +246,7 @@ public class PaymentService {
     }
 
     user.getUsedReferralCodes().add(referralCode);
+    user.getUserPromoCodes().add(promoCode);
 
     CourseDate courseDate = new CourseDate();
     courseDate.setCourseId(userPayment.getCourseId());

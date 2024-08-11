@@ -42,8 +42,10 @@ import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;
 import com.web.CoursesQuiz.user.entity.AttendLesson;
 import com.web.CoursesQuiz.user.entity.CourseDate;
+import com.web.CoursesQuiz.user.entity.PromoCode;
 import com.web.CoursesQuiz.user.entity.ReferralCode;
 import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
 
@@ -70,6 +72,7 @@ public class UserService implements UserDetailsService {
     private final ReferralCodeRepository referralCodeRepository;
     private final ChapterRepository chapterRepository;
     private final LessonRepository lessonRepository;
+    private final PromoCodeRepository promoCodeRepository;
 
     // get the discountValue from the application.properties
     private final String discountValue = System.getenv("DISCOUNT_VALUE");
@@ -489,6 +492,16 @@ public class UserService implements UserDetailsService {
         return referralCode.getCode();
     }
 
+    public String createPromoCode(Integer discount, Integer expiryDateByMonth) {
+        PromoCode promoCode = new PromoCode();
+        promoCode.setCode(UUID.randomUUID().toString().substring(0, 9));
+        promoCode.setDiscount(discount);
+        promoCode.setExpiryDateByMonth(expiryDateByMonth);
+        promoCodeRepository.save(promoCode);
+
+        return promoCode.getCode();
+    }
+
     public void useReferralCode(@NotNull String code) {
         ReferralCode referralCode = referralCodeRepository.findByCode(code);
         if (referralCode == null)
@@ -720,7 +733,7 @@ public class UserService implements UserDetailsService {
             lessonInfo.setLessonGrade(lesson.getGrade().toString());
             lessonInfo.setLevel(lesson.getLevel());
             lessonInfo.setChapterId(savedLesson.getChapterId());
-            if(chapterRepository.findById(savedLesson.getChapterId()).isPresent()){
+            if (chapterRepository.findById(savedLesson.getChapterId()).isPresent()) {
                 lessonInfo.setChapterName(chapterRepository.findById(savedLesson.getChapterId()).get().getName());
             }
             LessonQuestions lessonQuestions = calculateLessonQuestions(lesson.getLessonQuestions());

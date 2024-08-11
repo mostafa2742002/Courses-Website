@@ -1,6 +1,7 @@
 package com.web.CoursesQuiz.payments.paypal.service;
 
 import com.web.CoursesQuiz.dto.ResponseDto;
+import com.web.CoursesQuiz.payments.paymob.entity.CheckOut;
 import com.web.CoursesQuiz.payments.paymob.entity.user.UserPayment;
 import com.web.CoursesQuiz.payments.paymob.repo.UserPaymentRepository;
 import com.web.CoursesQuiz.payments.paypal.entity.Order;
@@ -8,44 +9,45 @@ import com.web.CoursesQuiz.payments.paypal.entity.TransactionCallback;
 import com.web.CoursesQuiz.payments.paypal.entity.TransactionCallback.CallbackOrder;
 import com.web.CoursesQuiz.user.entity.CourseDate;
 import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
+import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
 import com.web.CoursesQuiz.user.service.UserService;
+
+import lombok.AllArgsConstructor;
+
 import com.web.CoursesQuiz.course.service.CourseService;
 import com.web.CoursesQuiz.packages.entity.Pkg;
 import com.web.CoursesQuiz.packages.repo.PkgRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
+import java.sql.Ref;
 import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class PaymentPaypalService {
 
-    @Autowired
     private PaypalService paypalService;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private UserPaymentRepository userPaymentRepository;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private CourseService courseService;
-
-    @Autowired
     private PkgRepository pkgRepository;
+    private PromoCodeRepository promoCodeRepository;
+    private ReferralCodeRepository referralCodeRepository;
+    @Value("${DISCOUNT_VALUE}")
+    private Double DISCOUNT_VALUE;
 
-    public ResponseEntity<ResponseDto> createPaymentIntent(String courseId, String userId, String pkgId,
-            String referralCode, Double discountWallet, Boolean IsEgypt) {
+    public ResponseEntity<CheckOut> createPaymentIntent(String courseId, String userId, String pkgId,
+            String referralCode, Double discountWallet, Boolean IsEgypt, String promoCode) {
 
         Optional<Pkg> optionalPkg = pkgRepository.findById(pkgId);
         if (optionalPkg.isEmpty()) {
@@ -77,10 +79,33 @@ public class PaymentPaypalService {
             throw new RuntimeException("User wallet balance is less than the amount");
         }
 
+        if (!promoCode.equals("null") && checkUser.getUserPromoCodes().contains(promoCode)) {
+            throw new RuntimeException("User has already used this promo code");
+        }
+
         UserPayment checkUserPayment = userPaymentRepository.findByUserIdAndCourseId(userId, courseId);
         if (checkUserPayment != null) {
             userPaymentRepository.delete(checkUserPayment);
         }
+
+        amount -= discountWallet;
+
+        if (!promoCode.equals("null")) {
+            if (promoCodeRepository.findByCode(promoCode) == null) {
+                throw new RuntimeException("Promo code not found");
+            }
+            amount -= promoCodeRepository.findByCode(promoCode).getDiscount();
+        }
+
+        if (!referralCode.equals("null")) {
+            if (referralCodeRepository.findByCode(referralCode) == null) {
+                throw new RuntimeException("Referral code not found");
+            }
+
+            amount -= DISCOUNT_VALUE;
+        }
+
+        amount = Math.max(amount, 0);
 
         Order order = new Order(amount, "USD", "paypal", "sale", "Course payment");
 
@@ -105,14 +130,31 @@ public class PaymentPaypalService {
         UserPayment userPayment = new UserPayment();
         userPayment.setUserId(userId);
         userPayment.setCourseId(courseId);
-        userPayment.setReferralCode(referralCode);
+        if (!promoCode.equals("null"))
+            userPayment.setPromoCode(promoCode);
+        if (!referralCode.equals("null"))
+            userPayment.setReferralCode(referralCode);
         userPayment.setExpiryDate(LocalDate.now().plusMonths(expiryDate));
         userPayment.setPaymentId(paymentId);
         userPayment.setApprovalUrl(approvalUrl);
         userPaymentRepository.save(userPayment);
 
+        CheckOut checkOut = new CheckOut();
+        checkOut.setUrlToBuy(approvalUrl);
+        checkOut.setOriginalPrice(String.valueOf(amount));
+        checkOut.setDiscountedFromWallet(String.valueOf(discountWallet));
+        if (!promoCode.equals("null"))
+            checkOut.setDiscountedFromPromoCode(promoCodeRepository.findByCode(promoCode).getDiscount().toString());
+        else
+            checkOut.setDiscountedFromPromoCode("0");
+        if (!referralCode.equals("null"))
+            checkOut.setDiscountedFromReferralCode(String.valueOf(DISCOUNT_VALUE));
+        else
+            checkOut.setDiscountedFromReferralCode("0");
+        checkOut.setTotal(String.valueOf(amount));
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto("Payment intent created successfully", approvalUrl));
+                .body(checkOut);
     }
 
     public void handleCallback(TransactionCallback transactionCallback, String paymentId) {

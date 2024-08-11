@@ -289,7 +289,7 @@ public class UserController {
         public ResponseEntity<Boolean> attendLesson(@RequestParam @NotNull String userId,
                         @RequestParam @NotNull String lessonId,
                         @RequestParam @NotNull String level) {
-                Boolean attendLesson = userService.attendLesson(userId, lessonId,level);
+                Boolean attendLesson = userService.attendLesson(userId, lessonId, level);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)
@@ -306,7 +306,7 @@ public class UserController {
         public ResponseEntity<SolvedLesson> getLessonAnswers(@RequestParam @NotNull String userId,
                         @RequestParam @NotNull String lessonId,
                         @RequestParam @NotNull String level) {
-                SolvedLesson attendLesson = userService.getLessonAnswers(userId, lessonId,level);
+                SolvedLesson attendLesson = userService.getLessonAnswers(userId, lessonId, level);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)
@@ -399,7 +399,6 @@ public class UserController {
                                 .body(myCoursesAndLessonsInfo);
         }
 
-
         @Operation(summary = "Get The Lessons and Courses Info That I Participated In", description = "Get The Lessons and Courses Info That I Participated In")
         @ApiResponses({ @ApiResponse(responseCode = "200", description = "Lessons and Courses Info That I Participated In retrieved successfully"),
                         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)
@@ -414,11 +413,19 @@ public class UserController {
                                 .body(myCoursesAndLessonsInfo);
         }
 
-
         @PostMapping("enroll-course")
         public ResponseEntity<ResponseDto> enrollCourse(@RequestParam @NotNull String userId,
                         @RequestParam @NotNull String courseId, @RequestParam @NotNull LocalDate expiryDate) {
                 userService.enrollCourse(userId, courseId, expiryDate);
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
+        }
+
+        @PostMapping("promocode")
+        public ResponseEntity<ResponseDto> usePromoCode(@RequestParam @NotNull Integer discount,
+                        @RequestParam @NotNull Integer expiryDateByMonth) {
+                userService.createPromoCode(discount, expiryDateByMonth);
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
