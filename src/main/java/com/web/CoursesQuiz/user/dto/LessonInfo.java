@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class LessonInfo {
 
     private String courseId;
+    private String chapterId;
+    private String level;
     private String courseName;
     private String lessonId;
     private String lessonName;

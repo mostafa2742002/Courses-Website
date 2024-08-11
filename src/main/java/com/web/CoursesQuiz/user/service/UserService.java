@@ -352,8 +352,8 @@ public class UserService implements UserDetailsService {
         if (lessonRepository.findById(lessonId).isEmpty())
             throw new IllegalArgumentException("Lesson not found");
 
-        if (!(level.equals("easy") || level.equals("medium") || level.equals("hard"))) 
-            throw new IllegalArgumentException("Invalid level value should be easy or medium or hard"); 
+        if (!(level.equals("easy") || level.equals("medium") || level.equals("hard")))
+            throw new IllegalArgumentException("Invalid level value should be easy or medium or hard");
 
         SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonIdAndLevel(userId, lessonId, level);
         if (solvedLesson == null) {
@@ -404,7 +404,6 @@ public class UserService implements UserDetailsService {
         solvedLesson.getLessonQuestions().removeIf(answer -> questions.stream()
                 .noneMatch(question -> question.getId().equals(answer.getQuestionId())));
         solvedLessonRepository.save(solvedLesson);
-
 
         Boolean firstTime = solvedLesson.getFirstTime();
         return !firstTime;
@@ -717,7 +716,8 @@ public class UserService implements UserDetailsService {
             lessonInfo.setLessonId(lesson.getLessonId());
             lessonInfo.setLessonName(lessonService.getLessonName(lesson.getLessonId()));
             lessonInfo.setLessonGrade(lesson.getGrade().toString());
-
+            lessonInfo.setLevel(lesson.getLevel());
+            lessonInfo.setChapterId(savedLesson.getChapterId());
             LessonQuestions lessonQuestions = calculateLessonQuestions(lesson.getLessonQuestions());
             lessonInfo.setLessonQuestions(lessonQuestions);
 
