@@ -31,6 +31,8 @@ public class CourseDTO extends AuditableBase{
 
     private String image;
 
+    private Integer timer;
+
     @Schema(hidden = true)
     ArrayList<LessonPref> lessonsPref;
     @Schema(hidden = true)
