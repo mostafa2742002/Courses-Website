@@ -1,5 +1,6 @@
 package com.web.CoursesQuiz.lesson.repo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +27,7 @@ public interface SolvedLessonRepository extends MongoRepository<SolvedLesson, St
 
     SolvedLesson findByUserIdAndLessonIdAndLevel(@NotNull String userId, @NotNull String lessonId,
             @NotNull String level);
+
+    ArrayList<SolvedLesson> findByLessonId(String id);
 
 }

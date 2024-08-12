@@ -13,13 +13,17 @@ import com.web.CoursesQuiz.course.dto.CourseMapper;
 import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.course.entity.Course;
 import com.web.CoursesQuiz.course.entity.PageResponse;
+import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
+import com.web.CoursesQuiz.course.repo.SolvedCourseRepository;
 import com.web.CoursesQuiz.exception.ResourceNotFoundException;
 import com.web.CoursesQuiz.lesson.dto.LessonDTO;
 import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.lesson.entity.Question;
+import com.web.CoursesQuiz.lesson.entity.SolvedLesson;
 import com.web.CoursesQuiz.lesson.repo.LessonRepository;
 import com.web.CoursesQuiz.lesson.repo.QuestionRepository;
+import com.web.CoursesQuiz.lesson.repo.SolvedLessonRepository;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +37,8 @@ public class CourseService {
     private QuestionRepository questionRepository;
     private LessonRepository lessonRepository;
     private ChapterRepository chapterRepository;
+    private SolvedCourseRepository solvedCourseRepository;
+    private SolvedLessonRepository solvedLessonRepository;
 
     public void addCourse(CourseDTO courseDTO) {
         courseDTO.setId(null);
@@ -90,6 +96,11 @@ public class CourseService {
                 questionRepository.delete(question);
             }
 
+            ArrayList<SolvedLesson> solvedLessons = solvedLessonRepository.findByLessonId(lesson.getId());
+            for (SolvedLesson solvedLesson : solvedLessons) {
+                solvedLessonRepository.delete(solvedLesson);
+            }
+
             lessonRepository.delete(lesson);
         }
 
@@ -100,10 +111,13 @@ public class CourseService {
             chapterRepository.delete(chapter);
         }
 
+        ArrayList<SolvedCourse> solvedCourses = solvedCourseRepository.findByCourseId(courseId);
+        for (SolvedCourse solvedCourse : solvedCourses) {
+            solvedCourseRepository.delete(solvedCourse);
+        }
+
         courseRepository.delete(course);
-
         isDeleted = true;
-
         return isDeleted;
     }
 

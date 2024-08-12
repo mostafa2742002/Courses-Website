@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import com.web.CoursesQuiz.course.entity.SolvedCourse;
 
-import java.util.Optional;
+import jakarta.validation.constraints.NotNull;
 
 @Repository
 public interface SolvedCourseRepository extends MongoRepository<SolvedCourse, String> {
@@ -20,4 +20,6 @@ public interface SolvedCourseRepository extends MongoRepository<SolvedCourse, St
 
     // ArrayList of SolvedCourse by userId
     List<SolvedCourse> findAllByUserId(String userId);
+
+    ArrayList<SolvedCourse> findByCourseId(@NotNull String courseId);
 }
