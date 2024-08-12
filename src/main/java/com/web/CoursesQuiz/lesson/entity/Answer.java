@@ -13,5 +13,8 @@ public class Answer {
     private String userAnswer = "";
     private ArrayList<String> options;
     private String explaination = "";
+    private Boolean free = false;
+    private String level;
+    private Boolean calc = false;
     private Boolean isCorrect = false;
 }
