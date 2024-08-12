@@ -324,7 +324,7 @@ public class UserController {
                         @RequestParam @NotNull String userId, @RequestParam @NotNull String lessonId,
                         @RequestParam @NotNull String level) {
                 try {
-                        userService.completeQuestion(answer, userId, lessonId,level);
+                        userService.completeQuestion(answer, userId, lessonId, level);
                         return ResponseEntity.status(HttpStatus.OK).body("Lesson completed successfully");
                 } catch (IllegalArgumentException e) {
                         return ResponseEntity.badRequest().body(e.getMessage());
@@ -356,9 +356,10 @@ public class UserController {
 
         @PostMapping("/lesson/reset")
         public ResponseEntity<ResponseDto> resetLesson(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String lessonId) {
+                        @RequestParam @NotNull String lessonId,
+                        @RequestParam @NotNull String level) {
 
-                Boolean isDeleted = userService.resetLesson(userId, lessonId);
+                Boolean isDeleted = userService.resetLesson(userId, lessonId, level);
                 if (isDeleted) {
                         return ResponseEntity
                                         .status(HttpStatus.OK)

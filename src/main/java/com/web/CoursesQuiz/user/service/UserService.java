@@ -451,12 +451,12 @@ public class UserService implements UserDetailsService {
         solvedLessonRepository.save(solvedLesson);
     }
 
-    public Boolean resetLesson(@NotNull String userId, @NotNull String lessonId) {
+    public Boolean resetLesson(@NotNull String userId, @NotNull String lessonId, @NotNull String level) {
         Boolean isDeleted = false;
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId);
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonIdAndLevel(userId, lessonId, level);
         for (Answer answer : solvedLesson.getLessonQuestions()) {
             answer.setUserAnswer("");
             answer.setIsCorrect(false);
