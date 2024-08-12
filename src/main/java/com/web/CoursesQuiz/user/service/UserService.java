@@ -293,14 +293,19 @@ public class UserService implements UserDetailsService {
     }
 
     public void completeCourse(@NotNull CourseAnswersDTO answers) {
+        // System.out.println("11111111111111111111111");
         if (userRepository.findById(answers.getUserId()).isEmpty())
             throw new IllegalArgumentException("User not found");
 
         if (courseRepository.findById(answers.getCourseId()).isEmpty())
             throw new IllegalArgumentException("Course not found");
+        // System.out.println(answers);
+        // System.out.println(answers.getCourseId());
+        // System.out.println(answers.getUserId());
 
         SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(answers.getUserId(),
                 answers.getCourseId());
+        // System.out.println(solvedCourse);
         if (solvedCourse == null)
             throw new IllegalArgumentException("Solution not found");
 
