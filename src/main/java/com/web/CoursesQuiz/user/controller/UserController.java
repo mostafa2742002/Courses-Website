@@ -333,9 +333,10 @@ public class UserController {
 
         @PostMapping("/lesson/question/reset")
         public ResponseEntity<ResponseDto> resetQuestion(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String lessonId, @RequestParam @NotNull String questionId) {
+                        @RequestParam @NotNull String lessonId, @RequestParam @NotNull String questionId,
+                        @RequestParam @NotNull String level) {
 
-                Boolean isDeleted = userService.resetQuestion(userId, lessonId, questionId);
+                Boolean isDeleted = userService.resetQuestion(userId, lessonId, questionId, level);
                 if (isDeleted) {
                         return ResponseEntity
                                         .status(HttpStatus.OK)

@@ -568,12 +568,13 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public Boolean resetQuestion(@NotNull String userId, @NotNull String lessonId, @NotNull String questionId) {
+    public Boolean resetQuestion(@NotNull String userId, @NotNull String lessonId, @NotNull String questionId,
+            @NotNull String level) {
         Boolean isDeleted = false;
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
-        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId);
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonIdAndLevel(userId, lessonId, level);
         Answer answer = solvedLesson.getLessonQuestions().stream()
                 .filter(a -> a.getQuestionId().equals(questionId)).findFirst().get();
 
