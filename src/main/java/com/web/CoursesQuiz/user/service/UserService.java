@@ -411,6 +411,9 @@ public class UserService implements UserDetailsService {
                 answer.setExplaination(question.getExplanation());
                 answer.setImage(question.getImage());
                 answer.setIsCorrect(false);
+                answer.setCalc(question.getCalc());
+                answer.setLevel(question.getLevel());
+                answer.setFree(question.getFree());
                 answer.setOptions(question.getOptions());
                 solvedLesson.getLessonQuestions().add(answer);
             }
