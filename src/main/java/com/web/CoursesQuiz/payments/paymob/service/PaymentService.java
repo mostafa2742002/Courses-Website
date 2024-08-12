@@ -23,13 +23,16 @@ import com.web.CoursesQuiz.payments.paymob.entity.response.PaymentResponse;
 import com.web.CoursesQuiz.payments.paymob.entity.user.UserPayment;
 import com.web.CoursesQuiz.payments.paymob.repo.UserPaymentRepository;
 import com.web.CoursesQuiz.user.entity.CourseDate;
+import com.web.CoursesQuiz.user.entity.DiscountValue;
 import com.web.CoursesQuiz.user.entity.PromoCode;
 import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.DiscountRepository;
 import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
 import com.web.CoursesQuiz.user.service.UserService;
 
+import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -43,6 +46,7 @@ public class PaymentService {
   private final PkgRepository pkgRepository;
   private final PromoCodeRepository promoCodeRepository;
   private final ReferralCodeRepository referralCodeRepository;
+  private final DiscountRepository discountRepository;
 
   @Value("${paymob.api.secretkey}")
   private String secretKey;
@@ -56,13 +60,10 @@ public class PaymentService {
   @Value("${paymob.api.publicKey}")
   private String publicKey;
 
-  @Value("${DISCOUNT_VALUE}")
-  private int DISCOUNT_VALUE;
-
   public PaymentService(WebClient.Builder webClientBuilder, UserRepository userRepository,
       UserPaymentRepository userPaymentRepository, UserService userService,
       CourseService courseService, PkgRepository pkgRepository, PromoCodeRepository promoCodeRepository,
-      ReferralCodeRepository referralCodeRepository) {
+      ReferralCodeRepository referralCodeRepository, DiscountRepository discountRepository) {
     this.webClient = webClientBuilder.baseUrl("https://accept.paymob.com/v1/intention").build();
     this.userRepository = userRepository;
     this.userPaymentRepository = userPaymentRepository;
@@ -71,6 +72,7 @@ public class PaymentService {
     this.pkgRepository = pkgRepository;
     this.promoCodeRepository = promoCodeRepository;
     this.referralCodeRepository = referralCodeRepository;
+    this.discountRepository = discountRepository;
   }
 
   public ResponseEntity<CheckOut> createPaymentIntent(String courseId, String userId, String pkgId,
@@ -150,6 +152,8 @@ public class PaymentService {
         throw new RuntimeException("Referral code not found");
       }
 
+      DiscountValue discountValue = discountRepository.findAll().get(0);
+      Double DISCOUNT_VALUE = Double.parseDouble(discountValue.getValue());
       amount -= DISCOUNT_VALUE;
     }
 
@@ -218,9 +222,12 @@ public class PaymentService {
       checkOut.setDiscountedFromPromoCode(promoCodeRepository.findByCode(promoCode).getDiscount().toString());
     else
       checkOut.setDiscountedFromPromoCode("0");
-    if (!referralCode.equals("null"))
+    if (!referralCode.equals("null")) {
+      DiscountValue discount = discountRepository.findAll().get(0);
+      Integer DISCOUNT_VALUE = Integer.parseInt(discount.getValue());
       checkOut.setDiscountedFromReferralCode(String.valueOf(DISCOUNT_VALUE));
-    else
+
+    } else
       checkOut.setDiscountedFromReferralCode("0");
     checkOut.setTotal(String.valueOf(amount));
 

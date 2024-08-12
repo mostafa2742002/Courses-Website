@@ -430,4 +430,12 @@ public class UserController {
                                 .status(HttpStatus.OK)
                                 .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
         }
+
+        @PostMapping("discount-value")
+        public ResponseEntity<ResponseDto> createDiscountValue(@RequestParam @NotNull String value) {
+                userService.createDiscountValue(value);
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
+        }
 }

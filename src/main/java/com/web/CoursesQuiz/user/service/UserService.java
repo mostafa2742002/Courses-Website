@@ -42,9 +42,11 @@ import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;
 import com.web.CoursesQuiz.user.entity.AttendLesson;
 import com.web.CoursesQuiz.user.entity.CourseDate;
+import com.web.CoursesQuiz.user.entity.DiscountValue;
 import com.web.CoursesQuiz.user.entity.PromoCode;
 import com.web.CoursesQuiz.user.entity.ReferralCode;
 import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.DiscountRepository;
 import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
@@ -73,6 +75,7 @@ public class UserService implements UserDetailsService {
     private final ChapterRepository chapterRepository;
     private final LessonRepository lessonRepository;
     private final PromoCodeRepository promoCodeRepository;
+    private final DiscountRepository discountRepository;
 
     // get the discountValue from the application.properties
     private final String discountValue = System.getenv("DISCOUNT_VALUE");
@@ -743,6 +746,18 @@ public class UserService implements UserDetailsService {
         }
 
         return lessonInfos;
+    }
+
+    public void createDiscountValue(@NotNull String value) {
+        if (discountRepository.findAll().isEmpty()) {
+            DiscountValue discountValue = new DiscountValue();
+            discountValue.setValue(value);
+            discountRepository.save(discountValue);
+        } else {
+            DiscountValue discountValue = discountRepository.findAll().get(0);
+            discountValue.setValue(value);
+            discountRepository.save(discountValue);
+        }
     }
 
 }

@@ -8,8 +8,10 @@ import com.web.CoursesQuiz.payments.paypal.entity.Order;
 import com.web.CoursesQuiz.payments.paypal.entity.TransactionCallback;
 import com.web.CoursesQuiz.payments.paypal.entity.TransactionCallback.CallbackOrder;
 import com.web.CoursesQuiz.user.entity.CourseDate;
+import com.web.CoursesQuiz.user.entity.DiscountValue;
 import com.web.CoursesQuiz.user.entity.PromoCode;
 import com.web.CoursesQuiz.user.entity.User;
+import com.web.CoursesQuiz.user.repo.DiscountRepository;
 import com.web.CoursesQuiz.user.repo.PromoCodeRepository;
 import com.web.CoursesQuiz.user.repo.ReferralCodeRepository;
 import com.web.CoursesQuiz.user.repo.UserRepository;
@@ -25,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.braintreegateway.Discount;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
@@ -43,9 +47,8 @@ public class PaymentPaypalService {
     private CourseService courseService;
     private PkgRepository pkgRepository;
     private PromoCodeRepository promoCodeRepository;
+    private DiscountRepository discountRepository;
     private ReferralCodeRepository referralCodeRepository;
-    @Value("${DISCOUNT_VALUE}")
-    private Double DISCOUNT_VALUE;
 
     public ResponseEntity<CheckOut> createPaymentIntent(String courseId, String userId, String pkgId,
             String referralCode, Double discountWallet, Boolean IsEgypt, String promoCode) {
@@ -114,6 +117,9 @@ public class PaymentPaypalService {
                 throw new RuntimeException("Referral code not found");
             }
 
+            // convert from string to integer
+            DiscountValue discount = discountRepository.findAll().get(0);
+            Integer DISCOUNT_VALUE = Integer.parseInt(discount.getValue());
             amount -= DISCOUNT_VALUE;
         }
 
@@ -159,8 +165,12 @@ public class PaymentPaypalService {
             checkOut.setDiscountedFromPromoCode(promoCodeRepository.findByCode(promoCode).getDiscount().toString());
         else
             checkOut.setDiscountedFromPromoCode("0");
-        if (!referralCode.equals("null"))
+        if (!referralCode.equals("null")) {
+            DiscountValue discount = discountRepository.findAll().get(0);
+            Integer DISCOUNT_VALUE = Integer.parseInt(discount.getValue());
             checkOut.setDiscountedFromReferralCode(String.valueOf(DISCOUNT_VALUE));
+        }
+
         else
             checkOut.setDiscountedFromReferralCode("0");
         checkOut.setTotal(String.valueOf(amount));
