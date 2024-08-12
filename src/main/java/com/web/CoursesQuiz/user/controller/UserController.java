@@ -321,9 +321,10 @@ public class UserController {
 
         @PostMapping("/lesson/question/complete")
         public ResponseEntity<String> completeQuestion(@RequestBody @NotNull Answer answer,
-                        @RequestParam @NotNull String userId, @RequestParam @NotNull String lessonId) {
+                        @RequestParam @NotNull String userId, @RequestParam @NotNull String lessonId,
+                        @RequestParam @NotNull String level) {
                 try {
-                        userService.completeQuestion(answer, userId, lessonId);
+                        userService.completeQuestion(answer, userId, lessonId,level);
                         return ResponseEntity.status(HttpStatus.OK).body("Lesson completed successfully");
                 } catch (IllegalArgumentException e) {
                         return ResponseEntity.badRequest().body(e.getMessage());

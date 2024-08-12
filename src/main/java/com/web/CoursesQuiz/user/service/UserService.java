@@ -417,14 +417,18 @@ public class UserService implements UserDetailsService {
         return !firstTime;
     }
 
-    public void completeQuestion(@NotNull Answer answer, @NotNull String userId, @NotNull String lessonId) {
+    public void completeQuestion(@NotNull Answer answer, @NotNull String userId, @NotNull String lessonId,
+            @NotNull String level) {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
         if (lessonRepository.findById(lessonId).isEmpty())
             throw new IllegalArgumentException("Lesson not found");
 
-        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonId(userId, lessonId);
+        if (!(level.equals("easy") || level.equals("medium") || level.equals("hard")))
+            throw new IllegalArgumentException("Invalid level value should be easy or medium or hard");
+
+        SolvedLesson solvedLesson = solvedLessonRepository.findByUserIdAndLessonIdAndLevel(userId, lessonId, level);
 
         Answer answer1 = solvedLesson.getLessonQuestions().stream()
                 .filter(a -> a.getQuestion().equals(answer.getQuestion())).findFirst().get();
