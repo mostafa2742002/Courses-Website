@@ -207,6 +207,8 @@ public class UserService implements UserDetailsService {
             user1.setPhone(user.getPhone());
         if (user.getEmail() != null)
             user1.setEmail(user.getEmail());
+        if (user.getImage() != null)
+            user1.setImage(user.getImage());
 
         userRepository.save(user1);
 
