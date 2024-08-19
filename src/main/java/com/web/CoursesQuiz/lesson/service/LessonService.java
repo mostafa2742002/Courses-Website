@@ -70,6 +70,15 @@ public class LessonService {
             throw new IllegalArgumentException("Invalid level value should be easy or medium or hard");
 
         LessonDTO lessonDTO = LessonMapper.toLessonDto(lesson);
+        if (courseRepository.findById(lesson.getCourseId()).isEmpty()) {
+            throw new ResourceNotFoundException("Course", "Course Id", lesson.getCourseId());
+        }
+        lessonDTO.setCourseName(courseRepository.findById(lesson.getCourseId()).get().getName());
+
+        if (chapterRepository.findById(lesson.getChapterId()).isEmpty()) {
+            throw new ResourceNotFoundException("Chapter", "Chapter Id", lesson.getChapterId());
+        }
+        lessonDTO.setChapterName(chapterRepository.findById(lesson.getChapterId()).get().getName());
         ArrayList<Question> questions = getAllQuestions(lessonId, level);
         lessonDTO.setLessonQuestions(questions);
         return lessonDTO;

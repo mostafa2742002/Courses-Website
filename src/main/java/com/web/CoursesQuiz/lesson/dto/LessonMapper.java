@@ -22,6 +22,8 @@ public class LessonMapper {
             dto.setLastModifiedBy(lesson.getLastModifiedBy());
         if (lesson.getLastModifiedDate() != null)
             dto.setLastModifiedDate(lesson.getLastModifiedDate());
+        if (lesson.getChapterId() != null)
+            dto.setChapterId(lesson.getChapterId());
 
         return dto;
     }

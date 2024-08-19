@@ -31,5 +31,9 @@ public class LessonDTO extends AuditableBase{
     @NotNull
     private String courseId;
 
+    private String courseName;
+    private String chapterId;
+    private String chapterName;
+
     private ArrayList<Question> LessonQuestions;
 }
