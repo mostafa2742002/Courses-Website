@@ -31,8 +31,9 @@ public class ChapterService {
             throw new ResourceNotFoundException("Course", "Course Id", chapter.getCourseId());
         }
 
-        Chapter chapterSaved = chapterRepository.save(chapter);
         Course course = courseRepository.findById(chapter.getCourseId()).get();
+        chapter.setCourseName(course.getName());
+        Chapter chapterSaved = chapterRepository.save(chapter);
         course.getChaptersIds().add(chapterSaved.getId());
         courseRepository.save(course);
         return ResponseEntity.ok(new ResponseDto("201", "Chapter added successfully"));
@@ -81,5 +82,4 @@ public class ChapterService {
         return chapter.getLessonsPref();
     }
 
-    
 }

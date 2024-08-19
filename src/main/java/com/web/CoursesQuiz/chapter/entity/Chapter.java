@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.web.CoursesQuiz.course.dto.LessonPref;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,8 @@ public class Chapter {
 
     private String description;
 
+    @Schema(hidden = true)
+    private String courseName;
     private String courseId;
 
     private ArrayList<LessonPref> lessonsPref = new ArrayList<>();
