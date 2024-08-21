@@ -38,6 +38,7 @@ import com.web.CoursesQuiz.user.dto.UserDTO;
 import com.web.CoursesQuiz.user.entity.AttendCourse;
 import com.web.CoursesQuiz.user.entity.AttendLesson;
 import com.web.CoursesQuiz.user.entity.CourseDate;
+import com.web.CoursesQuiz.user.entity.PromoCode;
 import com.web.CoursesQuiz.user.entity.User;
 import com.web.CoursesQuiz.user.service.UserService;
 
@@ -435,7 +436,7 @@ public class UserController {
         }
 
         @GetMapping("promocodes")
-        public ResponseEntity<List<String>> getPromoCodes() {
+        public ResponseEntity<List<PromoCode>> getPromoCodes() {
                 return ResponseEntity.ok(userService.getPromoCodes());
         }
 
