@@ -778,4 +778,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public List<String> getPromoCodes() {
+        List<PromoCode> promoCodes = promoCodeRepository.findAll();
+        List<String> codes = new ArrayList<>();
+        for (PromoCode promoCode : promoCodes) {
+            codes.add(promoCode.getCode());
+        }
+        return codes;
+    }
+
 }

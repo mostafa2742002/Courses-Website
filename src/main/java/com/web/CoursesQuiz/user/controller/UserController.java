@@ -434,6 +434,11 @@ public class UserController {
                                 .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
         }
 
+        @GetMapping("promocodes")
+        public ResponseEntity<List<String>> getPromoCodes() {
+                return ResponseEntity.ok(userService.getPromoCodes());
+        }
+
         @PostMapping("discount-value")
         public ResponseEntity<ResponseDto> createDiscountValue(@RequestParam @NotNull String value) {
                 userService.createDiscountValue(value);
@@ -441,4 +446,6 @@ public class UserController {
                                 .status(HttpStatus.OK)
                                 .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
         }
+
+
 }
