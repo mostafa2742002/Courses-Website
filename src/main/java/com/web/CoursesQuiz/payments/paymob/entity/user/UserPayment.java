@@ -19,6 +19,7 @@ public class UserPayment {
     private String id;
 
     private String userId;
+    private String userEmail;
     private String courseId;
     private String paymentId;
     private LocalDate expiryDate;

@@ -204,6 +204,7 @@ public class PaymentService {
     response.subscribe(paymentResponse -> {
       UserPayment userPayment = new UserPayment();
       userPayment.setUserId(userId);
+      userPayment.setUserEmail(user.getEmail());
       userPayment.setCourseId(courseId);
       if (!referralCode.equals("null"))
         userPayment.setReferralCode(referralCode);
