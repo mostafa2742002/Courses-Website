@@ -23,4 +23,6 @@ public interface UserPaymentRepository extends MongoRepository<UserPayment, Stri
         void deleteByUserId(String userId);
         
         void deleteByCourseId(String courseId);
+
+        UserPayment findByUserEmail(String email);
 }

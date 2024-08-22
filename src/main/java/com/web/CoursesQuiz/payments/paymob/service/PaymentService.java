@@ -247,7 +247,7 @@ public class PaymentService {
     System.out.println("Payment successful");
     Order order = transactionCallback.getObj().getOrder();
     System.out.println("Order ID: " + order.getId());
-    UserPayment userPayment = userPaymentRepository.findByUserId(order.getShippingData().getEmail());
+    UserPayment userPayment = userPaymentRepository.findByUserEmail(order.getShippingData().getEmail());
     System.out.println(userPayment);
 
     if (userPayment == null) {
