@@ -87,6 +87,10 @@ public class PaymentService {
       }
     }
 
+    if(discountWallet == null) {
+      discountWallet = 0.0;
+    }
+
     Pkg pkg = pkgRepository.findById(pkgId).get();
     if (pkg == null) {
       throw new RuntimeException("Package not found");
