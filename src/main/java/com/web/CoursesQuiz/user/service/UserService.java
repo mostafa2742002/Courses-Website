@@ -539,7 +539,7 @@ public class UserService implements UserDetailsService {
 
     public String createPromoCode(Integer discount, Integer expiryDateByMonth) {
         PromoCode promoCode = new PromoCode();
-        promoCode.setCode(UUID.randomUUID().toString().substring(0, 9));
+        promoCode.setCode(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 9));
         promoCode.setDiscount(discount);
         promoCode.setExpiryDateByMonth(expiryDateByMonth);
         promoCodeRepository.save(promoCode);
