@@ -34,7 +34,7 @@ public class PaymentController {
 
     @PostMapping("/callback")
     public void callback(@RequestBody TransactionCallback transactionCallback) {
-
+        System.out.println("callback received");
         paymentService.handleCallback(transactionCallback);
     }
 }
