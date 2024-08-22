@@ -241,9 +241,13 @@ public class PaymentService {
   public void handleCallback(TransactionCallback transactionCallback) {
     if (!transactionCallback.getObj().isSuccess())
       return;
-    Order order = transactionCallback.getObj().getOrder();
+    // we will print a profissional logs here
 
+    System.out.println("Payment successful");
+    Order order = transactionCallback.getObj().getOrder();
+    System.out.println("Order ID: " + order.getId());
     UserPayment userPayment = userPaymentRepository.findByUserId(order.getShippingData().getEmail());
+    System.out.println(userPayment);
 
     if (userPayment == null) {
       throw new RuntimeException("User payment not found");
@@ -253,11 +257,16 @@ public class PaymentService {
     Double discountWallet = userPayment.getDiscountWallet();
     String promoCode = userPayment.getPromoCode();
 
+    System.out.println("Referral code: " + referralCode);
+    System.out.println("Discount wallet: " + discountWallet);
+    System.out.println("Promo code: " + promoCode);
+
     if (referralCode != null && !referralCode.isEmpty()) {
       userService.useReferralCode(referralCode);
     }
 
     User user = userRepository.findById(userPayment.getUserId()).get();
+    System.out.println(user);
     if (user == null) {
       throw new RuntimeException("User not found");
     }
@@ -277,6 +286,7 @@ public class PaymentService {
     courseDate.setCourseName(courseService.getCourseName(userPayment.getCourseId()));
     courseDate.setCourseImage(courseService.getCourseImage(userPayment.getCourseId()));
     user.getCourses().add(courseDate);
+    System.out.println(courseDate);
     userRepository.save(user);
 
     userPaymentRepository.delete(userPayment);
