@@ -28,6 +28,13 @@ public class UserDTO {
     private String image;
     private String phone;
 
+    private String birthday;
+    private String gender;
+    private String school;
+    private String city;
+    private String country;
+
+
     private String parentPhone;
 
     public UserDTO(User user) {
@@ -38,5 +45,11 @@ public class UserDTO {
         this.parentPhone = user.getParentPhone();
         this.first_name = user.getFirst_name();
         this.last_name = user.getLast_name();
+        this.image = user.getImage();
+        this.birthday = user.getBirthday();
+        this.gender = user.getGender();
+        this.school = user.getSchool();
+        this.city = user.getCity();
+        this.country = user.getCountry();
     }
 }

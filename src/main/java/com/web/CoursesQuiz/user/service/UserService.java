@@ -194,23 +194,48 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<String> updateProfile(UserDTO user, String user_id) {
+    public ResponseEntity<String> updateProfile(UserDTO user, String user_id)
+            throws MessagingException, InterruptedException {
 
         User user1 = userRepository.findById(user_id).orElse(null);
-
+        String Updates = "The Updates you Made : \n";
         if (user1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-        if (user.getName() != null)
+        if (user.getName() != null) {
             user1.setName(user.getName());
-        if (user.getPhone() != null)
+            Updates += "The Old Name Is : ";
+            Updates += user.getName() + " ";
+            Updates += " The New Name Is : ";
+            Updates += user1.getName() + "\n";
+        }
+        if (user.getPhone() != null) {
             user1.setPhone(user.getPhone());
-        if (user.getEmail() != null)
+            Updates += "The Old Phone Is : ";
+            Updates += user.getPhone() + " ";
+            Updates += " The New Phone Is : ";
+            Updates += user1.getPhone() + "\n";
+        }
+        if (user.getEmail() != null) {
             user1.setEmail(user.getEmail());
-        if (user.getImage() != null)
+            Updates += "The Old Email Is : ";
+            Updates += user.getEmail() + " ";
+            Updates += " The New Email Is : ";
+            Updates += user1.getEmail() + "\n";
+        }
+        if (user.getImage() != null) {
             user1.setImage(user.getImage());
+            Updates += "The Old Image Is : ";
+            Updates += user.getImage() + " ";
+            Updates += " The New Image Is : ";
+            Updates += user1.getImage() + "\n";
+        }
 
         userRepository.save(user1);
+
+        // now we will send an email to the client by this updates :
+
+        emailService.sendEmail(user.getEmail(), "The New Updates", Updates);
 
         return ResponseEntity.ok("Profile updated successfully");
     }
@@ -781,7 +806,7 @@ public class UserService implements UserDetailsService {
     public List<PromoCode> getPromoCodes() {
         List<PromoCode> promoCodes = promoCodeRepository.findAll();
         return promoCodes;
-        
+
     }
 
 }

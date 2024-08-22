@@ -59,6 +59,13 @@ public class User extends AuditableBase implements UserDetails {
 
     private ArrayList<String> notifications = new ArrayList<>();
 
+    private String birthday;
+    private String gender;
+    private String school;
+    private String city;
+    private String country;
+
+
     private String token;
     private String image;
     private boolean emailVerified;
@@ -73,6 +80,12 @@ public class User extends AuditableBase implements UserDetails {
         this.parentPhone = userDTO.getParentPhone();
         this.first_name = userDTO.getFirst_name();
         this.last_name = userDTO.getLast_name();
+        this.image = userDTO.getImage();
+        this.birthday = userDTO.getBirthday();
+        this.gender = userDTO.getGender();
+        this.school = userDTO.getSchool();
+        this.city = userDTO.getCity();
+        this.country = userDTO.getCountry();
     }
 
     @Override

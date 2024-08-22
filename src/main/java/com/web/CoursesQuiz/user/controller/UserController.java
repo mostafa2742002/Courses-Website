@@ -165,7 +165,7 @@ public class UserController {
                         )) })
 
         @PutMapping("/profile")
-        public ResponseEntity<String> updateProfile(@RequestBody @NotNull UserDTO user, @RequestParam String user_id) {
+        public ResponseEntity<String> updateProfile(@RequestBody @NotNull UserDTO user, @RequestParam String user_id) throws MessagingException, InterruptedException {
                 return userService.updateProfile(user, user_id);
         }
 
