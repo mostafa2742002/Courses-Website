@@ -76,7 +76,8 @@ public class SecurityConfig {
                                 "/api/courses",
                                 "/payment/success", "/payment/cancel",
                                 "/api/pages",
-                                "/api/pages/{id}")
+                                "/api/pages/{id}",
+                                "/callback")
                         .permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
