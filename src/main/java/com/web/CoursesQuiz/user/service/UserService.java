@@ -202,7 +202,7 @@ public class UserService implements UserDetailsService {
         if (user1 == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-        if (user.getName() != null) {
+        if (user.getName() != null && !user.getName().equals(user1.getName())) {
             user1.setName(user.getName());
             Updates += "The Old Name Is : ";
             Updates += user1.getName() + " ";
@@ -210,7 +210,23 @@ public class UserService implements UserDetailsService {
             user1.setName(user.getName());
             Updates += user1.getName() + "\n";
         }
-        if (user.getPhone() != null) {
+        if (user.getFirst_name() != null && !user.getFirst_name().equals(user1.getFirst_name())) {
+            user1.setFirst_name(user.getFirst_name());
+            Updates += "The Old First Name Is : ";
+            Updates += user1.getFirst_name() + " ";
+            Updates += " The New First Name Is : ";
+            user1.setFirst_name(user.getFirst_name());
+            Updates += user1.getFirst_name() + "\n";
+        }
+        if (user.getLast_name() != null && !user.getLast_name().equals(user1.getLast_name())) {
+            user1.setLast_name(user.getLast_name());
+            Updates += "The Old Last Name Is : ";
+            Updates += user1.getLast_name() + " ";
+            Updates += " The New Last Name Is : ";
+            user1.setLast_name(user.getLast_name());
+            Updates += user1.getLast_name() + "\n";
+        }
+        if (user.getPhone() != null && !user.getPhone().equals(user1.getPhone())) {
             user1.setPhone(user.getPhone());
             Updates += "The Old Phone Is : ";
             Updates += user1.getPhone() + " ";
@@ -218,7 +234,15 @@ public class UserService implements UserDetailsService {
             user1.setPhone(user.getPhone());
             Updates += user1.getPhone() + "\n";
         }
-        if (user.getImage() != null) {
+        if (user.getParentPhone() != null && !user.getParentPhone().equals(user1.getParentPhone())) {
+            user1.setParentPhone(user.getParentPhone());
+            Updates += "The Old Parent Phone Is : ";
+            Updates += user1.getParentPhone() + " ";
+            Updates += " The New Parent Phone Is : ";
+            user1.setParentPhone(user.getParentPhone());
+            Updates += user1.getParentPhone() + "\n";
+        }
+        if (user.getImage() != null && !user.getImage().equals(user1.getImage())) {
             user1.setImage(user.getImage());
             Updates += "The Old Image Is : ";
             Updates += user1.getImage() + " ";
@@ -226,7 +250,7 @@ public class UserService implements UserDetailsService {
             user1.setImage(user.getImage());
             Updates += user1.getImage() + "\n";
         }
-        if (user.getCountry() != null) {
+        if (user.getCountry() != null && !user.getCountry().equals(user1.getCountry())) {
             user1.setCountry(user.getCountry());
             Updates += "The Old Country Is : ";
             Updates += user1.getCountry() + " ";
@@ -234,7 +258,7 @@ public class UserService implements UserDetailsService {
             user1.setCountry(user.getCountry());
             Updates += user1.getCountry() + "\n";
         }
-        if (user.getCity() != null) {
+        if (user.getCity() != null && !user.getCity().equals(user1.getCity())) {
             user1.setCity(user.getCity());
             Updates += "The Old City Is : ";
             Updates += user1.getCity() + " ";
@@ -242,7 +266,7 @@ public class UserService implements UserDetailsService {
             user1.setCity(user.getCity());
             Updates += user1.getCity() + "\n";
         }
-        if (user.getSchool() != null) {
+        if (user.getSchool() != null && !user.getSchool().equals(user1.getSchool())) {
             user1.setSchool(user.getSchool());
             Updates += "The Old School Is : ";
             Updates += user1.getSchool() + " ";
@@ -250,7 +274,7 @@ public class UserService implements UserDetailsService {
             user1.setSchool(user.getSchool());
             Updates += user1.getSchool() + "\n";
         }
-        if (user.getBirthday() != null) {
+        if (user.getBirthday() != null && !user.getBirthday().equals(user1.getBirthday())) {
             user1.setBirthday(user.getBirthday());
             Updates += "The Old Birthday Is : ";
             Updates += user1.getBirthday() + " ";
