@@ -230,6 +230,34 @@ public class UserService implements UserDetailsService {
             Updates += " The New Image Is : ";
             Updates += user1.getImage() + "\n";
         }
+        if (user.getCountry() != null) {
+            user1.setCountry(user.getCountry());
+            Updates += "The Old Country Is : ";
+            Updates += user.getCountry() + " ";
+            Updates += " The New Country Is : ";
+            Updates += user1.getCountry() + "\n";
+        }
+        if (user.getCity() != null) {
+            user1.setCity(user.getCity());
+            Updates += "The Old City Is : ";
+            Updates += user.getCity() + " ";
+            Updates += " The New City Is : ";
+            Updates += user1.getCity() + "\n";
+        }
+        if (user.getSchool() != null) {
+            user1.setSchool(user.getSchool());
+            Updates += "The Old School Is : ";
+            Updates += user.getSchool() + " ";
+            Updates += " The New School Is : ";
+            Updates += user1.getSchool() + "\n";
+        }
+        if (user.getBirthday() != null) {
+            user1.setBirthday(user.getBirthday());
+            Updates += "The Old Birthday Is : ";
+            Updates += user.getBirthday() + " ";
+            Updates += " The New Birthday Is : ";
+            Updates += user1.getBirthday() + "\n";
+        }
 
         userRepository.save(user1);
 
