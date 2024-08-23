@@ -205,57 +205,57 @@ public class UserService implements UserDetailsService {
         if (user.getName() != null) {
             user1.setName(user.getName());
             Updates += "The Old Name Is : ";
-            Updates += user.getName() + " ";
+            Updates += user1.getName() + " ";
             Updates += " The New Name Is : ";
+            user1.setName(user.getName());
             Updates += user1.getName() + "\n";
         }
         if (user.getPhone() != null) {
             user1.setPhone(user.getPhone());
             Updates += "The Old Phone Is : ";
-            Updates += user.getPhone() + " ";
+            Updates += user1.getPhone() + " ";
             Updates += " The New Phone Is : ";
+            user1.setPhone(user.getPhone());
             Updates += user1.getPhone() + "\n";
-        }
-        if (user.getEmail() != null) {
-            user1.setEmail(user.getEmail());
-            Updates += "The Old Email Is : ";
-            Updates += user.getEmail() + " ";
-            Updates += " The New Email Is : ";
-            Updates += user1.getEmail() + "\n";
         }
         if (user.getImage() != null) {
             user1.setImage(user.getImage());
             Updates += "The Old Image Is : ";
-            Updates += user.getImage() + " ";
+            Updates += user1.getImage() + " ";
             Updates += " The New Image Is : ";
+            user1.setImage(user.getImage());
             Updates += user1.getImage() + "\n";
         }
         if (user.getCountry() != null) {
             user1.setCountry(user.getCountry());
             Updates += "The Old Country Is : ";
-            Updates += user.getCountry() + " ";
+            Updates += user1.getCountry() + " ";
             Updates += " The New Country Is : ";
+            user1.setCountry(user.getCountry());
             Updates += user1.getCountry() + "\n";
         }
         if (user.getCity() != null) {
             user1.setCity(user.getCity());
             Updates += "The Old City Is : ";
-            Updates += user.getCity() + " ";
+            Updates += user1.getCity() + " ";
             Updates += " The New City Is : ";
+            user1.setCity(user.getCity());
             Updates += user1.getCity() + "\n";
         }
         if (user.getSchool() != null) {
             user1.setSchool(user.getSchool());
             Updates += "The Old School Is : ";
-            Updates += user.getSchool() + " ";
+            Updates += user1.getSchool() + " ";
             Updates += " The New School Is : ";
+            user1.setSchool(user.getSchool());
             Updates += user1.getSchool() + "\n";
         }
         if (user.getBirthday() != null) {
             user1.setBirthday(user.getBirthday());
             Updates += "The Old Birthday Is : ";
-            Updates += user.getBirthday() + " ";
+            Updates += user1.getBirthday() + " ";
             Updates += " The New Birthday Is : ";
+            user1.setBirthday(user.getBirthday());
             Updates += user1.getBirthday() + "\n";
         }
 
@@ -263,7 +263,7 @@ public class UserService implements UserDetailsService {
 
         // now we will send an email to the client by this updates :
 
-        emailService.sendEmail(user.getEmail(), "The New Updates", Updates);
+        emailService.sendEmail(user1.getEmail(), "The New Updates", Updates);
 
         return ResponseEntity.ok("Profile updated successfully");
     }
