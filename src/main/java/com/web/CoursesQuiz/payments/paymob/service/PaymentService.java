@@ -212,6 +212,9 @@ public class PaymentService {
         userPayment.setPromoCode(promoCode);
       LocalDate expiryDate1 = LocalDate.now().plusMonths(expiryDate);
       userPayment.setExpiryDate(expiryDate1);
+      LocalDate createdDate = LocalDate.now();
+      userPayment.setCreationDate(createdDate);
+      userPayment.setDuration(pkg.getDurationByMonths());
       userPayment.setPaymentId(paymentResponse.getId());
       userPaymentRepository.save(userPayment);
     });
@@ -235,6 +238,9 @@ public class PaymentService {
     } else
       checkOut.setDiscountedFromReferralCode("0");
     checkOut.setTotal(String.valueOf(amount));
+    checkOut.setStartDate(LocalDate.now());
+    checkOut.setExpiryDate(LocalDate.now().plusMonths(expiryDate));
+    checkOut.setDuration(expiryDate);
 
     return ResponseEntity.status(HttpStatus.OK).body(checkOut);
   }
@@ -284,6 +290,8 @@ public class PaymentService {
     CourseDate courseDate = new CourseDate();
     courseDate.setCourseId(userPayment.getCourseId());
     courseDate.setExpiryDate(userPayment.getExpiryDate());
+    courseDate.setDuration(userPayment.getDuration());
+    courseDate.setStartDate(LocalDate.now());
     courseDate.setCourseName(courseService.getCourseName(userPayment.getCourseId()));
     courseDate.setCourseImage(courseService.getCourseImage(userPayment.getCourseId()));
     user.getCourses().add(courseDate);

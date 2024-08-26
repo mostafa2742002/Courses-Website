@@ -12,6 +12,7 @@ import com.web.CoursesQuiz.course.dto.CourseDTO;
 import com.web.CoursesQuiz.course.dto.CourseMapper;
 import com.web.CoursesQuiz.course.dto.LessonPref;
 import com.web.CoursesQuiz.course.entity.Course;
+import com.web.CoursesQuiz.course.entity.CourseFinalExam;
 import com.web.CoursesQuiz.course.entity.PageResponse;
 import com.web.CoursesQuiz.course.entity.SolvedCourse;
 import com.web.CoursesQuiz.course.repo.CourseRepository;
@@ -56,8 +57,7 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
         CourseDTO courseDTO = CourseMapper.toCourseDto(course);
-        ArrayList<Question> questions = getAllQuestions(courseId);
-        courseDTO.setFinalQuiz(questions);
+        courseDTO.setFinalExams(course.getFinalQuiz());
         return courseDTO;
     }
 
@@ -79,9 +79,12 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
-        ArrayList<Question> questions = getAllQuestions(courseId);
-        for (Question question : questions) {
-            questionRepository.delete(question);
+        for (CourseFinalExam courseFinalExam : course.getFinalQuiz()) {
+            for (String questionId : courseFinalExam.getFinalQuizIds()) {
+                Question question = questionRepository.findById(questionId).orElseThrow(
+                        () -> new ResourceNotFoundException("Question", "Question Id", questionId));
+                questionRepository.delete(question);
+            }
         }
 
         ArrayList<LessonPref> lessons = course.getLessonsPref();
@@ -136,7 +139,7 @@ public class CourseService {
         return response;
     }
 
-    public void addQuestion(@NotNull Question question, @NotNull String courseId) {
+    public void addQuestion(@NotNull Question question, @NotNull String courseId, @NotNull Integer idx) {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
@@ -145,9 +148,22 @@ public class CourseService {
         if (question.getCourseId() == null)
             throw new ResourceNotFoundException("Course Id", "Course Id", courseId);
 
+        if (course.getFinalQuiz().size() < idx )
+            throw new ResourceNotFoundException("Index", "Index", idx.toString());
+
         Question savedQuestion = questionRepository.save(question);
 
-        course.getFinalQuizIds().add(savedQuestion.getId());
+        if (idx != -1) {
+            CourseFinalExam courseFinalExam = course.getFinalQuiz().get(idx);
+            courseFinalExam.getFinalQuizIds().add(savedQuestion.getId());
+            course.getFinalQuiz().set(idx, courseFinalExam);
+        } else if (idx == -1) {
+            CourseFinalExam courseFinalExam = new CourseFinalExam();
+            courseFinalExam.getFinalQuizIds().add(savedQuestion.getId());
+            course.getFinalQuiz().add(courseFinalExam);
+        } else
+            throw new ResourceNotFoundException("Index", "Index", idx.toString());
+
         courseRepository.save(course);
     }
 
@@ -159,7 +175,13 @@ public class CourseService {
         Course course = courseRepository.findById(question.getCourseId()).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", question.getCourseId()));
 
-        course.getFinalQuizIds().remove(questionId);
+        if (course.getFinalQuiz().size() < question.getFinalQuizIdx())
+            throw new ResourceNotFoundException("Index", "Index", question.getFinalQuizIdx().toString());
+
+        CourseFinalExam courseFinalExam = course.getFinalQuiz().get(question.getFinalQuizIdx());
+        courseFinalExam.getFinalQuizIds().remove(questionId);
+        course.getFinalQuiz().set(question.getFinalQuizIdx(), courseFinalExam);
+
         courseRepository.save(course);
 
         questionRepository.delete(question);
@@ -185,12 +207,15 @@ public class CourseService {
         return isUpdated;
     }
 
-    public ArrayList<Question> getAllQuestions(@NotNull String courseId) {
+    public ArrayList<Question> getAllQuestions(@NotNull String courseId, Integer idx) {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
+        if (course.getFinalQuiz().size() < idx || idx < 0 || idx == null)
+            throw new ResourceNotFoundException("Index", "Index", idx.toString());
+
         ArrayList<Question> questions = new ArrayList<>();
-        for (String questionId : course.getFinalQuizIds()) {
+        for (String questionId : course.getFinalQuiz().get(idx).getFinalQuizIds()) {
             Question question = questionRepository.findById(questionId).orElseThrow(
                     () -> new ResourceNotFoundException("Question", "Question Id", questionId));
             questions.add(question);

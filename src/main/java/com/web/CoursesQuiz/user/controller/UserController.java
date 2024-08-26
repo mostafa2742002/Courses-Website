@@ -218,8 +218,9 @@ public class UserController {
 
         @PostMapping("/course/attend")
         public ResponseEntity<Boolean> attendCourse(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String courseId) {
-                Boolean attendCourse = userService.attendCourse(userId, courseId);
+                        @RequestParam @NotNull String courseId,
+                        @RequestParam @NotNull Integer idx) {
+                Boolean attendCourse = userService.attendCourse(userId, courseId, idx);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)
@@ -248,9 +249,10 @@ public class UserController {
                         )) })
 
         @PostMapping("/course/complete")
-        public ResponseEntity<String> completeCourse(@RequestBody @NotNull CourseAnswersDTO answers) {
+        public ResponseEntity<String> completeCourse(@RequestBody @NotNull CourseAnswersDTO answers,
+                        @RequestParam @NotNull Integer idx) {
                 try {
-                        userService.completeCourse(answers);
+                        userService.completeCourse(answers, idx);
                         return ResponseEntity.status(HttpStatus.OK).body("Course completed successfully");
                 } catch (IllegalArgumentException e) {
                         return ResponseEntity.badRequest().body(e.getMessage());
@@ -265,9 +267,10 @@ public class UserController {
 
         @PostMapping("/course/reset")
         public ResponseEntity<ResponseDto> resetCourse(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String courseId) {
+                        @RequestParam @NotNull String courseId,
+                        @RequestParam @NotNull Integer idx) {
 
-                Boolean isDeleted = userService.resetCourse(userId, courseId);
+                Boolean isDeleted = userService.resetCourse(userId, courseId, idx);
                 if (isDeleted) {
                         return ResponseEntity
                                         .status(HttpStatus.OK)
@@ -417,14 +420,14 @@ public class UserController {
                                 .body(myCoursesAndLessonsInfo);
         }
 
-        @PostMapping("enroll-course")
-        public ResponseEntity<ResponseDto> enrollCourse(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String courseId, @RequestParam @NotNull LocalDate expiryDate) {
-                userService.enrollCourse(userId, courseId, expiryDate);
-                return ResponseEntity
-                                .status(HttpStatus.OK)
-                                .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
-        }
+        // @PostMapping("enroll-course")
+        // public ResponseEntity<ResponseDto> enrollCourse(@RequestParam @NotNull String userId,
+        //                 @RequestParam @NotNull String courseId, @RequestParam @NotNull LocalDate expiryDate) {
+        //         userService.enrollCourse(userId, courseId, expiryDate);
+        //         return ResponseEntity
+        //                         .status(HttpStatus.OK)
+        //                         .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
+        // }
 
         @PostMapping("promocode")
         public ResponseEntity<ResponseDto> usePromoCode(@RequestParam @NotNull Integer discount,

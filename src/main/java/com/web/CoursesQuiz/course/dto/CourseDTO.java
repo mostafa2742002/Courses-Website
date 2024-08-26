@@ -3,6 +3,7 @@ package com.web.CoursesQuiz.course.dto;
 import java.util.ArrayList;
 
 import com.web.CoursesQuiz.chapter.entity.Chapter;
+import com.web.CoursesQuiz.course.entity.CourseFinalExam;
 import com.web.CoursesQuiz.lesson.entity.Lesson;
 import com.web.CoursesQuiz.lesson.entity.Question;
 import com.web.CoursesQuiz.user.entity.AuditableBase;
@@ -39,4 +40,7 @@ public class CourseDTO extends AuditableBase{
     ArrayList<Question> FinalQuiz;
     @Schema(hidden = true)
     ArrayList<Chapter> chapters;
+    @Schema(hidden = true)
+    ArrayList<CourseFinalExam> FinalExams;
+
 }

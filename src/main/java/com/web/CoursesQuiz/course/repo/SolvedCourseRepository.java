@@ -22,4 +22,6 @@ public interface SolvedCourseRepository extends MongoRepository<SolvedCourse, St
     List<SolvedCourse> findAllByUserId(String userId);
 
     ArrayList<SolvedCourse> findByCourseId(@NotNull String courseId);
+
+    SolvedCourse findByUserIdAndCourseIdAndQuizIdx(@NotNull String userId, @NotNull String courseId, @NotNull Integer idx);
 }

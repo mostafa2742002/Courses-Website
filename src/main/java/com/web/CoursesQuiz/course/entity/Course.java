@@ -33,5 +33,5 @@ public class Course extends AuditableBase {
     private Integer timer;
     private ArrayList<String> chaptersIds = new ArrayList<>();
     private ArrayList<LessonPref> lessonsPref = new ArrayList<>();
-    private ArrayList<String> FinalQuizIds = new ArrayList<>();
+    private ArrayList<CourseFinalExam> FinalQuiz = new ArrayList<>();
 }

@@ -22,6 +22,7 @@ public class Question {
 
     private String lessonId;    
     private String courseId;
+    private Integer finalQuizIdx;
     private String level;
     private String question;
     private String image;

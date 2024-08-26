@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class CourseDate {
 
     private String courseId;
+    private LocalDate startDate;
     private LocalDate expiryDate;
+    private Integer Duration;
     private String courseName;
     private String courseImage;
 }

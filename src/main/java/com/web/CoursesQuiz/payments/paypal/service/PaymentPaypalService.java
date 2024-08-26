@@ -152,9 +152,12 @@ public class PaymentPaypalService {
             userPayment.setPromoCode(promoCode);
         if (!referralCode.equals("null"))
             userPayment.setReferralCode(referralCode);
+        userPayment.setCreationDate(LocalDate.now());
         userPayment.setExpiryDate(LocalDate.now().plusMonths(expiryDate));
+        userPayment.setDuration(expiryDate);
         userPayment.setPaymentId(paymentId);
         userPayment.setApprovalUrl(approvalUrl);
+
         userPaymentRepository.save(userPayment);
 
         CheckOut checkOut = new CheckOut();
@@ -174,6 +177,11 @@ public class PaymentPaypalService {
         else
             checkOut.setDiscountedFromReferralCode("0");
         checkOut.setTotal(String.valueOf(amount));
+
+        checkOut.setStartDate(LocalDate.now());
+        checkOut.setExpiryDate(LocalDate.now().plusMonths(expiryDate));
+        checkOut.setDuration(expiryDate);
+
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(checkOut);
@@ -209,7 +217,9 @@ public class PaymentPaypalService {
 
         CourseDate courseDate = new CourseDate();
         courseDate.setCourseId(userPayment.getCourseId());
+        courseDate.setStartDate(LocalDate.now());
         courseDate.setExpiryDate(userPayment.getExpiryDate());
+        courseDate.setDuration(userPayment.getDuration());
         courseDate.setCourseName(courseService.getCourseName(userPayment.getCourseId()));
         courseDate.setCourseImage(courseService.getCourseImage(userPayment.getCourseId()));
         user.getCourses().add(courseDate);

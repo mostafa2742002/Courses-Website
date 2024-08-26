@@ -30,4 +30,6 @@ public class SolvedCourse extends AuditableBase {
     private ArrayList<Answer> FinalQuiz = new ArrayList<>();
     private Boolean firstTime = true;
     private Integer grade = 0;
+    private Integer quizIdx;
+
 }

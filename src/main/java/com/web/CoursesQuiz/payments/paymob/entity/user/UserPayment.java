@@ -22,6 +22,8 @@ public class UserPayment {
     private String userEmail;
     private String courseId;
     private String paymentId;
+    private LocalDate creationDate;
+    private Integer duration;
     private LocalDate expiryDate;
     private String referralCode;
     private String promoCode;
