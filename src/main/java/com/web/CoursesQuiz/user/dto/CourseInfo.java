@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class CourseInfo {
 
     private String courseId;
+    private Integer quizidx;
     private String courseName;
     private String courseGrade;
     private CourseQuestions courseQuestions;

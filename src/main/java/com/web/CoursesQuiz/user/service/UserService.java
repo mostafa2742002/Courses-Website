@@ -553,18 +553,20 @@ public class UserService implements UserDetailsService {
         return isDeleted;
     }
 
-    // public void enrollCourse(@NotNull String userId, @NotNull String courseId, @NotNull LocalDate expiryDate) {
-    //     if (userRepository.findById(userId).isEmpty())
-    //         throw new IllegalArgumentException("User not found");
-    //     if (courseRepository.findById(courseId).isEmpty())
-    //         throw new IllegalArgumentException("Course not found");
+    // public void enrollCourse(@NotNull String userId, @NotNull String courseId,
+    // @NotNull LocalDate expiryDate) {
+    // if (userRepository.findById(userId).isEmpty())
+    // throw new IllegalArgumentException("User not found");
+    // if (courseRepository.findById(courseId).isEmpty())
+    // throw new IllegalArgumentException("Course not found");
 
-    //     User user = userRepository.findById(userId).get();
+    // User user = userRepository.findById(userId).get();
 
-    //     CourseDate courseDate = new CourseDate(courseId, expiryDate, courseService.getCourseName(courseId),
-    //             courseService.getCourseImage(courseId));
-    //     user.getCourses().add(courseDate);
-    //     userRepository.save(user);
+    // CourseDate courseDate = new CourseDate(courseId, expiryDate,
+    // courseService.getCourseName(courseId),
+    // courseService.getCourseImage(courseId));
+    // user.getCourses().add(courseDate);
+    // userRepository.save(user);
     // }
 
     public String createReferralCode(@NotNull String userId) {
@@ -786,20 +788,15 @@ public class UserService implements UserDetailsService {
             courseInfo.setCourseId(course.getCourseId());
             courseInfo.setCourseName(courseService.getCourseName(course.getCourseId()));
             courseInfo.setCourseGrade(course.getGrade().toString());
+            courseInfo.setQuizidx(course.getQuizIdx());
 
             CourseQuestions courseQuestions = calculateCourseQuestions(course.getFinalQuiz());
             courseInfo.setCourseQuestions(courseQuestions);
-            if (!(course.getQuizIdx()
-                    .equals(courseService.getAllQuestions(course.getCourseId(), course.getQuizIdx()).size())))
-                courseInfos.add(courseInfo);
+            courseInfos.add(courseInfo);
         }
 
-        // // delete empty solved sourses from the list
-        // // if the not solved questions equal to the number of questions we will delete
-        // // it
-
-        // courseInfos.removeIf(courseInfo -> courseInfo.getCourseQuestions().getNotSolved()
-        //         .equals(String.valueOf(courseService.getAllQuestions(courseInfo.getCourseId(), 0).size())));
+        // now we need if there is any courseinfo that is not solved yet
+        
 
         return courseInfos;
     }
