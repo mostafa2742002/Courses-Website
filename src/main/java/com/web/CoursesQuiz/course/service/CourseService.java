@@ -254,14 +254,15 @@ public class CourseService {
         return course.getImage();
     }
 
-    
-    public boolean deleteFinalQuiz(@NotNull String courseId,@RequestParam @NotNull Integer idx) {
+    public boolean deleteFinalQuiz(@NotNull String courseId, @RequestParam @NotNull Integer idx) {
         boolean isDeleted = false;
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
-        if (course.getFinalQuiz().size() < idx)
+        // Check if the idx is out of bounds
+        if (course.getFinalQuiz().size() <= idx || idx < 0) {
             throw new ResourceNotFoundException("Index", "Index", idx.toString());
+        }
 
         CourseFinalExam courseFinalExam = course.getFinalQuiz().get(idx);
         for (String questionId : courseFinalExam.getFinalQuizIds()) {
@@ -270,11 +271,13 @@ public class CourseService {
             questionRepository.delete(question);
         }
 
-        course.getFinalQuiz().remove((Object) idx);
+        // Remove the final quiz from the course using the correct method
+        course.getFinalQuiz().remove((int) idx);
         courseRepository.save(course);
 
         isDeleted = true;
 
         return isDeleted;
     }
+
 }
