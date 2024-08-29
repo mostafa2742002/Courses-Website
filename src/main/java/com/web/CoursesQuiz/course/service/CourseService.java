@@ -254,7 +254,7 @@ public class CourseService {
         return course.getImage();
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    
     public boolean deleteFinalQuiz(@NotNull String courseId,@RequestParam @NotNull Integer idx) {
         boolean isDeleted = false;
         Course course = courseRepository.findById(courseId).orElseThrow(
@@ -270,7 +270,7 @@ public class CourseService {
             questionRepository.delete(question);
         }
 
-        course.getFinalQuiz().remove(idx);
+        course.getFinalQuiz().remove((Object) idx);
         courseRepository.save(course);
 
         isDeleted = true;
