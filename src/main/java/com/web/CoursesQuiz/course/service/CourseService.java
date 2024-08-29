@@ -151,6 +151,7 @@ public class CourseService {
         if (course.getFinalQuiz().size() < idx )
             throw new ResourceNotFoundException("Index", "Index", idx.toString());
 
+        question.setFinalQuizIdx(idx);
         Question savedQuestion = questionRepository.save(question);
 
         if (idx != -1) {
