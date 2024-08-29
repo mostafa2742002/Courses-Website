@@ -148,23 +148,25 @@ public class CourseService {
         if (question.getCourseId() == null)
             throw new ResourceNotFoundException("Course Id", "Course Id", courseId);
 
-        if (course.getFinalQuiz().size() < idx )
+        if (course.getFinalQuiz().size() < idx)
             throw new ResourceNotFoundException("Index", "Index", idx.toString());
 
-        question.setFinalQuizIdx(idx);
         Question savedQuestion = questionRepository.save(question);
 
         if (idx != -1) {
             CourseFinalExam courseFinalExam = course.getFinalQuiz().get(idx);
             courseFinalExam.getFinalQuizIds().add(savedQuestion.getId());
             course.getFinalQuiz().set(idx, courseFinalExam);
+            savedQuestion.setFinalQuizIdx(idx);
         } else if (idx == -1) {
             CourseFinalExam courseFinalExam = new CourseFinalExam();
             courseFinalExam.getFinalQuizIds().add(savedQuestion.getId());
             course.getFinalQuiz().add(courseFinalExam);
+            savedQuestion.setFinalQuizIdx(course.getFinalQuiz().size() - 1);
         } else
             throw new ResourceNotFoundException("Index", "Index", idx.toString());
 
+        questionRepository.save(savedQuestion);
         courseRepository.save(course);
     }
 
