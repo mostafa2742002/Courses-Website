@@ -425,6 +425,7 @@ public class UserService implements UserDetailsService {
             answer.setIsCorrect(false);
         }
 
+        solvedCourse.setSolved(false);
         solvedCourse.setGrade(0);
         solvedCourse.setFirstTime(true);
 
