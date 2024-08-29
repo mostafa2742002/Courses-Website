@@ -686,14 +686,14 @@ public class UserService implements UserDetailsService {
         return solvedLesson;
     }
 
-    public SolvedCourse getCourseAnswers(@NotNull String userId, @NotNull String courseId) {
+    public SolvedCourse getCourseAnswers(@NotNull String userId, @NotNull String courseId, @NotNull Integer idx) {
         if (userRepository.findById(userId).isEmpty())
             throw new IllegalArgumentException("User not found");
 
         if (courseRepository.findById(courseId).isEmpty())
             throw new IllegalArgumentException("Course not found");
 
-        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseId(userId, courseId);
+        SolvedCourse solvedCourse = solvedCourseRepository.findByUserIdAndCourseIdAndQuizIdx(userId, courseId, idx);
         if (solvedCourse == null)
             throw new IllegalArgumentException("Solution not found");
 

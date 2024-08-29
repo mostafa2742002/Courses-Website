@@ -234,8 +234,8 @@ public class UserController {
                         )) })
         @GetMapping("/course/answers")
         public ResponseEntity<SolvedCourse> getCourseAnswers(@RequestParam @NotNull String userId,
-                        @RequestParam @NotNull String courseId) {
-                SolvedCourse attendCourse = userService.getCourseAnswers(userId, courseId);
+                        @RequestParam @NotNull String courseId, @RequestParam @NotNull Integer idx) {
+                SolvedCourse attendCourse = userService.getCourseAnswers(userId, courseId, idx);
 
                 return ResponseEntity
                                 .status(HttpStatus.OK)
