@@ -405,6 +405,7 @@ public class UserService implements UserDetailsService {
                 grade++;
         }
 
+        solvedCourse1.setSolved(true);
         solvedCourse1.setGrade(grade);
         solvedCourse1.setFirstTime(false);
         solvedCourseRepository.save(solvedCourse1);
@@ -784,6 +785,8 @@ public class UserService implements UserDetailsService {
         // Retrieve solved courses
         List<SolvedCourse> solvedCourses = solvedCourseRepository.findAllByUserId(userId);
         for (SolvedCourse course : solvedCourses) {
+            if (!course.getSolved())
+                continue;
             CourseInfo courseInfo = new CourseInfo();
             courseInfo.setCourseId(course.getCourseId());
             courseInfo.setCourseName(courseService.getCourseName(course.getCourseId()));
@@ -796,7 +799,6 @@ public class UserService implements UserDetailsService {
         }
 
         // now we need if there is any courseinfo that is not solved yet
-        
 
         return courseInfos;
     }

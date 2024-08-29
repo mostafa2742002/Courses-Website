@@ -31,5 +31,6 @@ public class SolvedCourse extends AuditableBase {
     private Boolean firstTime = true;
     private Integer grade = 0;
     private Integer quizIdx;
+    private Boolean solved = false;
 
 }
