@@ -322,6 +322,7 @@ public class UserService implements UserDetailsService {
             SolvedCourse new_SolvedCourse = new SolvedCourse();
             new_SolvedCourse.setUserId(userId);
             new_SolvedCourse.setCourseId(courseId);
+            new_SolvedCourse.setQuizIdx(idx);
             ArrayList<Question> questions = courseService.getAllQuestions(courseId, idx);
 
             for (Question question : questions) {
