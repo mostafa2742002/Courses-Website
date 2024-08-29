@@ -3,6 +3,7 @@ package com.web.CoursesQuiz.course.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -251,5 +252,29 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
         return course.getImage();
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    public boolean deleteFinalQuiz(@NotNull String courseId,@RequestParam @NotNull Integer idx) {
+        boolean isDeleted = false;
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Course Id", courseId));
+
+        if (course.getFinalQuiz().size() < idx)
+            throw new ResourceNotFoundException("Index", "Index", idx.toString());
+
+        CourseFinalExam courseFinalExam = course.getFinalQuiz().get(idx);
+        for (String questionId : courseFinalExam.getFinalQuizIds()) {
+            Question question = questionRepository.findById(questionId).orElseThrow(
+                    () -> new ResourceNotFoundException("Question", "Question Id", questionId));
+            questionRepository.delete(question);
+        }
+
+        course.getFinalQuiz().remove(idx);
+        courseRepository.save(course);
+
+        isDeleted = true;
+
+        return isDeleted;
     }
 }

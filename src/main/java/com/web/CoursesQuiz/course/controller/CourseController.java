@@ -208,4 +208,19 @@ public class CourseController {
                 }
         }
 
+        @DeleteMapping("/course/finalquiz")
+        public ResponseEntity<ResponseDto> deleteFinalQuiz(@RequestParam @NotNull String courseId,
+                        @RequestParam @NotNull Integer idx) {
+                boolean isDeleted = courseService.deleteFinalQuiz(courseId, idx);
+                if (isDeleted) {
+                        return ResponseEntity
+                                        .status(HttpStatus.OK)
+                                        .body(new ResponseDto(ServerConstants.STATUS_200, ServerConstants.MESSAGE_200));
+                } else {
+                        return ResponseEntity
+                                        .status(HttpStatus.EXPECTATION_FAILED)
+                                        .body(new ResponseDto(ServerConstants.STATUS_417,
+                                                        ServerConstants.MESSAGE_417_DELETE));
+                }
+        }
 }
