@@ -276,7 +276,7 @@ public class CourseService {
         courseRepository.save(course);
 
         isDeleted = true;
-
+        
         return isDeleted;
     }
 

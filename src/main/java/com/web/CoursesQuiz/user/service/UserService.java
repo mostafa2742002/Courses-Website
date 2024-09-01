@@ -329,11 +329,15 @@ public class UserService implements UserDetailsService {
                 Answer answer = new Answer();
                 answer.setQuestionId(question.getId());
                 answer.setQuestion(question.getQuestion());
+                answer.setQuestionImage(question.getQuestionImage());
+                answer.setExplainationImage(question.getQuestionImage());
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
                 answer.setImage(question.getImage());
                 answer.setIsCorrect(false);
+
+                
                 answer.setOptions(question.getOptions());
                 new_SolvedCourse.getFinalQuiz().add(answer);
             }
@@ -356,6 +360,8 @@ public class UserService implements UserDetailsService {
                 answer.setExplaination(question.getExplanation());
                 answer.setImage(question.getImage());
                 answer.setIsCorrect(false);
+                answer.setQuestionImage(question.getQuestionImage());
+                answer.setExplainationImage(question.getQuestionImage());
                 answer.setOptions(question.getOptions());
                 solvedCourse.getFinalQuiz().add(answer);
             }
@@ -464,6 +470,8 @@ public class UserService implements UserDetailsService {
                 answer.setImage(question.getImage());
                 answer.setCalc(question.getCalc());
                 answer.setLevel(question.getLevel());
+                answer.setQuestionImage(question.getQuestionImage());
+                answer.setExplainationImage(question.getQuestionImage());
                 answer.setFree(question.getFree());
                 answer.setIsCorrect(false);
                 answer.setOptions(question.getOptions());
@@ -488,6 +496,8 @@ public class UserService implements UserDetailsService {
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
                 answer.setImage(question.getImage());
+                answer.setQuestionImage(question.getQuestionImage());
+                answer.setExplainationImage(question.getQuestionImage());
                 answer.setIsCorrect(false);
                 answer.setCalc(question.getCalc());
                 answer.setLevel(question.getLevel());

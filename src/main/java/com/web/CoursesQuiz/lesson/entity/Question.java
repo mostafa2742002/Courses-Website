@@ -25,10 +25,12 @@ public class Question {
     private Integer finalQuizIdx;
     private String level;
     private String question;
+    private String questionImage;
     private String image;
     private ArrayList<String> options;
     private String correctAnswer;
     private String explanation;
+    private String explanationImage;
     private Boolean free = false;
     private Boolean calc = false;
 }
