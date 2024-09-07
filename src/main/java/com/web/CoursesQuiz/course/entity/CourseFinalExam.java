@@ -7,5 +7,6 @@ import lombok.Data;
 @Data
 public class CourseFinalExam {
 
+    private Integer timer;
     private ArrayList<String> FinalQuizIds = new ArrayList<>();
 }

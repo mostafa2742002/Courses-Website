@@ -140,7 +140,8 @@ public class CourseService {
         return response;
     }
 
-    public void addQuestion(@NotNull Question question, @NotNull String courseId, @NotNull Integer idx) {
+    public void addQuestion(@NotNull Question question, @NotNull String courseId, @NotNull Integer idx,
+    Integer timer) {
         Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Course Id", courseId));
 
@@ -162,6 +163,8 @@ public class CourseService {
         } else if (idx == -1) {
             CourseFinalExam courseFinalExam = new CourseFinalExam();
             courseFinalExam.getFinalQuizIds().add(savedQuestion.getId());
+            if(timer != null)
+                courseFinalExam.setTimer(timer);
             course.getFinalQuiz().add(courseFinalExam);
             savedQuestion.setFinalQuizIdx(course.getFinalQuiz().size() - 1);
         } else

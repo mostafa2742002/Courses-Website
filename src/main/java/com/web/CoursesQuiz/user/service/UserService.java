@@ -107,8 +107,7 @@ public class UserService implements UserDetailsService {
         String subject = "Verify Your Email";
 
         // if we use render site then use this
-        String body = "Click the link to verify your email:https://courses-website-q0gf.onrender.com/api/verifyemail?token="
-                + verificationToken;
+        String body = "Click the link to verify your email:http://mathapes.com/api/verifyemail?token=" + verificationToken;
 
         // if we use localhost then use this
         // String body = "Click the link to verify your
@@ -334,7 +333,7 @@ public class UserService implements UserDetailsService {
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
-                answer.setImage(question.getImage());
+                answer.setQuestionImage(question.getQuestionImage());
                 answer.setIsCorrect(false);
 
                 
@@ -358,7 +357,7 @@ public class UserService implements UserDetailsService {
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
-                answer.setImage(question.getImage());
+                answer.setQuestionImage(question.getQuestionImage());
                 answer.setIsCorrect(false);
                 answer.setQuestionImage(question.getQuestionImage());
                 answer.setExplainationImage(question.getQuestionImage());
@@ -467,7 +466,7 @@ public class UserService implements UserDetailsService {
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
-                answer.setImage(question.getImage());
+                answer.setQuestionImage(question.getQuestionImage());
                 answer.setCalc(question.getCalc());
                 answer.setLevel(question.getLevel());
                 answer.setQuestionImage(question.getQuestionImage());
@@ -495,7 +494,7 @@ public class UserService implements UserDetailsService {
                 answer.setCorrectAnswer(question.getCorrectAnswer());
                 answer.setUserAnswer("");
                 answer.setExplaination(question.getExplanation());
-                answer.setImage(question.getImage());
+                answer.setQuestionImage(question.getQuestionImage());
                 answer.setQuestionImage(question.getQuestionImage());
                 answer.setExplainationImage(question.getQuestionImage());
                 answer.setIsCorrect(false);

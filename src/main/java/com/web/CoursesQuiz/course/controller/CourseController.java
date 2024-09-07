@@ -145,8 +145,9 @@ public class CourseController {
         @PostMapping("/course/question")
         public ResponseEntity<ResponseDto> addQuestion(@RequestBody @NotNull Question question,
                         @RequestParam @NotNull String courseId,
-                        @RequestParam @NotNull Integer idx) {
-                courseService.addQuestion(question, courseId, idx);
+                        @RequestParam @NotNull Integer idx, // the timer is optional
+                        @RequestParam(required = false) Integer timer) {
+                courseService.addQuestion(question, courseId, idx, timer);
                 return ResponseEntity
                                 .status(HttpStatus.CREATED)
                                 .body(new ResponseDto(ServerConstants.STATUS_201, ServerConstants.MESSAGE_201));
@@ -158,8 +159,8 @@ public class CourseController {
                         @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
         })
         @GetMapping("/course/questions")
-        public ResponseEntity<List<Question>> getAllQuestions(@RequestParam @NotNull String courseId
-        , @RequestParam @NotNull Integer idx) {
+        public ResponseEntity<List<Question>> getAllQuestions(@RequestParam @NotNull String courseId,
+                        @RequestParam @NotNull Integer idx) {
                 List<Question> questions = courseService.getAllQuestions(courseId, idx);
                 return ResponseEntity
                                 .status(HttpStatus.OK)

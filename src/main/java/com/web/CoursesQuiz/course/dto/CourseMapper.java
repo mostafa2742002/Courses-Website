@@ -24,8 +24,6 @@ public class CourseMapper {
             dto.setLastModifiedBy(course.getLastModifiedBy());
         if (course.getLastModifiedDate() != null)
             dto.setLastModifiedDate(course.getLastModifiedDate());
-        if (course.getTimer() != null)
-            dto.setTimer(course.getTimer());
 
         return dto;
     }
@@ -42,8 +40,7 @@ public class CourseMapper {
             course.setLessonsPref(courseDTO.getLessonsPref()); // Directly assign the list if it's fine as is
         if (courseDTO.getImage() != null)
             course.setImage(courseDTO.getImage());
-        if (courseDTO.getTimer() != null)
-            course.setTimer(courseDTO.getTimer());
+        
         return course;
     }
 }

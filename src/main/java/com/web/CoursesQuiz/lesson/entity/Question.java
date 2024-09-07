@@ -26,7 +26,7 @@ public class Question {
     private String level;
     private String question;
     private String questionImage;
-    private String image;
+    // private String image;
     private ArrayList<String> options;
     private String correctAnswer;
     private String explanation;
